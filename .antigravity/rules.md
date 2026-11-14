@@ -1,23 +1,35 @@
-# NIPPIA GLOBAL AGENT RULES
+# NIPPIA MONOREPO — AI AGENT RULES & GUARDRAILS
 
-## 1. Single Source of Truth (SSOT)
-- Selalu baca `docs/PRD_Nippia_CPNS.md` dan `docs/API_CONTRACT.md` sebelum menulis kode.
-- Jika menambah/mengubah field database atau endpoint, wajib perbarui `docs/API_CONTRACT.md` lebih dulu.
+## 1. Konteks Proyek & Single Source of Truth
+- **Nama Aplikasi:** Nippia – Latihan Soal CPNS & CAT (`id.my.kulitech.nippia`)
+- **Arsitektur Repo:** Monorepo (`docs/`, `nippia-backend/`, `nippia-android/`).
+- **Referensi Wajib:** Selalu baca `docs/PRD_Nippia_CPNS.md`, `docs/API_CONTRACT.md`, dan `docs/RIVE_SPECS.md` sebelum menulis atau memodifikasi kode.
+- **Aturan Contract-First:** Jika ada perubahan struktur data atau endpoint, perbarui `docs/API_CONTRACT.md` terlebih dahulu sebelum menyentuh kode Backend maupun Android.
 
-## 2. Backend Standards (`nippia-backend/`)
-- Stack: Node.js, Express.js, TypeScript (strict), PostgreSQL, Prisma ORM, Redis, Zod.
-- Architecture: Clean Architecture (`presentation` -> `application` -> `domain` <- `infrastructure`).
-- Content Rule: Dilarang hard-delete pada `units` dan `questions`. Gunakan `ContentStatus` (`DRAFT`, `PUBLISHED`, `ARCHIVED`).
-- Validasi semua request body/query menggunakan Zod di layer presentation.
+## 2. Aturan Backend (`nippia-backend/`)
+- **Tech Stack:** Node.js (LTS), Express.js, TypeScript (Strict Mode), PostgreSQL 16, Prisma ORM, Redis 7, Zod, Cloudinary, Google Play Developer API, Firebase Admin SDK.
+- **Arsitektur:** Clean Architecture dengan arah dependensi ketat:
+  `presentation` (controllers, routes, validators) -> `application` (use-cases) -> `domain` (entities, interfaces) <- `infrastructure` (prisma, redis, cloudinary, google).
+- **Manajemen Konten Dinamis:** Dilarang melakukan *hard delete* (`DELETE`) pada tabel `units` dan `questions`. Gunakan soft-archive (`status = 'ARCHIVED'`) dan perbarui kolom `updatedAt` agar mekanisme Delta Sync di Android tetap konsisten.
+- **Performa & Keamanan:**
+  - Validasi seluruh input `body`, `query`, dan `params` menggunakan Zod.
+  - Gunakan Redis Sorted Sets (`ZINCRBY` / `ZREVRANGE`) untuk *Weekly Leaderboard* dan cache `learning_path`.
+  - Validasi durasi Simulasi CAT berdasarkan timestamp `started_at` di server.
+  - Wajib gunakan *Idempotency-Key* pada endpoint klaim XP / penyelesaian unit.
 
-## 3. Android Standards (`nippia-android/`)
-- Package: `id.my.kulitech.nippia`
-- Stack: Kotlin, Jetpack Compose (Material 3), Hilt, Coroutines/Flow, Room, DataStore, Retrofit, Kotlinx Serialization, Rive Android SDK (`app.rive:rive-android`), Coil.
-- Architecture: Clean Architecture (`presentation` -> `domain` <- `data`) dengan MVVM + Unidirectional Data Flow (UDF).
-- Offline-First: UI wajib mengamati Flow dari Room Database (`@Upsert` Delta Sync), bukan langsung dari Retrofit.
-- UI & Animasi: Gunakan komponen `TactileButton3D` untuk aksi utama dan opsi jawaban. Kontrol Rive State Machine wajib dipicu melalui `LaunchedEffect`.
+## 3. Aturan Android (`nippia-android/`)
+- **Tech Stack:** Kotlin, Jetpack Compose (Material 3), Dagger Hilt, Coroutines & Flow, Room Database, Jetpack DataStore, WorkManager, Retrofit + Kotlinx Serialization, Rive Android SDK (`app.rive:rive-android`), Coil, Google Play Billing v7+, AdMob SDK.
+- **Arsitektur:** Clean Architecture (`presentation` -> `domain` <- `data`) dengan pola MVVM + Unidirectional Data Flow (UDF) & State Hoisting.
+- **Offline-First Single Source of Truth (SSOT):**
+  - `ViewModel` wajib mengamati `Flow` dari Room Database, bukan langsung dari Retrofit.
+  - Sinkronisasi konten menggunakan Delta Sync (`GET /api/v1/content/sync?since=...`) dengan `@Upsert` Room.
+  - Pengiriman progres kuis offline wajib melalui antrean `pending_sync` + `WorkManager`.
+- **UI/UX Taktil & Rive:**
+  - Gunakan komponen `TactileButton3D` (shadow bibir solid `4.dp` dengan efek `translationY` + haptic feedback) untuk tombol aksi utama dan opsi jawaban.
+  - Jangan pernah memasang Banner/Interstitial Ads di layar kuis aktif atau layar simulasi CAT.
+  - **Pembuatan Aset Rive (`.riv`):** Seluruh pembuatan dan kompilasi aset animasi Rive (`mascot_nippia.riv`, `streak_flame.riv`, `heart_status.riv`, `unit_node.riv`, `lesson_complete.riv`) wajib menggunakan **Rive CLI** (`rive` / `C:\Users\Wahyu\.rive\bin\rive.exe`) berbasis proyek `rive.yaml` + `scene.rml`, diverifikasi dengan `rive <dir> --verify`, dan diekspor ke `nippia-android/app/src/main/res/raw/`.
+  - Kontrol State Machine Rive (`fireState`, `setBooleanState`, `setNumberState`) wajib dipicu dari dalam `LaunchedEffect` agar aman terhadap *recomposition* Compose.
 
-## 4. UI/UX & Figcraft MCP Standards
-- Ukuran frame standar Android: `360x800 dp` dengan Auto Layout.
-- Palet warna: Primary Navy (`#1E3A8A`), Emerald (`#10B981`), Accent Gold (`#F59E0B`), Correct (`#22C55E`), Wrong (`#EF4444`).
-- Tandai slot animasi Rive dengan frame placeholder bernama `RIVE_<NAMA_ASET>` sesuai dimensi di `docs/RIVE_SPECS.md`.
+## 4. Konvensi Git & Eksekusi
+- Gunakan *Conventional Commits* dengan scope: `docs(contract):`, `feat(api):`, `feat(android):`, `fix(android):`, `design(figma):`.
+- Jangan pernah menyentuh atau meng-commit file `.env`, `google-services.json`, `*.jks`, atau `keystore.properties`.
