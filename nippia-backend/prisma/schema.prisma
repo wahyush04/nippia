@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ============================================================================
@@ -78,18 +77,23 @@ enum LeagueTier {
 // ============================================================================
 
 model User {
-  id            String    @id @default(uuid()) @db.Uuid
-  email         String?   @unique
-  googleId      String?   @unique @map("google_id")
-  displayName   String?   @map("display_name")
-  avatarUrl     String?   @map("avatar_url")
-  role          UserRole  @default(USER)
-  isGuest       Boolean   @default(false) @map("is_guest")
-  dailyGoal     DailyGoal @default(REGULER) @map("daily_goal")
-  dailyXpTarget Int       @default(50) @map("daily_xp_target")
-  fcmToken      String?   @map("fcm_token")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  id                   String    @id @default(uuid()) @db.Uuid
+  email                String?   @unique
+  googleId             String?   @unique @map("google_id")
+  displayName          String?   @map("display_name")
+  avatarUrl            String?   @map("avatar_url")
+  role                 UserRole  @default(USER)
+  isGuest              Boolean   @default(false) @map("is_guest")
+  targetInstitution    String?   @map("target_institution")
+  targetPosition       String?   @map("target_position")
+  dailyGoal            DailyGoal @default(REGULER) @map("daily_goal")
+  dailyXpTarget        Int       @default(50) @map("daily_xp_target")
+  dailyReminderEnabled Boolean   @default(true) @map("daily_reminder_enabled")
+  dailyReminderTime    String    @default("19:30") @map("daily_reminder_time")
+  onboardingCompleted  Boolean   @default(false) @map("onboarding_completed")
+  fcmToken             String?   @map("fcm_token")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
 
   gamification       UserGamification?
   refreshTokens      RefreshToken[]

@@ -8,7 +8,7 @@
 
 **Platform:** Android (Native Kotlin + Jetpack Compose)
 
-**Versi Dokumen:** 1.1 (Dynamic Content & Post-Launch Sync Update)
+**Versi Dokumen:** 1.5 (Google Stitch UI/UX Alignment – Poin 3: 6 Layar Baru P0/P1/P2 Lengkap)
 
 **Status:** Approved for Engineering & Design
 
@@ -72,15 +72,28 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
 ## 3. Spesifikasi Fungsional Produk
 
-### 3.1 Autentikasi & Onboarding
+### 3.1 Autentikasi & Onboarding (3 Langkah)
 
-* **FR-01 (Google Sign-In):** Autentikasi satu ketukan menggunakan Google Account serta opsi *Guest Mode* (progres lokal yang dapat ditautkan ke akun Google kapan saja).
+* **FR-01 (Google Sign-In, Guest Mode & Account Linking):**
+  * Autentikasi satu ketukan menggunakan Google Account dengan selebrasi mikro (*Coin Burst* & bonus awal `+50 XP`).
+  * Opsi **Masuk sebagai Tamu (*Guest Mode*)** agar pengguna dapat langsung mencoba sesi latihan tanpa registrasi awal.
+  * **Transisi Tautkan Akun Tamu ke Google (*Account Linking*):** Modal konfirmasi khusus untuk menautkan akun tamu ke Google kapan saja dengan memigrasikan seluruh progres lokal (*Daily Streak*, *Permata/Gems*, *Total XP*, dan *Bank Kesalahan*) secara utuh ke *cloud* tanpa kehilangan data.
 
-* **FR-02 (Target Harian):** Saat *onboarding*, pengguna memilih target intensitas XP harian: *Santai* (20 XP/hari), *Reguler* (50 XP/hari), atau *Ambisius* (100 XP/hari).
+* **FR-02A (Onboarding Langkah 1 – Pilih Target Formasi CPNS):**
+  * Pengguna mencari dan memilih target instansi (Kementerian, Lembaga Negara, Pemda/Provinsi, Kejaksaan/Hukum) serta jabatan impian.
+  * Setiap kartu formasi menampilkan informasi **Passing Grade Resmi SKD** (`TWK 65`, `TIU 80`, `TKP 166` — Total Min. `311`), rekomendasi **Target Skor Aman Lolos** (misal `410+` s/d `440+`), dan estimasi **Rasio Keketatan Pelamar**. Target formasi dapat diganti kapan saja di halaman Profil tanpa mereset progres belajar.
+
+* **FR-02B (Onboarding Langkah 2 – Target Harian & Pengingat Belajar):**
+  * Pengguna memilih target intensitas XP harian: **Santai** (`20 XP/hari` / ~3 menit), **Reguler – Rekomendasi** (`50 XP/hari` / ~8 menit), atau **Ambisius** (`100 XP/hari` / ~15 menit).
+  * Dilengkapi *toggle* **Pengingat Harian** (default pukul `19.30 WIB`) melalui notifikasi lokal/FCM untuk menjaga *daily streak* tetap menyala.
+
+* **FR-02C (Onboarding Langkah 3 – Diagnostic Baseline Quiz):**
+  * Kuis diagnostik kilat berdurasi ~3 menit yang terdiri dari **3 soal representatif** (`1 TWK`, `1 TIU`, `1 TKP`) dengan insentif bonus awal (`+30 XP` & `+10 Permata`) untuk mengkalibrasi rekomendasi awal pada peta belajar.
+  * Menyediakan opsi **"Lewati Tes Awal & Mulai dari Dasar Unit 1"** bagi pengguna yang ingin langsung belajar dari materi paling dasar tanpa tes diagnostik.
 
 ### 3.2 Learning Path & Sesi Latihan Mikro
 
-* **FR-03 (Peta Materi Berkelok / S-Curve Path):** Materi dibagi menjadi 3 jalur utama yang dapat diganti melalui *Top Sticky HUD*:
+* **FR-03 (Peta Materi Berkelok / S-Curve Path):** Materi dibagi menjadi 3 jalur utama yang dapat diganti melalui *Top Sticky HUD* (*Modal Pemilih Jalur Materi SKD* yang menampilkan progres per pilar):
 
   1. **TWK (Tes Wawasan Kebangsaan):** Nasionalisme, Integritas, Bela Negara, Pilar Negara, Bahasa Negara.
 
@@ -94,7 +107,9 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
   * Soal **TIU Figural** mendukung gambar resolusi tinggi dengan fitur *tap-to-zoom*.
 
-  * Setelah menekan tombol **"Cek Jawaban"**, muncul *Feedback Bottom Sheet* secara instan (0 ms *latency*) yang menampilkan status benar/salah (atau poin skala 1–5 untuk TKP) beserta **Trik Cepat / Pembahasan Ringkas**.
+  * Setelah menekan tombol **"Cek Jawaban"**, muncul *Feedback Bottom Sheet* secara instan (0 ms *latency*) yang menampilkan status benar/salah (atau badge bobot poin skala `1–5` untuk soal TKP `WEIGHTED_SCALE`, di mana skor $< 4$ otomatis masuk *Mistake Bank* tanpa mengurangi *heart*) beserta **Trik Cepat / Pembahasan Ringkas**.
+
+  * Setelah seluruh soal dalam unit selesai (7/7), pengguna diarahkan ke **Layar Selebrasi Selesai Unit (*Lesson Complete*)** yang menampilkan animasi Rive `lesson_complete.riv`, bintang akurasi (1–3), rincian perolehan XP (+ bonus kecepatan), waktu pengerjaan, dan tombol **"KLAIM XP & LANJUTKAN"**.
 
 * **FR-06 (Latihan Ulang Kesalahan / *Mistake Review*):** Soal TWK/TIU yang dijawab salah atau soal TKP dengan skor $< 4$ otomatis masuk ke antrean *Mistake Bank* untuk diujikan kembali dalam sesi khusus.
 
@@ -106,25 +121,33 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
   * Pemulihan *heart*: Regenerasi otomatis 1 *heart* setiap 4 jam, menonton 1 *Rewarded Ad* (+1 *heart*), menukar XP/Permata, atau otomatis tanpa batas ($\infty$) bagi pelanggan **Nippia Pro**.
 
-* **FR-08 (Daily Streak & Streak Freeze):** Menghitung jumlah hari berturut-turut pengguna menyelesaikan minimal 1 unit. Tersedia item *Streak Freeze* (maksimal 2 slot) untuk melindungi *streak* saat pengguna absen 1 hari.
+* **FR-08 (Daily Streak & Streak Freeze):** Menghitung jumlah hari berturut-turut pengguna menyelesaikan minimal 1 unit, dilengkapi **Modal Daily Streak & Streak Freeze** (kalender 7 hari + animasi `streak_flame.riv`). Tersedia item *Streak Freeze* (maksimal 2 slot) yang dapat dipasang menggunakan Gems (200 Gems) atau *Rewarded Ad* untuk melindungi *streak* saat pengguna absen 1 hari.
 
-* **FR-09 (Weekly Leaderboard):** Sistem liga mingguan bertingkat (*Perunggu* $\rightarrow$ *Perak* $\rightarrow$ *Emas* $\rightarrow$ *Safir* $\rightarrow$ *Berlian*) beranggotakan 30 pengguna per grup yang di-reset setiap Senin pukul 00.00 WIB. 10 besar naik liga, 5 terbawah turun liga.
+* **FR-09 (Weekly Leaderboard):** Sistem liga mingguan bertingkat (*Perunggu* $\rightarrow$ *Perak* $\rightarrow$ *Emas* $\rightarrow$ *Safir* $\rightarrow$ *Berlian*) beranggotakan 30 pengguna per grup yang di-reset setiap Senin pukul 00.00 WIB. Peringkat 1–10 masuk *Zona Promosi* (naik liga), 11–25 *Zona Aman*, dan 26–30 *Zona Degradasi* (turun liga). Dilengkapi CTA **Latihan Kilat (+30 XP)** untuk mengejar peringkat serta **Kuis Kilat Penyelamat Degradasi (+50 XP)** khusus saat pengguna berada di zona degradasi.
 
 ### 3.4 Simulasi CAT BKN & Radar Kelemahan
 
-* **FR-10 (Mode Simulasi CAT):**
+* **FR-10 (Mode Simulasi CAT & Katalog Tryout):**
 
   * **Mini CAT:** 30 soal campuran (30 menit).
 
-  * **Full Tryout CAT:** 110 soal standar BKN (30 TWK, 35 TIU, 45 TKP) dengan *countdown timer* 100 menit yang tervalidasi di server, tanpa pembahasan selama ujian berlangsung.
+  * **Tryout Mandiri / Full Tryout CAT:** 110 soal standar BKN (30 TWK, 35 TIU, 45 TKP) dengan *countdown timer* 100 menit yang tervalidasi di server, tanpa pembahasan selama ujian berlangsung.
 
-* **FR-11 (Evaluasi Passing Grade Resmi):**
+  * **Tryout Akbar Nasional (*Scheduled Event*):** Event tryout serentak terjadwal dengan kuota kursi, reservasi peserta, serta papan peringkat langsung (*Live Ranking*) dan pemeringkatan formasi instansi.
+
+* **FR-11 (Evaluasi Passing Grade Resmi & Review Pembahasan):**
 
   * Pembobotan skor otomatis: TWK & TIU (Benar $+5$, Salah/Kosong $0$), TKP (Skala opsi $1$ sampai $5$, Kosong $0$).
 
-  * Penentuan status kelulusan berdasarkan ambang batas (*Passing Grade*): **TWK** $\ge 65$, **TIU** $\ge 80$, dan **TKP** $\ge 166$.
+  * Penentuan status kelulusan berdasarkan ambang batas (*Passing Grade*): **TWK** $\ge 65$, **TIU** $\ge 80$, dan **TKP** $\ge 166$, disertai peringkat nasional peserta.
 
-* **FR-12 (Radar Kelemahan / Smart Review):** Grafik radar performa per sub-topik dan tombol aksi cepat untuk membuat kuis otomatis dari 3 sub-topik dengan akurasi terendah.
+  * **Review Pembahasan CAT:** Filter status jawaban (`Semua`, `Salah`, `Benar`, `Ragu-ragu`, `Kosong`), *quick-jump* nomor soal per pilar (`TWK`/`TIU`/`TKP`), kunci jawaban resmi, metode cepat (*Trik Kilat ASN*), tips menghindari jebakan soal, serta aksi simpan ke *Mistake Bank* dan *Bookmark* soal.
+
+* **FR-12 (Radar Kelemahan Sub-Topik & Smart Review AI):**
+
+  * Grafik radar performa **6 dimensi sub-topik** dengan indikator garis ambang aman **70%** dan daftar sub-topik kritis di bawah target.
+
+  * Kartu rekomendasi **Smart Review AI** berisi paket latihan kilat terpersonalisasi **10 soal** (`+25 XP`) dari sub-topik dengan akurasi terendah.
 
 ### 3.5 Manajemen Konten & Penambahan Soal Pasca-Rilis
 
@@ -136,7 +159,7 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
   * `ARCHIVED`: Konten lama yang ditarik dari peredaran tanpa menghapus relasi riwayat skor atau *mistake bank* pengguna lama.
 
-* **FR-14 (Bulk Import Pipeline):** Endpoint admin (`POST /api/v1/admin/questions/import`) mendukung unggah massal file `.csv` beserta arsip `.zip` gambar soal TIU Figural. Sistem mengekstrak gambar, mengunggahnya otomatis ke Cloudinary (konversi WebP), dan menyimpan soal ke database dalam satu transaksi atomik berstatus awal `DRAFT`.
+* **FR-14 (Bulk Import Pipeline):** Endpoint admin (`POST /api/v1/admin/questions/import`) mendukung unggah massal file `.csv` beserta arsip `.zip` gambar soal TIU Figural. Sistem mengekstrak gambar, mengonversinya otomatis ke WebP (`sharp`), mengunggahnya ke **Cloudflare R2 / S3** (`@aws-sdk/client-s3`), dan menyimpan soal ke database dalam satu transaksi atomik berstatus awal `DRAFT`.
 
 * **FR-15 (Mini Web Admin CMS):** Antarmuka web internal (`admin.nippia.kulitech.my.id`) untuk mengelola bank soal, memvalidasi pratinjau rumus matematika/gambar figural, dan mengubah status publikasi dari `DRAFT` ke `PUBLISHED` sekaligus memicu invalidasi cache Redis.
 
@@ -156,7 +179,7 @@ Penempatan iklan dirancang agar tidak mengganggu fokus berhitung dan membaca soa
 
 ### 4.2 Paket Langganan ("Nippia Pro")
 
-Dikelola menggunakan **Google Play Billing Library v7+** dengan dukungan *Free Trial* 3 hari bagi pengguna yang mencapai *7-day streak*:
+Dikelola menggunakan **Google Play Billing Library v7+** dengan dukungan *Free Trial* 3 hari (tersedia pada paket *Best Value* 3 bulan maupun sebagai reward pencapaian *7-day streak*):
 
 * **Paket 1 Bulan:** Rp 35.000 (Opsi fleksibel bulanan).
 
@@ -184,15 +207,15 @@ Dikelola menggunakan **Google Play Billing Library v7+** dengan dukungan *Free T
 
 * **Tech Stack:**
 
-  * **UI & Animasi:** Kotlin, Jetpack Compose (Material 3), Rive Android SDK (`app.rive:rive-android`), Coil (image caching).
+  * **UI & Animasi:** Kotlin, Jetpack Compose (Material 3), Navigation Compose (Type-Safe), Rive Android SDK (`app.rive:rive-android`), Coil 3 (image caching), `SoundPool` (SFX taktil).
 
-  * **Async & DI:** Kotlin Coroutines, `StateFlow`/`SharedFlow`, Dagger Hilt.
+  * **Async & DI:** Kotlin Coroutines, `StateFlow`/`SharedFlow`, Dagger Hilt (+ KSP).
 
   * **Storage & Sync:** Room Database (bank soal unit *pre-fetched*, *delta sync* `@Upsert`, & antrean *pending sync*), Jetpack DataStore (JWT, `last_content_sync`, & cache status Pro), WorkManager (sinkronisasi latar belakang).
 
   * **Network:** Retrofit, OkHttp, Kotlinx Serialization, Chucker (debug).
 
-  * **SDK Layanan:** Google Play Billing Library, Google Mobile Ads SDK, Play Integrity API, Firebase (Crashlytics, Analytics, FCM).
+  * **SDK Layanan:** Android Credential Manager (Google Sign-In), Google Play Billing Library, Google Mobile Ads SDK, Play Integrity API, Firebase (Crashlytics, Analytics, FCM).
 
 ### 5.2 Backend Service
 
@@ -200,13 +223,13 @@ Dikelola menggunakan **Google Play Billing Library v7+** dengan dukungan *Free T
 
 * **Tech Stack:**
 
-  * **Core:** Node.js (LTS), Express.js, TypeScript (Strict Mode).
+  * **Core:** Node.js (LTS), Express.js v5, TypeScript (Strict Mode), Zod (validasi skema), Pino (structured logging), Vitest + Supertest (testing).
 
-  * **Database & Cache:** PostgreSQL 16 + Prisma ORM; Redis 7 (Sorted Sets untuk *Weekly Leaderboard* $< 2\text{ ms}$, rate limiting, dan cache bank soal dengan *auto-invalidation* saat publikasi konten baru).
+  * **Database & Cache:** PostgreSQL 16 + Prisma ORM; Redis 7 (`ioredis` — Sorted Sets untuk *Weekly Leaderboard* $< 2\text{ ms}$, rate limiting, dan cache bank soal dengan *auto-invalidation* saat publikasi konten baru).
 
-  * **Media & Auth:** Cloudinary (konversi otomatis WebP untuk gambar TIU Figural & pipeline *bulk upload*), `google-auth-library`, JWT (`accessToken` + rotasi `refreshToken`) dengan dukungan *role-based access control* (`USER` vs `ADMIN`).
+  * **Media & Auth:** Cloudflare R2 / S3 (`@aws-sdk/client-s3` + `sharp` untuk konversi otomatis WebP gambar TIU Figural & pipeline *bulk upload*), `google-auth-library`, JWT (`accessToken` + rotasi `refreshToken`) dengan dukungan *role-based access control* (`USER` vs `ADMIN`).
 
-  * **Billing & Notifikasi:** Google Play Developer API (validasi `purchaseToken` server-side), Google Cloud Pub/Sub untuk webhook **RTDN (Real-Time Developer Notifications)**, BullMQ/Cron, Firebase Admin SDK (FCM).
+  * **Billing & Notifikasi:** Google Play Developer API (validasi `purchaseToken` server-side), Google Cloud Pub/Sub untuk webhook **RTDN (Real-Time Developer Notifications)**, BullMQ (antrean job di atas Redis 7), Firebase Admin SDK (FCM).
 
 ### 5.3 Infrastruktur Production
 
@@ -237,7 +260,7 @@ Dijalankan menggunakan **Docker Compose** pada VPS/Cloud Compute Engine dengan k
    1---* [tryout_attempts]
 ```
 
-* **`users`**: `id`, `email`, `google_id`, `role` (`USER` | `ADMIN`), `created_at`.
+* **`users`**: `id`, `email`, `google_id`, `is_guest`, `role` (`USER` | `ADMIN`), `target_institution`, `target_position`, `daily_xp_goal` (`20` | `50` | `100`), `daily_reminder_time` (contoh: `"19:30"`), `onboarding_completed`, `created_at`.
 
 * **`categories`**: `id`, `code` (`TWK`, `TIU`, `TKP`), `name`, `passing_grade` (`65`, `80`, `166`).
 

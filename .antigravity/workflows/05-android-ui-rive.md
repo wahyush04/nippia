@@ -4,7 +4,7 @@
 Membangun antarmuka pengguna taktil ala Duolingo di Jetpack Compose dengan integrasi Rive State Machine dan arsitektur MVVM + UDF.
 
 ## Langkah Eksekusi
-1. Baca `docs/PRD_Nippia_CPNS.md`, `docs/RIVE_SPECS.md` (`docs/RIVE_DOCS.md`), dan inspect frame Figma terkait melalui Figcraft MCP (jika tersedia).
+1. Baca `docs/PRD_Nippia_CPNS.md` (`docs/prd_nippia_latihan_soal_cpns_cat.md`), `docs/RIVE_SPECS.md` (`docs/RIVE_DOCS.md`), dan inspect screen terkait di **Google Stitch** melalui **StitchMCP** (`projectId: "6573748658328314582"` — gunakan `list_screens` dan `get_screen`).
 2. Jika aset `.riv` belum ada atau perlu diperbarui, buat/kompilasi aset menggunakan **Rive CLI** (`C:\Users\Wahyu\.rive\bin\rive.exe` — scaffold via `rive create <dir>`, definisikan artboard & state machine di `scene.rml`, verifikasi dengan `rive <dir> --verify`, dan tempatkan output `.riv` di `nippia-android/app/src/main/res/raw/`).
 3. Pastikan komponen dasar tersedia di `presentation/components/`:
    - `TactileButton3D`: Tombol dengan lapisan bayangan bawah `4.dp`, animasi `translationY` saat ditekan, dan `HapticFeedbackType.TextHandleMove`.

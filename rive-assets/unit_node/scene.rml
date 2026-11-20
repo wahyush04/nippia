@@ -1,0 +1,190 @@
+<Rive version="1" kind="fragment">
+    <Artboard defaultStateMachineId="0:10" styleId="0:5" width="256" height="256" name="UnitNodeArtboard" id="0:2">
+        <LayoutComponentStyle name="Artboard Style" id="0:5"/>
+
+        <Fill name="Background">
+            <SolidColor colorValue="00000000" name="Transparent"/>
+        </Fill>
+
+        <StateMachine name="NodeState" id="0:10">
+            <StateMachineNumber value="0" name="status" id="0:11"/>
+            <StateMachineBool value="false" name="isPressed" id="0:12"/>
+
+            <!-- Layer 1: Status (0=Locked, 1=Active, 2=Completed) -->
+            <StateMachineLayer name="StatusLayer" id="0:20">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="620" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:21"/>
+                </EntryState>
+
+                <!-- 0: Locked -->
+                <AnimationState x="160" y="40" animationId="0:30" id="0:21">
+                    <StateTransition stateToId="0:22" duration="180">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="1"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="180">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <!-- 1: Active -->
+                <AnimationState x="360" y="40" animationId="0:31" id="0:22">
+                    <StateTransition stateToId="0:21" duration="180">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="1"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="180">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <!-- 2: Completed -->
+                <AnimationState x="560" y="40" animationId="0:32" id="0:23">
+                    <StateTransition stateToId="0:21" duration="180">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="1"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:22" duration="180">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="1"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                </AnimationState>
+            </StateMachineLayer>
+
+            <!-- Layer 2: Tactile 3D Press Depression -->
+            <StateMachineLayer name="PressLayer" id="0:25">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="620" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:26"/>
+                </EntryState>
+
+                <AnimationState x="200" y="40" animationId="0:33" id="0:26">
+                    <StateTransition stateToId="0:27" duration="80">
+                        <TransitionBoolCondition inputId="0:12" opValue="equal"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <AnimationState x="420" y="40" animationId="0:34" id="0:27">
+                    <StateTransition stateToId="0:26" duration="100">
+                        <TransitionBoolCondition inputId="0:12" opValue="notEqual"/>
+                    </StateTransition>
+                </AnimationState>
+            </StateMachineLayer>
+        </StateMachine>
+
+        <!-- 0:30 StatusLocked -->
+        <LinearAnimation duration="10" loopValue="oneShot" name="StatusLocked" id="0:30">
+            <KeyedObject objectId="0:121"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFCBD5E1" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:131"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF94A3B8" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:140"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:150"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:160"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:170"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:31 StatusActive (1.5s pulsing emerald beacon = 90f) -->
+        <LinearAnimation duration="90" loopValue="loop" name="StatusActive" id="0:31">
+            <KeyedObject objectId="0:121"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF10B981" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:131"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF059669" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:140"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:150"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:160"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:170">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.85" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="0.0" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0.82" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.2" y1="0" x2="0.4" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.22" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0.82" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.2" y1="0" x2="0.4" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.22" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:32 StatusCompleted (gold badge with check) -->
+        <LinearAnimation duration="120" loopValue="loop" name="StatusCompleted" id="0:32">
+            <KeyedObject objectId="0:121"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFBBF24" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:131"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFD97706" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:140"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:150"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:160"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:170"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:33 CapReleased -->
+        <LinearAnimation duration="10" loopValue="oneShot" name="CapReleased" id="0:33">
+            <KeyedObject objectId="0:120"><KeyedProperty propertyKey="14"><KeyFrameDouble value="116" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:34 CapPressed -->
+        <LinearAnimation duration="10" loopValue="oneShot" name="CapPressed" id="0:34">
+            <KeyedObject objectId="0:120"><KeyedProperty propertyKey="14"><KeyFrameDouble value="128" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- Artwork (front-to-back) -->
+        <!-- Tactile Cap Group (shifts down when pressed) -->
+        <Node x="128" y="116" name="NodeCapGroup" id="0:120">
+            <!-- Lock Glyph (Status 0) -->
+            <Node x="0" y="2" name="LockGlyph" id="0:140">
+                <Shape x="0" y="-14" name="Shackle">
+                    <Rectangle width="28" height="28" cornerRadiusTL="14" originX="0.5" originY="0.5" name="Path"/>
+                    <Stroke thickness="7" name="Stroke"><SolidColor colorValue="FF64748B" name="Slate"/></Stroke>
+                </Shape>
+                <Shape x="0" y="8" name="LockBody">
+                    <Rectangle width="44" height="34" cornerRadiusTL="8" originX="0.5" originY="0.5" name="Path"/>
+                    <Fill name="Fill"><SolidColor colorValue="FF64748B" name="Slate"/></Fill>
+                </Shape>
+            </Node>
+
+            <!-- Active Star Glyph (Status 1) -->
+            <Node x="0" y="0" opacity="0" name="ActiveStarGlyph" id="0:150">
+                <Shape x="0" y="0" name="Star">
+                    <Star width="64" height="64" points="5" innerRadius="0.48" cornerRadius="4" originX="0.5" originY="0.5" name="Path"/>
+                    <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="White"/></Fill>
+                </Shape>
+            </Node>
+
+            <!-- Completed Check Glyph (Status 2) -->
+            <Node x="0" y="0" opacity="0" name="CheckGlyph" id="0:160">
+                <Shape x="0" y="2" name="CheckMark">
+                    <PointsPath isClosed="false" name="Path">
+                        <StraightVertex x="-24" y="2"/>
+                        <StraightVertex x="-6" y="20"/>
+                        <StraightVertex x="26" y="-18"/>
+                    </PointsPath>
+                    <Stroke thickness="12" cap="round" join="round" name="Check"><SolidColor colorValue="FFFFFFFF" name="White"/></Stroke>
+                </Shape>
+            </Node>
+
+            <!-- Cap Specular Shine -->
+            <Shape x="-32" y="-36" rotation="-0.5" name="CapShine">
+                <Ellipse width="32" height="14" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="44FFFFFF" name="Shine"/></Fill>
+            </Shape>
+
+            <!-- Cap Surface -->
+            <Shape x="0" y="0" name="CapDisc">
+                <Ellipse width="152" height="132" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFCBD5E1" name="CapColor" id="0:121"/></Fill>
+                <Stroke thickness="4" name="Border"><SolidColor colorValue="33FFFFFF" name="Highlight"/></Stroke>
+            </Shape>
+        </Node>
+
+        <!-- 3D Extruded Bottom Ledge -->
+        <Shape x="128" y="132" name="NodeLedge" id="0:130">
+            <Ellipse width="152" height="132" originX="0.5" originY="0.5" name="Path"/>
+            <Fill name="Fill"><SolidColor colorValue="FF94A3B8" name="LedgeColor" id="0:131"/></Fill>
+        </Shape>
+
+        <!-- Pulsing Outer Ring (Active state) -->
+        <Shape x="128" y="124" opacity="0" name="ActivePulseRing" id="0:170">
+            <Ellipse width="196" height="176" originX="0.5" originY="0.5" name="Path"/>
+            <Stroke thickness="8" name="Ring"><SolidColor colorValue="FF10B981" name="Emerald"/></Stroke>
+        </Shape>
+    </Artboard>
+</Rive>

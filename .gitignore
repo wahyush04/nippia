@@ -15,6 +15,8 @@ $RECYCLE.BIN/
 *~
 *.bak
 *.tmp
+*.temp
+*.orig
 
 # ==========================================
 # IDEs & Code Editors
@@ -26,6 +28,7 @@ $RECYCLE.BIN/
 *.iws
 *.ipr
 out/
+**/out/
 
 # VS Code / Cursor / Windsurf
 .vscode/*
@@ -67,13 +70,16 @@ dist/
 **/dist/
 build/
 **/build/
-out/
 coverage/
 **/coverage/
 *.lcov
 .nyc_output/
 *.tsbuildinfo
 tsconfig.tsbuildinfo
+.turbo/
+.vitest/
+.jest/
+junit.xml
 
 # Package managers & logs
 npm-debug.log*
@@ -88,6 +94,9 @@ lerna-debug.log*
 .yarn/install-state.gz
 *.log
 logs/
+
+# Docker Local Overrides
+docker-compose.override.yml
 
 # ==========================================
 # Database & In-Memory Store
@@ -105,6 +114,8 @@ dump.rdb
 # ==========================================
 .gradle/
 **/.gradle/
+.kotlin/
+**/.kotlin/
 build/
 **/build/
 captures/
@@ -113,16 +124,26 @@ captures/
 **/.externalNativeBuild/
 .cxx/
 **/.cxx/
+.navigation/
+**/.navigation/
 
-# Android Build Outputs
+# Android Build Outputs & Profiling
 *.apk
 *.ap_
 *.aab
 *.dex
 *.class
+*.hprof
 
-# Android Lint & Profiling
+# Android Lint & Reports
 lint/
 **/lint/
 reports/
 **/reports/
+
+# ==========================================
+# Rive Assets & Animations
+# ==========================================
+rive-assets/**/build/
+rive-assets/**/*.log
+*.riv.bak

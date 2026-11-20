@@ -1,0 +1,310 @@
+<Rive version="1" kind="fragment">
+    <Artboard defaultStateMachineId="0:10" styleId="0:5" width="256" height="256" name="FlameArtboard" id="0:2">
+        <LayoutComponentStyle name="Artboard Style" id="0:5"/>
+
+        <Fill name="Background">
+            <SolidColor colorValue="00000000" name="Transparent"/>
+        </Fill>
+
+        <StateMachine name="FlameState" id="0:10">
+            <StateMachineBool value="false" name="isActive" id="0:11"/>
+            <StateMachineTrigger name="igniteTrigger" id="0:12"/>
+
+            <StateMachineLayer name="FlameLayer" id="0:20">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="600" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:21"/>
+                </EntryState>
+
+                <!-- Inactive (Dormant Gray Ember) -->
+                <AnimationState x="200" y="40" animationId="0:30" id="0:21">
+                    <StateTransition stateToId="0:22" duration="80">
+                        <TransitionTriggerCondition inputId="0:12"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="220">
+                        <TransitionBoolCondition inputId="0:11" opValue="equal"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <!-- Ignite Burst -->
+                <AnimationState x="420" y="-20" animationId="0:31" reset="true" id="0:22">
+                    <StateTransition stateToId="0:23" duration="180" enableExitTime="true" exitTime="700"/>
+                </AnimationState>
+
+                <!-- Active Flame Loop -->
+                <AnimationState x="420" y="120" animationId="0:32" id="0:23">
+                    <StateTransition stateToId="0:22" duration="80">
+                        <TransitionTriggerCondition inputId="0:12"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:21" duration="250">
+                        <TransitionBoolCondition inputId="0:11" opValue="notEqual"/>
+                    </StateTransition>
+                </AnimationState>
+            </StateMachineLayer>
+        </StateMachine>
+
+        <!-- 0:30 Inactive (2s gentle idle) -->
+        <LinearAnimation duration="120" loopValue="loop" name="Inactive" id="0:30">
+            <KeyedObject objectId="0:100">
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0.92" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.96" frame="60" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.92" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0.92" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.96" frame="60" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.92" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:111">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FF94A3B8" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:121">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFCBD5E1" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:131">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFE2E8F0" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:140">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:150">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:31 IgniteBurst (0.75s = 45f) -->
+        <LinearAnimation duration="45" loopValue="oneShot" name="IgniteBurst" id="0:31">
+            <KeyedObject objectId="0:100">
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0.85" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.2" y1="0" x2="0.3" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.26" frame="16" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.4" y1="0" x2="0.6" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0.85" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.2" y1="0" x2="0.3" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.30" frame="16" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.4" y1="0" x2="0.6" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:111">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFEA580C" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:121">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFF59E0B" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:131">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFFEF08A" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:140">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.0" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="1.0" frame="10" interpolationType="linear"/>
+                    <KeyFrameDouble value="0.0" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0.5" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.2" y1="0" x2="0.4" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.35" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0.5" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.2" y1="0" x2="0.4" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.35" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:150">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/>
+                    <KeyFrameDouble value="0.0" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="14">
+                    <KeyFrameDouble value="130" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="70" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:32 ActiveLoop (1.5s dancing flame = 90f) -->
+        <LinearAnimation duration="90" loopValue="loop" name="ActiveLoop" id="0:32">
+            <KeyedObject objectId="0:111">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFEA580C" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:121">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFF59E0B" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:131">
+                <KeyedProperty propertyKey="37">
+                    <KeyFrameColor value="FFFEF08A" frame="0" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:100">
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.06" frame="30" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.97" frame="60" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.95" frame="30" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.07" frame="60" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="15">
+                    <KeyFrameDouble value="-0.04" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.05" frame="45" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="-0.04" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:120">
+                <KeyedProperty propertyKey="15">
+                    <KeyFrameDouble value="0.05" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="-0.06" frame="45" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.05" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:140">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.35" frame="0" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.55" frame="45" interpolationType="cubic">
+                        <CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/>
+                    </KeyFrameDouble>
+                    <KeyFrameDouble value="0.35" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:150">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.0" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="0.9" frame="20" interpolationType="linear"/>
+                    <KeyFrameDouble value="0.0" frame="85" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="14">
+                    <KeyFrameDouble value="145" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="80" frame="85" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- Artwork (front-to-back) -->
+        <!-- Floating Embers -->
+        <Node x="128" y="130" opacity="0" name="EmbersGroup" id="0:150">
+            <Shape x="-46" y="-58" name="Ember1">
+                <Ellipse width="12" height="12" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFBBF24" name="Gold"/></Fill>
+            </Shape>
+            <Shape x="44" y="-68" name="Ember2">
+                <Star width="16" height="16" points="4" innerRadius="0.4" cornerRadius="1" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFDE047" name="BrightYellow"/></Fill>
+            </Shape>
+            <Shape x="6" y="-88" name="Ember3">
+                <Ellipse width="9" height="9" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFF59E0B" name="Amber"/></Fill>
+            </Shape>
+        </Node>
+
+        <!-- Flame Pivot near bottom center -->
+        <Node x="128" y="210" name="FlameRoot" id="0:100">
+            <!-- Inner Core -->
+            <Shape x="0" y="-38" name="InnerFlame" id="0:130">
+                <PointsPath isClosed="true" name="Path">
+                    <CubicDetachedVertex x="0" y="-44" inRotation="2.10" inDistance="14" outRotation="1.04" outDistance="14"/>
+                    <CubicDetachedVertex x="26" y="14" inRotation="-1.57" inDistance="22" outRotation="1.57" outDistance="16"/>
+                    <CubicDetachedVertex x="0" y="34" inRotation="0" inDistance="16" outRotation="3.1416" outDistance="16"/>
+                    <CubicDetachedVertex x="-26" y="14" inRotation="1.57" inDistance="16" outRotation="-1.57" outDistance="22"/>
+                </PointsPath>
+                <Fill name="Fill"><SolidColor colorValue="FFFEF08A" name="CoreColor" id="0:131"/></Fill>
+            </Shape>
+
+            <!-- Mid Flame -->
+            <Shape x="0" y="-56" name="MidFlame" id="0:120">
+                <PointsPath isClosed="true" name="Path">
+                    <CubicDetachedVertex x="-3" y="-68" inRotation="2.12" inDistance="20" outRotation="1.06" outDistance="20"/>
+                    <CubicDetachedVertex x="44" y="18" inRotation="-1.57" inDistance="34" outRotation="1.57" outDistance="24"/>
+                    <CubicDetachedVertex x="0" y="50" inRotation="0" inDistance="26" outRotation="3.1416" outDistance="26"/>
+                    <CubicDetachedVertex x="-44" y="18" inRotation="1.57" inDistance="24" outRotation="-1.57" outDistance="34"/>
+                </PointsPath>
+                <Fill name="Fill"><SolidColor colorValue="FFF59E0B" name="MidColor" id="0:121"/></Fill>
+            </Shape>
+
+            <!-- Outer Flame Silhouette -->
+            <Shape x="0" y="-76" name="OuterFlame" id="0:110">
+                <PointsPath isClosed="true" name="Path">
+                    <CubicDetachedVertex x="3" y="-98" inRotation="2.10" inDistance="28" outRotation="1.04" outDistance="28"/>
+                    <CubicDetachedVertex x="66" y="22" inRotation="-1.57" inDistance="48" outRotation="1.57" outDistance="36"/>
+                    <CubicDetachedVertex x="0" y="68" inRotation="0" inDistance="40" outRotation="3.1416" outDistance="40"/>
+                    <CubicDetachedVertex x="-66" y="22" inRotation="1.57" inDistance="36" outRotation="-1.57" outDistance="48"/>
+                </PointsPath>
+                <Fill name="Fill"><SolidColor colorValue="FFEA580C" name="OuterColor" id="0:111"/></Fill>
+            </Shape>
+        </Node>
+
+        <!-- Soft Glow Ring Behind Flame -->
+        <Shape x="128" y="142" opacity="0" name="FlameHalo" id="0:140">
+            <Ellipse width="196" height="196" originX="0.5" originY="0.5" name="Path"/>
+            <Fill name="Fill"><SolidColor colorValue="3DFBBF24" name="Glow"/></Fill>
+        </Shape>
+    </Artboard>
+</Rive>

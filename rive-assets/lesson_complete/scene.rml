@@ -1,0 +1,225 @@
+<Rive version="1" kind="fragment">
+    <Artboard defaultStateMachineId="0:10" styleId="0:5" width="640" height="360" name="CelebrationArtboard" id="0:2">
+        <LayoutComponentStyle name="Artboard Style" id="0:5"/>
+
+        <Fill name="Background">
+            <SolidColor colorValue="00000000" name="Transparent"/>
+        </Fill>
+
+        <StateMachine name="CelebrationState" id="0:10">
+            <StateMachineNumber value="3" name="accuracyTier" id="0:11"/>
+
+            <StateMachineLayer name="CelebrationLayer" id="0:20">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="620" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:21">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:22">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="3"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="3"/>
+                    </StateTransition>
+                </EntryState>
+
+                <!-- Tier 1: 1 Gold Star -->
+                <AnimationState x="160" y="40" animationId="0:30" id="0:21">
+                    <StateTransition stateToId="0:22" duration="150">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="3"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="150">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="3"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <!-- Tier 2: 2 Gold Stars -->
+                <AnimationState x="360" y="40" animationId="0:31" id="0:22">
+                    <StateTransition stateToId="0:21" duration="150">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="150">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="3"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <!-- Tier 3: 3 Gold Stars + Full Halo Confetti -->
+                <AnimationState x="560" y="40" animationId="0:32" id="0:23">
+                    <StateTransition stateToId="0:21" duration="150">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:22" duration="150">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="3"/>
+                    </StateTransition>
+                </AnimationState>
+            </StateMachineLayer>
+        </StateMachine>
+
+        <!-- 0:30 Tier 1 (1 star lit) -->
+        <LinearAnimation duration="120" loopValue="loop" name="Tier1" id="0:30">
+            <KeyedObject objectId="0:111"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFBBF24" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:121"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFCBD5E1" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:131"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFCBD5E1" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:150">
+                <KeyedProperty propertyKey="14">
+                    <KeyFrameDouble value="200" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="192" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="200" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:160"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.25" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:170"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:31 Tier 2 (2 stars lit + confetti) -->
+        <LinearAnimation duration="120" loopValue="loop" name="Tier2" id="0:31">
+            <KeyedObject objectId="0:111"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFBBF24" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:121"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFBBF24" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:131"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFCBD5E1" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:150">
+                <KeyedProperty propertyKey="14">
+                    <KeyFrameDouble value="200" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="188" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="200" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:160">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.85" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="0.55" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="0.85" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:170"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.3" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:32 Tier 3 (All 3 gold stars + rotating halo + sparkling confetti) -->
+        <LinearAnimation duration="120" loopValue="loop" name="Tier3" id="0:32">
+            <KeyedObject objectId="0:111"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFBBF24" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:121"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFBBF24" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:131"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFBBF24" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:150">
+                <KeyedProperty propertyKey="14">
+                    <KeyFrameDouble value="200" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="184" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="200" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:120">
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.12" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.12" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:160">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="0.7" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:170">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty>
+                <KeyedProperty propertyKey="15">
+                    <KeyFrameDouble value="0" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="6.2831855" frame="120" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- Artwork (front-to-back) -->
+        <!-- 3 Arching Stars above Shield -->
+        <Node x="320" y="96" name="StarsArch" id="0:100">
+            <Shape x="-102" y="22" rotation="-0.22" name="LeftStar" id="0:110">
+                <Star width="64" height="64" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFBBF24" name="LeftStarColor" id="0:111"/></Fill>
+                <Stroke thickness="4" name="Rim"><SolidColor colorValue="FFFFFFFF" name="White"/></Stroke>
+            </Shape>
+            <Shape x="0" y="-8" name="CenterStar" id="0:120">
+                <Star width="84" height="84" points="5" innerRadius="0.48" cornerRadius="4" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFBBF24" name="CenterStarColor" id="0:121"/></Fill>
+                <Stroke thickness="5" name="Rim"><SolidColor colorValue="FFFFFFFF" name="White"/></Stroke>
+            </Shape>
+            <Shape x="102" y="22" rotation="0.22" name="RightStar" id="0:130">
+                <Star width="64" height="64" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFBBF24" name="RightStarColor" id="0:131"/></Fill>
+                <Stroke thickness="4" name="Rim"><SolidColor colorValue="FFFFFFFF" name="White"/></Stroke>
+            </Shape>
+        </Node>
+
+        <!-- Confetti Burst Pieces -->
+        <Node x="320" y="180" name="ConfettiGroup" id="0:160">
+            <Shape x="-185" y="-65" rotation="0.4" name="Conf1">
+                <Rectangle width="22" height="10" cornerRadiusTL="4" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FF10B981" name="Emerald"/></Fill>
+            </Shape>
+            <Shape x="190" y="-70" rotation="-0.4" name="Conf2">
+                <Rectangle width="22" height="10" cornerRadiusTL="4" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFF59E0B" name="Amber"/></Fill>
+            </Shape>
+            <Shape x="-215" y="25" name="Conf3">
+                <Star width="28" height="28" points="4" innerRadius="0.4" cornerRadius="2" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFBBF24" name="Gold"/></Fill>
+            </Shape>
+            <Shape x="215" y="20" name="Conf4">
+                <Star width="28" height="28" points="4" innerRadius="0.4" cornerRadius="2" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FF1E3A8A" name="Navy"/></Fill>
+            </Shape>
+            <Shape x="-145" y="95" name="Conf5">
+                <Ellipse width="16" height="16" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFDA4AF" name="Coral"/></Fill>
+            </Shape>
+            <Shape x="150" y="90" name="Conf6">
+                <Ellipse width="16" height="16" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FF34D399" name="Mint"/></Fill>
+            </Shape>
+        </Node>
+
+        <!-- Central Korpri Victory Trophy Shield -->
+        <Node x="320" y="200" name="TrophyHero" id="0:150">
+            <!-- Emerald Check Emblem inside Shield -->
+            <Shape x="0" y="4" name="VictoryCheck">
+                <PointsPath isClosed="false" name="Path">
+                    <StraightVertex x="-24" y="4"/>
+                    <StraightVertex x="-6" y="22"/>
+                    <StraightVertex x="28" y="-18"/>
+                </PointsPath>
+                <Stroke thickness="12" cap="round" join="round" name="Stroke"><SolidColor colorValue="FFFFFFFF" name="White"/></Stroke>
+            </Shape>
+            <!-- Bottom Emerald Ribbon Banner -->
+            <Shape x="0" y="76" name="RibbonBanner">
+                <Rectangle width="176" height="36" cornerRadiusTL="18" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FF10B981" name="Emerald"/></Fill>
+                <Stroke thickness="4" name="Rim"><SolidColor colorValue="FF059669" name="DarkEmerald"/></Stroke>
+            </Shape>
+            <!-- Shield Crest -->
+            <Shape x="0" y="6" name="ShieldBody">
+                <PointsPath isClosed="true" name="Path">
+                    <StraightVertex x="-68" y="-58" radius="14"/>
+                    <StraightVertex x="68" y="-58" radius="14"/>
+                    <CubicDetachedVertex x="68" y="18" inRotation="-1.57" inDistance="14" outRotation="1.57" outDistance="32"/>
+                    <CubicDetachedVertex x="0" y="74" inRotation="0.45" inDistance="28" outRotation="2.69" outDistance="28"/>
+                    <CubicDetachedVertex x="-68" y="18" inRotation="1.57" inDistance="32" outRotation="-1.57" outDistance="14"/>
+                </PointsPath>
+                <Fill name="Fill"><SolidColor colorValue="FF1E3A8A" name="NavyKorpri"/></Fill>
+                <Stroke thickness="8" join="round" name="GoldRim"><SolidColor colorValue="FFFBBF24" name="Gold"/></Stroke>
+            </Shape>
+        </Node>
+
+        <!-- Backmost Golden Burst Halo -->
+        <Shape x="320" y="196" name="VictoryHalo" id="0:170">
+            <Star width="310" height="310" points="16" innerRadius="0.78" cornerRadius="14" originX="0.5" originY="0.5" name="Path"/>
+            <Fill name="Fill"><SolidColor colorValue="33FBBF24" name="GoldGlow"/></Fill>
+        </Shape>
+    </Artboard>
+</Rive>

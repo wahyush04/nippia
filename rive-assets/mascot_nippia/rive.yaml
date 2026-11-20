@@ -1,0 +1,7 @@
+name: mascot_nippia
+logs:
+  file: build/rive.log
+  problems: build/problems.log
+pages:
+  workspaceId: 601382
+  name: "mascot-nippia"

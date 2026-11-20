@@ -1,5 +1,6 @@
 *.iml
 .gradle/
+.kotlin/
 local.properties
 .idea/
 .DS_Store
@@ -7,11 +8,16 @@ build/
 captures/
 .externalNativeBuild/
 .cxx/
+.navigation/
 *.apk
 *.aab
 *.ap_
 *.dex
+*.class
+*.hprof
 *.keystore
 *.jks
 *.pepk
 google-services.json
+lint/
+reports/

@@ -1,0 +1,4 @@
+name: heart_status
+logs:
+  file: build/rive.log
+  problems: build/problems.log

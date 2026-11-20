@@ -7,6 +7,10 @@ coverage/
 .nyc_output/
 *.tsbuildinfo
 tsconfig.tsbuildinfo
+.turbo/
+.vitest/
+.jest/
+junit.xml
 
 # Logs
 *.log
@@ -24,6 +28,9 @@ pnpm-debug.log*
 !.env.sample
 !.env.template
 
+# Docker Overrides
+docker-compose.override.yml
+
 # Database & Cache
 dump.rdb
 *.db
@@ -38,4 +45,3 @@ dump.rdb
 Thumbs.db
 .idea/
 .vscode/
-

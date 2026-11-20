@@ -1,0 +1,252 @@
+<Rive version="1" kind="fragment">
+    <Artboard defaultStateMachineId="0:10" styleId="0:5" width="256" height="256" name="HeartArtboard" id="0:2">
+        <LayoutComponentStyle name="Artboard Style" id="0:5"/>
+
+        <Fill name="Background">
+            <SolidColor colorValue="00000000" name="Transparent"/>
+        </Fill>
+
+        <StateMachine name="HeartState" id="0:10">
+            <StateMachineBool value="false" name="isUnlimited" id="0:11"/>
+            <StateMachineTrigger name="crackTrigger" id="0:12"/>
+            <StateMachineTrigger name="refillTrigger" id="0:13"/>
+
+            <StateMachineLayer name="HeartLayer" id="0:20">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="640" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:21"/>
+                </EntryState>
+
+                <!-- Normal Heartbeat -->
+                <AnimationState x="200" y="40" animationId="0:30" id="0:21">
+                    <StateTransition stateToId="0:22" duration="200">
+                        <TransitionBoolCondition inputId="0:11" opValue="equal"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="60">
+                        <TransitionTriggerCondition inputId="0:12"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:24" duration="60">
+                        <TransitionTriggerCondition inputId="0:13"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <!-- Nippia Pro Unlimited Gold Infinity -->
+                <AnimationState x="200" y="190" animationId="0:31" id="0:22">
+                    <StateTransition stateToId="0:21" duration="200">
+                        <TransitionBoolCondition inputId="0:11" opValue="notEqual"/>
+                    </StateTransition>
+                </AnimationState>
+
+                <!-- Crack Shake -->
+                <AnimationState x="440" y="-20" animationId="0:32" reset="true" id="0:23">
+                    <StateTransition stateToId="0:21" duration="150" enableExitTime="true" exitTime="650"/>
+                </AnimationState>
+
+                <!-- Refill Bounce -->
+                <AnimationState x="440" y="110" animationId="0:33" reset="true" id="0:24">
+                    <StateTransition stateToId="0:21" duration="150" enableExitTime="true" exitTime="700"/>
+                </AnimationState>
+            </StateMachineLayer>
+        </StateMachine>
+
+        <!-- 0:30 NormalHeart (1.5s loop = 90f) -->
+        <LinearAnimation duration="90" loopValue="loop" name="NormalHeart" id="0:30">
+            <KeyedObject objectId="0:110">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.05" frame="15" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="35" interpolationType="hold"/>
+                    <KeyFrameDouble value="1.0" frame="90" interpolationType="hold"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.05" frame="15" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="35" interpolationType="hold"/>
+                    <KeyFrameDouble value="1.0" frame="90" interpolationType="hold"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:120">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:130">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:140">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:31 UnlimitedPro (1.5s loop = 90f) -->
+        <LinearAnimation duration="90" loopValue="loop" name="UnlimitedPro" id="0:31">
+            <KeyedObject objectId="0:110">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:120">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.07" frame="45" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.07" frame="45" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="90" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:130">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:140">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:32 CrackAnim (0.67s = 40f) -->
+        <LinearAnimation duration="40" loopValue="oneShot" name="CrackAnim" id="0:32">
+            <KeyedObject objectId="0:110">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="1.0" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="0.65" frame="10" interpolationType="linear"/>
+                    <KeyFrameDouble value="1.0" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble value="128" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="116" frame="6" interpolationType="linear"/>
+                    <KeyFrameDouble value="140" frame="12" interpolationType="linear"/>
+                    <KeyFrameDouble value="120" frame="18" interpolationType="linear"/>
+                    <KeyFrameDouble value="134" frame="25" interpolationType="linear"/>
+                    <KeyFrameDouble value="128" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="15">
+                    <KeyFrameDouble value="0" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="-0.12" frame="8" interpolationType="linear"/>
+                    <KeyFrameDouble value="0.10" frame="16" interpolationType="linear"/>
+                    <KeyFrameDouble value="0" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:130">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.0" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="1.0" frame="6" interpolationType="hold"/>
+                    <KeyFrameDouble value="1.0" frame="28" interpolationType="linear"/>
+                    <KeyFrameDouble value="0.0" frame="40" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:120"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:140"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- 0:33 RefillAnim (0.75s = 45f) -->
+        <LinearAnimation duration="45" loopValue="oneShot" name="RefillAnim" id="0:33">
+            <KeyedObject objectId="0:110">
+                <KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0.7" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.2" y1="0" x2="0.3" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.22" frame="18" interpolationType="cubic"><CubicEaseInterpolator x1="0.4" y1="0" x2="0.6" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0.7" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.2" y1="0" x2="0.3" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.22" frame="18" interpolationType="cubic"><CubicEaseInterpolator x1="0.4" y1="0" x2="0.6" y2="1"/></KeyFrameDouble>
+                    <KeyFrameDouble value="1.0" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:140">
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble value="0.0" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="1.0" frame="10" interpolationType="hold"/>
+                    <KeyFrameDouble value="0.0" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="16">
+                    <KeyFrameDouble value="0.6" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="1.25" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+                <KeyedProperty propertyKey="17">
+                    <KeyFrameDouble value="0.6" frame="0" interpolationType="linear"/>
+                    <KeyFrameDouble value="1.25" frame="45" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+            <KeyedObject objectId="0:120"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:130"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- Artwork (front-to-back) -->
+        <!-- Refill Healing Sparkles -->
+        <Node x="128" y="128" opacity="0" name="RefillSparkles" id="0:140">
+            <Shape x="-74" y="-66" name="HealStar1">
+                <Star width="28" height="28" points="4" innerRadius="0.4" cornerRadius="2" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FF10B981" name="Emerald"/></Fill>
+            </Shape>
+            <Shape x="74" y="-66" name="HealStar2">
+                <Star width="24" height="24" points="4" innerRadius="0.4" cornerRadius="2" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFBBF24" name="Gold"/></Fill>
+            </Shape>
+            <Shape x="0" y="-88" name="HealStar3">
+                <Star width="22" height="22" points="4" innerRadius="0.4" cornerRadius="2" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FF34D399" name="Mint"/></Fill>
+            </Shape>
+        </Node>
+
+        <!-- Crack Bolt Overlay -->
+        <Shape x="128" y="128" opacity="0" name="CrackBolt" id="0:130">
+            <PointsPath isClosed="false" name="Path">
+                <StraightVertex x="-6" y="-44"/>
+                <StraightVertex x="14" y="-12"/>
+                <StraightVertex x="-10" y="16"/>
+                <StraightVertex x="8" y="54"/>
+            </PointsPath>
+            <Stroke thickness="7" cap="round" join="round" name="Bolt">
+                <SolidColor colorValue="FFFFFFFF" name="White"/>
+            </Stroke>
+        </Shape>
+
+        <!-- Pro Unlimited Infinity Badge -->
+        <Node x="128" y="128" opacity="0" name="UnlimitedGroup" id="0:120">
+            <Shape x="-62" y="-54" name="ProStar1">
+                <Star width="24" height="24" points="4" innerRadius="0.4" cornerRadius="2" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFFBBF24" name="Gold"/></Fill>
+            </Shape>
+            <Shape x="64" y="48" name="ProStar2">
+                <Star width="20" height="20" points="4" innerRadius="0.4" cornerRadius="2" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="FFF59E0B" name="Amber"/></Fill>
+            </Shape>
+            <Shape x="-32" y="0" name="InfinityLeft">
+                <Ellipse width="64" height="64" originX="0.5" originY="0.5" name="Path"/>
+                <Stroke thickness="16" name="LoopL"><SolidColor colorValue="FFF59E0B" name="Amber"/></Stroke>
+            </Shape>
+            <Shape x="32" y="0" name="InfinityRight">
+                <Ellipse width="64" height="64" originX="0.5" originY="0.5" name="Path"/>
+                <Stroke thickness="16" name="LoopR"><SolidColor colorValue="FFFBBF24" name="Gold"/></Stroke>
+            </Shape>
+            <Shape x="0" y="0" name="ProHalo">
+                <Ellipse width="196" height="196" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="2EFBBF24" name="GoldGlow"/></Fill>
+            </Shape>
+        </Node>
+
+        <!-- Standard Coral Heart -->
+        <Node x="128" y="128" name="HeartGroup" id="0:110">
+            <!-- Glossy Specular Highlight -->
+            <Shape x="-38" y="-34" rotation="-0.55" name="Gloss">
+                <Ellipse width="26" height="14" originX="0.5" originY="0.5" name="Path"/>
+                <Fill name="Fill"><SolidColor colorValue="99FFFFFF" name="Shine"/></Fill>
+            </Shape>
+            <!-- Heart Silhouette -->
+            <Shape x="0" y="4" name="HeartShape">
+                <PointsPath isClosed="true" name="Path">
+                    <StraightVertex x="0" y="-36"/>
+                    <CubicDetachedVertex x="46" y="-74" inRotation="3.1416" inDistance="28" outRotation="0" outDistance="28"/>
+                    <CubicDetachedVertex x="84" y="-22" inRotation="-1.57" inDistance="30" outRotation="1.57" outDistance="46"/>
+                    <StraightVertex x="0" y="78"/>
+                    <CubicDetachedVertex x="-84" y="-22" inRotation="1.57" inDistance="46" outRotation="-1.57" outDistance="30"/>
+                    <CubicDetachedVertex x="-46" y="-74" inRotation="3.1416" inDistance="28" outRotation="0" outDistance="28"/>
+                </PointsPath>
+                <Fill name="Fill"><SolidColor colorValue="FFEF4444" name="CoralRed"/></Fill>
+                <Stroke thickness="7" join="round" name="Rim"><SolidColor colorValue="FFDC2626" name="DeepRed"/></Stroke>
+            </Shape>
+        </Node>
+    </Artboard>
+</Rive>

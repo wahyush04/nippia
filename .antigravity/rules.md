@@ -3,7 +3,10 @@
 ## 1. Konteks Proyek & Single Source of Truth
 - **Nama Aplikasi:** Nippia – Latihan Soal CPNS & CAT (`id.my.kulitech.nippia`)
 - **Arsitektur Repo:** Monorepo (`docs/`, `nippia-backend/`, `nippia-android/`).
-- **Referensi Wajib:** Selalu baca `docs/PRD_Nippia_CPNS.md`, `docs/API_CONTRACT.md`, dan `docs/RIVE_SPECS.md` sebelum menulis atau memodifikasi kode.
+- **Referensi Wajib:** Selalu baca `docs/PRD_Nippia_CPNS.md` (`docs/prd_nippia_latihan_soal_cpns_cat.md`), `docs/API_CONTRACT.md`, dan `docs/RIVE_SPECS.md` (`docs/RIVE_DOCS.md`) sebelum menulis atau memodifikasi kode.
+- **UI/UX Design Single Source of Truth (Google Stitch MCP):**
+  - Seluruh desain UI/UX aplikasi menggunakan **Google Stitch** melalui **StitchMCP** pada project: `https://stitch.google.com/projects/6573748658328314582` (`projectId`: `6573748658328314582`, resource name: `projects/6573748658328314582`, Design System: `Nippia CAT Learning System` / `assets/701ef1c2a35c460ba534b9ec6f225507`).
+  - Gunakan tool `StitchMCP` (`get_project`, `list_screens`, `get_screen`, `generate_screen_from_text`, `edit_screens`, `apply_design_system`) untuk membaca spesifikasi visual/HTML screen atau memperbarui desain. Jangan gunakan FigCraft atau Figma.
 - **Aturan Contract-First:** Jika ada perubahan struktur data atau endpoint, perbarui `docs/API_CONTRACT.md` terlebih dahulu sebelum menyentuh kode Backend maupun Android.
 
 ## 2. Aturan Backend (`nippia-backend/`)
@@ -31,5 +34,5 @@
   - Kontrol State Machine Rive (`fireState`, `setBooleanState`, `setNumberState`) wajib dipicu dari dalam `LaunchedEffect` agar aman terhadap *recomposition* Compose.
 
 ## 4. Konvensi Git & Eksekusi
-- Gunakan *Conventional Commits* dengan scope: `docs(contract):`, `feat(api):`, `feat(android):`, `fix(android):`, `design(figma):`.
+- Gunakan *Conventional Commits* dengan scope: `docs(contract):`, `feat(api):`, `feat(android):`, `fix(android):`, `design(stitch):`.
 - Jangan pernah menyentuh atau meng-commit file `.env`, `google-services.json`, `*.jks`, atau `keystore.properties`.

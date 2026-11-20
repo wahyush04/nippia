@@ -105,8 +105,13 @@ Autentikasi menggunakan Google ID Token (Google Sign-In Android). Membuat akun b
       "avatarUrl": "https://lh3.googleusercontent.com/a/...",
       "role": "USER",
       "isGuest": false,
+      "targetInstitution": "Kementerian Hukum dan HAM",
+      "targetPosition": "Penjaga Tahanan / Pengelola Pemasyarakatan",
       "dailyGoal": "REGULER",
       "dailyXpTarget": 50,
+      "dailyReminderEnabled": true,
+      "dailyReminderTime": "19:30",
+      "onboardingCompleted": true,
       "isPro": false,
       "createdAt": "2026-11-14T00:00:00.000Z"
     },
@@ -146,10 +151,43 @@ Rotasi `refreshToken` untuk memperbarui `accessToken`.
 - **Response `200 OK`:** `{ "success": true, "data": { "accessToken": "...", "refreshToken": "...", "expiresIn": 900 } }`
 
 #### `PATCH /api/v1/users/me/onboarding`
-Menetapkan target harian saat onboarding (FR-02): `SANTAI` (20 XP), `REGULER` (50 XP), `AMBISIUS` (100 XP).
+Menyimpan preferensi 3 langkah onboarding pengguna (FR-02A Target Formasi CPNS, FR-02B Target Harian & Pengingat, FR-02C Diagnostic Baseline Quiz / Skip) maupun pembaruan profil formasi/target harian di kemudian hari. Jika menyertakan hasil `diagnosticCompleted: true`, sistem memberikan bonus awal `+30 XP` & `+10 Permata` satu kali (`onboardingCompleted: true`).
 - **Headers:** `Authorization: Bearer <accessToken>`
-- **Request Body:** `{ "dailyGoal": "AMBISIUS" }`
-- **Response `200 OK`:** `{ "success": true, "data": { "dailyGoal": "AMBISIUS", "dailyXpTarget": 100 } }`
+- **Request Body:**
+```json
+{
+  "targetInstitution": "Kementerian Hukum dan HAM",
+  "targetPosition": "Penjaga Tahanan / Pengelola Pemasyarakatan",
+  "dailyGoal": "REGULER",
+  "dailyReminderEnabled": true,
+  "dailyReminderTime": "19:30",
+  "diagnosticCompleted": true,
+  "diagnosticScore": {
+    "twkCorrect": true,
+    "tiuCorrect": true,
+    "tkpScore": 5
+  }
+}
+```
+- **Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "targetInstitution": "Kementerian Hukum dan HAM",
+    "targetPosition": "Penjaga Tahanan / Pengelola Pemasyarakatan",
+    "dailyGoal": "REGULER",
+    "dailyXpTarget": 50,
+    "dailyReminderEnabled": true,
+    "dailyReminderTime": "19:30",
+    "onboardingCompleted": true,
+    "bonusAwarded": {
+      "xp": 30,
+      "gems": 10
+    }
+  }
+}
+```
 
 ---
 
@@ -606,7 +644,7 @@ Endpoint penerima **Real-Time Developer Notifications (RTDN)** dari Google Cloud
 ### 3.8 Admin Bulk Import & Content Lifecycle (`ADMIN` Only)
 
 #### `POST /api/v1/admin/questions/import`
-Mengunggah massal soal dari file `.csv` beserta arsip `.zip` gambar soal TIU Figural. Sistem mengekstrak gambar, mengunggahnya otomatis ke Cloudinary (konversi WebP), dan menyimpan `Question` + `QuestionOption` dalam satu transaksi Prisma atomik dengan status awal `DRAFT`.
+Mengunggah massal soal dari file `.csv` beserta arsip `.zip` gambar soal TIU Figural. Sistem mengekstrak gambar, mengonversinya ke WebP (`sharp`), mengunggahnya ke Cloudflare R2 / S3 (`@aws-sdk/client-s3`), dan menyimpan `Question` + `QuestionOption` dalam satu transaksi Prisma atomik dengan status awal `DRAFT`.
 - **Headers:**
   - `Authorization: Bearer <adminAccessToken>` (`role === "ADMIN"`)
   - `Content-Type: multipart/form-data`

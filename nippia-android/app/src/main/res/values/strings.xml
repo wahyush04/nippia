@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Nippia</string>
+    <string name="google_web_client_id" translatable="false">94497945304-28p54upe1db8kvhgn2ct5kgchh5t86o1.apps.googleusercontent.com</string>
 </resources>
