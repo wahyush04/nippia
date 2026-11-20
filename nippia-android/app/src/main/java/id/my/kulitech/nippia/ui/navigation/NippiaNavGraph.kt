@@ -22,10 +22,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import id.my.kulitech.nippia.ui.screens.auth.AuthSuccessScreen
 import id.my.kulitech.nippia.ui.screens.auth.LoginScreen
+import id.my.kulitech.nippia.ui.screens.home.HomeLearningPathScreen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep1Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep2Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep3Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingViewModel
+import id.my.kulitech.nippia.ui.screens.path.ChooseLearningPathScreen
 import id.my.kulitech.nippia.ui.screens.splash.SplashScreen
 
 @Composable
@@ -148,7 +150,7 @@ fun NippiaNavGraph(
                     viewModel = viewModel,
                     onBackClick = { navController.popBackStack() },
                     onNavigateToHome = {
-                        navController.navigate(HomeRoute) {
+                        navController.navigate(ChoosePathRoute) {
                             popUpTo<OnboardingGraphRoute> { inclusive = true }
                         }
                     }
@@ -156,11 +158,23 @@ fun NippiaNavGraph(
             }
         }
 
-        composable<HomeRoute> {
-            DestinationPlaceholder(
-                title = "Home Peta Belajar",
-                subtitle = "Peta Belajar SKD TWK, TIU, & TKP (siap diimplementasikan berikutnya)"
+        composable<ChoosePathRoute> {
+            ChooseLearningPathScreen(
+                onBackClick = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo<ChoosePathRoute> { inclusive = true }
+                    }
+                },
+                onNavigateToHome = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo<ChoosePathRoute> { inclusive = true }
+                    }
+                }
             )
+        }
+
+        composable<HomeRoute> {
+            HomeLearningPathScreen()
         }
     }
 }

@@ -30,4 +30,7 @@ data object OnboardingStep2Route
 data object OnboardingStep3Route
 
 @Serializable
+data object ChoosePathRoute
+
+@Serializable
 data object HomeRoute

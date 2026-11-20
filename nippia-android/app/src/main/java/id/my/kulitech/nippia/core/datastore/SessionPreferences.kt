@@ -23,12 +23,14 @@ class SessionPreferences @Inject constructor(
         val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         val LAST_CONTENT_SYNC = stringPreferencesKey("last_content_sync")
         val IS_PRO_USER = booleanPreferencesKey("is_pro_user")
+        val SELECTED_CATEGORY = stringPreferencesKey("selected_category")
     }
 
     val accessToken: Flow<String?> = dataStore.data.map { it[Keys.ACCESS_TOKEN] }
     val refreshToken: Flow<String?> = dataStore.data.map { it[Keys.REFRESH_TOKEN] }
     val lastContentSync: Flow<String?> = dataStore.data.map { it[Keys.LAST_CONTENT_SYNC] }
     val isProUser: Flow<Boolean> = dataStore.data.map { it[Keys.IS_PRO_USER] ?: false }
+    val selectedCategory: Flow<String> = dataStore.data.map { it[Keys.SELECTED_CATEGORY] ?: "TWK" }
 
     suspend fun saveTokens(accessToken: String, refreshToken: String) {
         dataStore.edit { prefs ->
@@ -46,6 +48,12 @@ class SessionPreferences @Inject constructor(
     suspend fun setProStatus(isPro: Boolean) {
         dataStore.edit { prefs ->
             prefs[Keys.IS_PRO_USER] = isPro
+        }
+    }
+
+    suspend fun setSelectedCategory(categoryCode: String) {
+        dataStore.edit { prefs ->
+            prefs[Keys.SELECTED_CATEGORY] = categoryCode
         }
     }
 

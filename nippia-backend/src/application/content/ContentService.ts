@@ -23,7 +23,7 @@ export class ContentService {
     const allowedStatuses: ContentStatus[] =
       role === "ADMIN" ? ["DRAFT", "PUBLISHED"] : ["PUBLISHED"];
 
-    const [gamification, isPro, categories, progresses] = await Promise.all([
+    const [gamification, isPro, categories, progresses, pendingMistakesCount] = await Promise.all([
       prisma.userGamification.findUnique({ where: { userId } }),
       this.isProUser(userId),
       prisma.category.findMany({
@@ -39,11 +39,15 @@ export class ContentService {
       prisma.userUnitProgress.findMany({
         where: { userId },
       }),
+      prisma.userMistake.count({
+        where: { userId, isResolved: false },
+      }),
     ]);
 
     const progressByUnit = new Map(progresses.map((p) => [p.unitId, p]));
 
     return {
+      pendingMistakesCount,
       gamification: {
         totalXp: gamification?.totalXp ?? 0,
         weeklyXp: gamification?.weeklyXp ?? 0,

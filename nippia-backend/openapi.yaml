@@ -537,7 +537,7 @@ paths:
   /learning-path:
     get:
       tags: [Content]
-      summary: Ambil peta belajar berkelok (S-Curve Path) dan progres unit
+      summary: Ambil peta belajar berkelok (S-Curve Path), jumlah Bank Kesalahan aktif, dan progres unit
       security:
         - bearerAuth: []
       parameters:
@@ -549,7 +549,7 @@ paths:
             enum: [TWK, TIU, TKP]
       responses:
         "200":
-          description: Learning path berhasil diambil
+          description: Learning path berhasil diambil (berisi `pendingMistakesCount`, `gamification`, dan `categories`)
         "400":
           description: Parameter category tidak valid
           content:

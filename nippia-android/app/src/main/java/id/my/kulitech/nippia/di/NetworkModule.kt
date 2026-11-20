@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import id.my.kulitech.nippia.BuildConfig
 import id.my.kulitech.nippia.data.remote.api.AuthApiService
+import id.my.kulitech.nippia.data.remote.api.LearningPathApiService
 import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
 import id.my.kulitech.nippia.data.remote.interceptor.AuthInterceptor
 import kotlinx.serialization.json.Json
@@ -87,4 +88,9 @@ object NetworkModule {
     @Singleton
     fun provideOnboardingApiService(retrofit: Retrofit): OnboardingApiService =
         retrofit.create(OnboardingApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideLearningPathApiService(retrofit: Retrofit): LearningPathApiService =
+        retrofit.create(LearningPathApiService::class.java)
 }
