@@ -8,6 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import id.my.kulitech.nippia.BuildConfig
+import id.my.kulitech.nippia.data.remote.api.AuthApiService
+import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
 import id.my.kulitech.nippia.data.remote.interceptor.AuthInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -75,4 +77,14 @@ object NetworkModule {
         .client(okHttpClient)
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
+
+    @Provides
+    @Singleton
+    fun provideAuthApiService(retrofit: Retrofit): AuthApiService =
+        retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideOnboardingApiService(retrofit: Retrofit): OnboardingApiService =
+        retrofit.create(OnboardingApiService::class.java)
 }

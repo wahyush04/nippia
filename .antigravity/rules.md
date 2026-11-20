@@ -7,7 +7,7 @@
 - **UI/UX Design Single Source of Truth (Google Stitch MCP):**
   - Seluruh desain UI/UX aplikasi menggunakan **Google Stitch** melalui **StitchMCP** pada project: `https://stitch.google.com/projects/6573748658328314582` (`projectId`: `6573748658328314582`, resource name: `projects/6573748658328314582`, Design System: `Nippia CAT Learning System` / `assets/701ef1c2a35c460ba534b9ec6f225507`).
   - Gunakan tool `StitchMCP` (`get_project`, `list_screens`, `get_screen`, `generate_screen_from_text`, `edit_screens`, `apply_design_system`) untuk membaca spesifikasi visual/HTML screen atau memperbarui desain. Jangan gunakan FigCraft atau Figma.
-- **Aturan Contract-First:** Jika ada perubahan struktur data atau endpoint, perbarui `docs/API_CONTRACT.md` terlebih dahulu sebelum menyentuh kode Backend maupun Android.
+- **Aturan Contract-First & OpenAPI:** Jika ada perubahan struktur data atau endpoint, perbarui `docs/API_CONTRACT.md` terlebih dahulu sebelum menyentuh kode Backend maupun Android. Setiap ada endpoint baru di `nippia-backend/`, wajib mendokumentasikan spesifikasi API-nya dalam format Swagger di `nippia-backend/openapi.yaml`.
 
 ## 2. Aturan Backend (`nippia-backend/`)
 - **Tech Stack:** Node.js (LTS), Express.js, TypeScript (Strict Mode), PostgreSQL 16, Prisma ORM, Redis 7, Zod, Cloudinary, Google Play Developer API, Firebase Admin SDK.
@@ -35,4 +35,5 @@
 
 ## 4. Konvensi Git & Eksekusi
 - Gunakan *Conventional Commits* dengan scope: `docs(contract):`, `feat(api):`, `feat(android):`, `fix(android):`, `design(stitch):`.
+- Setelah selesai mengimplementasikan atau menyesuaikan suatu fitur dan seluruh verifikasi build/test lulus, langsung lakukan `git add`, `git commit`, dan `git push`.
 - Jangan pernah menyentuh atau meng-commit file `.env`, `google-services.json`, `*.jks`, atau `keystore.properties`.

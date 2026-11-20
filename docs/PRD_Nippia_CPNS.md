@@ -8,7 +8,7 @@
 
 **Platform:** Android (Native Kotlin + Jetpack Compose)
 
-**Versi Dokumen:** 1.5 (Google Stitch UI/UX Alignment – Poin 3: 6 Layar Baru P0/P1/P2 Lengkap)
+**Versi Dokumen:** 1.6 (Google Stitch Full 53-Screen Alignment & Subscription Lifecycle)
 
 **Status:** Approved for Engineering & Design
 
@@ -74,6 +74,9 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
 ### 3.1 Autentikasi & Onboarding (3 Langkah)
 
+* **FR-00 (Splash Screen & Inisialisasi Aplikasi):**
+  * Layar pembuka saat *cold start* yang menampilkan identitas visual Nippia, memeriksa validitas token sesi (`JWT`), memuat status sinkronisasi Room DB lokal, dan mengarahkan pengguna ke layar Login, Onboarding, atau Home Peta Belajar.
+
 * **FR-01 (Google Sign-In, Guest Mode & Account Linking):**
   * Autentikasi satu ketukan menggunakan Google Account dengan selebrasi mikro (*Coin Burst* & bonus awal `+50 XP`).
   * Opsi **Masuk sebagai Tamu (*Guest Mode*)** agar pengguna dapat langsung mencoba sesi latihan tanpa registrasi awal.
@@ -101,7 +104,7 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
   3. **TKP (Tes Karakteristik Pribadi):** Pelayanan Publik, Jejaring Kerja, Sosial Budaya, TIK, Profesionalisme, Anti Radikalisme.
 
-* **FR-04 (Struktur Unit Mikro & Dynamic Unlock):** Setiap *node* unit berisi **5–7 soal** dengan durasi pengerjaan 3–5 menit. Pembukaan kunci unit menggunakan aturan relasional dinamis (`Unit[n]` selesai $\rightarrow$ `Unit[n+1]` terbuka), sehingga penambahan unit baru di ujung jalur setelah rilis otomatis tersedia bagi pengguna yang telah menamatkan unit sebelumnya. Setiap bagian dilengkapi tombol **Buku Panduan** berisi rangkuman rumus/materi ringkas.
+* **FR-04 (Struktur Unit Mikro, Daftar Bagian & Dynamic Unlock):** Setiap *node* unit berisi **5–7 soal** dengan durasi pengerjaan 3–5 menit. Pembukaan kunci unit menggunakan aturan relasional dinamis (`Unit[n]` selesai $\rightarrow$ `Unit[n+1]` terbuka), sehingga penambahan unit baru di ujung jalur setelah rilis otomatis tersedia bagi pengguna yang telah menamatkan unit sebelumnya. Tersedia halaman **Daftar Bagian Materi (*Section List*)** per pilar (`TWK`, `TIU`, `TKP`) yang menampilkan progres per bagian, status (`Aktif`, `Terbuka`, `Terkunci`), serta tombol akses **Buku Panduan Materi** berisi rangkuman rumus dan kisi-kisi resmi.
 
 * **FR-05 (Mekanik Kuis & Pembahasan Mikro):**
 
@@ -111,7 +114,7 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
   * Setelah seluruh soal dalam unit selesai (7/7), pengguna diarahkan ke **Layar Selebrasi Selesai Unit (*Lesson Complete*)** yang menampilkan animasi Rive `lesson_complete.riv`, bintang akurasi (1–3), rincian perolehan XP (+ bonus kecepatan), waktu pengerjaan, dan tombol **"KLAIM XP & LANJUTKAN"**.
 
-* **FR-06 (Latihan Ulang Kesalahan / *Mistake Review*):** Soal TWK/TIU yang dijawab salah atau soal TKP dengan skor $< 4$ otomatis masuk ke antrean *Mistake Bank* untuk diujikan kembali dalam sesi khusus.
+* **FR-06 (Bank Kesalahan / *Mistake Review*):** Soal TWK/TIU yang dijawab salah atau soal TKP dengan skor $< 4$ otomatis masuk ke antrean **Bank Kesalahan (*Mistake Bank*)**. Halaman ini menampilkan target harian remedial (misal selesaikan 5 soal untuk `+30 XP`), metrik *Tingkat Remedial* dan *Akurasi Ulang*, filter per pilar (`Semua`, `TWK`, `TIU`, `TKP`), pengurutan berdasarkan *Sering Salah (Paling Kritis)*, filter *Hanya Belum Tuntas*, perbandingan *Jawaban Anda vs Kunci Jawaban* beserta metode cepat, serta tombol **Latih Soal Ini** untuk menghapus soal dari daftar kelemahan setelah dijawab benar.
 
 ### 3.3 Sistem Gamifikasi & Retensi
 
@@ -123,7 +126,9 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
 * **FR-08 (Daily Streak & Streak Freeze):** Menghitung jumlah hari berturut-turut pengguna menyelesaikan minimal 1 unit, dilengkapi **Modal Daily Streak & Streak Freeze** (kalender 7 hari + animasi `streak_flame.riv`). Tersedia item *Streak Freeze* (maksimal 2 slot) yang dapat dipasang menggunakan Gems (200 Gems) atau *Rewarded Ad* untuk melindungi *streak* saat pengguna absen 1 hari.
 
-* **FR-09 (Weekly Leaderboard):** Sistem liga mingguan bertingkat (*Perunggu* $\rightarrow$ *Perak* $\rightarrow$ *Emas* $\rightarrow$ *Safir* $\rightarrow$ *Berlian*) beranggotakan 30 pengguna per grup yang di-reset setiap Senin pukul 00.00 WIB. Peringkat 1–10 masuk *Zona Promosi* (naik liga), 11–25 *Zona Aman*, dan 26–30 *Zona Degradasi* (turun liga). Dilengkapi CTA **Latihan Kilat (+30 XP)** untuk mengejar peringkat serta **Kuis Kilat Penyelamat Degradasi (+50 XP)** khusus saat pengguna berada di zona degradasi.
+* **FR-09 (Weekly Leaderboard & Evaluasi Pekanan):** Sistem liga mingguan bertingkat (*Perunggu* $\rightarrow$ *Perak* $\rightarrow$ *Emas* $\rightarrow$ *Safir* $\rightarrow$ *Berlian*) beranggotakan 30 pengguna per grup yang di-reset setiap Senin pukul 00.00 WIB. Peringkat 1–10 masuk *Zona Promosi* (naik liga), 11–25 *Zona Aman*, dan 26–30 *Zona Degradasi* (turun liga). Dilengkapi CTA **Latihan Kilat (+30 XP)** untuk mengejar peringkat serta **Kuis Kilat Penyelamat Degradasi (+50 XP)** khusus saat pengguna berada di zona degradasi. Pada akhir pekan, sistem menampilkan:
+  * **Selebrasi Promosi Naik Liga:** Menampilkan peringkat akhir, hadiah promosi (Permata, *Streak Freeze*, lencana divisi), dan tombol bagikan pencapaian.
+  * **Notifikasi Degradasi Liga:** Menampilkan evaluasi diagnostik selisih XP dari batas aman (Rank #25), catatan konsistensi hari belajar, dan jaminan bahwa *Daily Streak* tetap aman tanpa di-reset.
 
 ### 3.4 Simulasi CAT BKN & Radar Kelemahan
 
@@ -133,7 +138,8 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
   * **Tryout Mandiri / Full Tryout CAT:** 110 soal standar BKN (30 TWK, 35 TIU, 45 TKP) dengan *countdown timer* 100 menit yang tervalidasi di server, tanpa pembahasan selama ujian berlangsung.
 
-  * **Tryout Akbar Nasional (*Scheduled Event*):** Event tryout serentak terjadwal dengan kuota kursi, reservasi peserta, serta papan peringkat langsung (*Live Ranking*) dan pemeringkatan formasi instansi.
+  * **Tryout Akbar Nasional (*Scheduled Event*):** Event tryout serentak terjadwal dengan kuota kursi, reservasi peserta, **Lobby Tunggu Tryout Akbar** (*countdown* pembukaan gerbang ujian otomatis, jumlah peserta online, token sesi tervalidasi, dan *Pre-Flight Device Check* untuk ping koneksi, baterai, dan mode DND), serta papan peringkat langsung (*Live Ranking*) dan pemeringkatan formasi instansi.
+  * **Navigasi & Penyelesaian Ujian CAT:** Selama simulasi CAT berlangsung, peserta dapat membuka **Modal Lembar Jawaban & Kisi Soal (1–110)** untuk melompat antar soal dan memantau status (`Sudah Dijawab`, `Ragu-ragu`, `Belum Dijawab`), serta melewati **Modal Konfirmasi Selesaikan Ujian CAT** sebelum skor dikunci.
 
 * **FR-11 (Evaluasi Passing Grade Resmi & Review Pembahasan):**
 
@@ -143,11 +149,15 @@ Persiapan Seleksi Kompetensi Dasar (SKD) CPNS memiliki dua hambatan utama bagi p
 
   * **Review Pembahasan CAT:** Filter status jawaban (`Semua`, `Salah`, `Benar`, `Ragu-ragu`, `Kosong`), *quick-jump* nomor soal per pilar (`TWK`/`TIU`/`TKP`), kunci jawaban resmi, metode cepat (*Trik Kilat ASN*), tips menghindari jebakan soal, serta aksi simpan ke *Mistake Bank* dan *Bookmark* soal.
 
-* **FR-12 (Radar Kelemahan Sub-Topik & Smart Review AI):**
+* **FR-12 (Radar Kelemahan Sub-Topik, Smart Review AI, Profil & Sinkronisasi Offline):**
 
   * Grafik radar performa **6 dimensi sub-topik** dengan indikator garis ambang aman **70%** dan daftar sub-topik kritis di bawah target.
 
   * Kartu rekomendasi **Smart Review AI** berisi paket latihan kilat terpersonalisasi **10 soal** (`+25 XP`) dari sub-topik dengan akurasi terendah.
+
+  * **Halaman Profil & Statistik CPNS:** Menampilkan identitas target formasi aktif (dengan opsi edit profil & *Sync Kilat*), vital belajar harian (*Streak*, Total XP, Permata, status Hearts), **Rekam Jejak Simulasi CAT** (jumlah simulasi, rata-rata skor SKD, persentase kelulusan PG, peringkat nasional), serta **Peta Akurasi 3 Pilar Utama** terhadap ambang batas resmi.
+
+  * **Halaman Pengaturan & Sinkronisasi Offline:** Menampilkan status Room DB lokal (jumlah soal tersimpan), ukuran cache gambar figural WebP dan audio `SoundPool`, versi bank soal, tombol **Periksa Pembaruan Soal Baru (Sync Now)**, *toggle* **Sinkronisasi Hanya Wi-Fi** dan **Unduh Gambar Figural HD**, tombol **Bersihkan Cache Usang**, serta pengaturan **Target XP Harian**.
 
 ### 3.5 Manajemen Konten & Penambahan Soal Pasca-Rilis
 
@@ -198,6 +208,12 @@ Dikelola menggunakan **Google Play Billing Library v7+** dengan dukungan *Free T
 4. Fitur **Smart Review** tanpa batas untuk melatih soal kelemahan.
 
 5. **Mode Offline Penuh** (unduh seluruh unit materi dan gambar figural).
+
+**Manajemen Siklus Langganan (*Subscription Lifecycle & Retention*):**
+
+* **Layar Sukses & Riwayat Transaksi:** Konfirmasi aktivasi Nippia Pro, halaman **Langganan & Pembayaran** yang menampilkan sisa hari aktif/trial, rekap manfaat Pro yang telah digunakan (*Unlimited Hearts* terselamatkan, Tryout diikuti, soal *Smart Review*, cache offline), metode pembayaran Google Play Billing, serta riwayat transaksi dan unduh bukti bayar (*receipt* PDF).
+* **Jeda Langganan (*Pause Subscription*):** Pengguna dapat menjeda langganan selama **2 Pekan (14 Hari)**, **1 Bulan (30 Hari)**, atau **Hingga SKD Dimulai (Maks. 60 Hari)** tanpa kehilangan *Daily Streak*, Permata, atau *Bank Kesalahan*, dengan *Auto-Resume* dan **Pengingat H-3 Masa Jeda Berakhir** (beserta opsi aktifkan kembali lebih awal + bonus `+50 XP`).
+* **Alur Pembatalan (*Retention Flow*):** Sebelum konfirmasi akhir pembatalan di Google Play, aplikasi menampilkan modal retensi yang menawarkan opsi jeda langganan gratis sebagai alternatif pembatalan permanen.
 
 ## 5. Arsitektur Teknis & Tech Stack
 

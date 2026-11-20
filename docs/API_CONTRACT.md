@@ -150,6 +150,14 @@ Rotasi `refreshToken` untuk memperbarui `accessToken`.
 - **Request Body:** `{ "refreshToken": "nippia_rt_9f8a7b6c..." }`
 - **Response `200 OK`:** `{ "success": true, "data": { "accessToken": "...", "refreshToken": "...", "expiresIn": 900 } }`
 
+#### `GET /api/v1/onboarding/formations`
+Mengambil katalog formasi CPNS untuk Onboarding Langkah 1 (mendukung query `?category=KEMENTERIAN|LEMBAGA|PEMDA|HUKUM` dan `?q=<kata_kunci>`).
+- **Headers:** `Authorization: Bearer <accessToken>`
+
+#### `GET /api/v1/onboarding/diagnostic-questions`
+Mengambil 3 soal representatif (*1 TWK*, *1 TIU*, *1 TKP*) untuk Diagnostic Baseline Quiz pada Onboarding Langkah 3.
+- **Headers:** `Authorization: Bearer <accessToken>`
+
 #### `PATCH /api/v1/users/me/onboarding`
 Menyimpan preferensi 3 langkah onboarding pengguna (FR-02A Target Formasi CPNS, FR-02B Target Harian & Pengingat, FR-02C Diagnostic Baseline Quiz / Skip) maupun pembaruan profil formasi/target harian di kemudian hari. Jika menyertakan hasil `diagnosticCompleted: true`, sistem memberikan bonus awal `+30 XP` & `+10 Permata` satu kali (`onboardingCompleted: true`).
 - **Headers:** `Authorization: Bearer <accessToken>`

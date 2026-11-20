@@ -7,8 +7,8 @@ const envSchema = z.object({
   DATABASE_URL: z
     .string()
     .min(1)
-    .default("postgresql://nippia:nippia_secret@localhost:5432/nippia_db"),
-  REDIS_URL: z.string().min(1).default("redis://localhost:6379"),
+    .default("postgresql://nippia:nippia_secret@127.0.0.1:5432/nippia_db"),
+  REDIS_URL: z.string().min(1).default("redis://127.0.0.1:6379"),
   JWT_ACCESS_SECRET: z
     .string()
     .min(16)

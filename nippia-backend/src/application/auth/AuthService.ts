@@ -14,6 +14,10 @@ export interface AuthResponseDto {
   refreshToken: string;
   expiresIn: number;
   isNewUser: boolean;
+  welcomeBonus: {
+    xp: number;
+    gems: number;
+  } | null;
   user: {
     id: string;
     email: string | null;
@@ -47,12 +51,25 @@ export interface AuthResponseDto {
 }
 
 export class AuthService {
+  private static readonly GOOGLE_WELCOME_XP = 50;
+  private static readonly GOOGLE_WELCOME_GEMS = 10;
+
   private async initializeNewUserState(
     tx: Prisma.TransactionClient,
     userId: string,
+    initialBonus?: { xp: number; gems: number },
   ): Promise<UserGamification> {
     const gamification = await tx.userGamification.create({
-      data: { userId },
+      data: {
+        userId,
+        ...(initialBonus
+          ? {
+              totalXp: initialBonus.xp,
+              weeklyXp: initialBonus.xp,
+              gems: initialBonus.gems,
+            }
+          : {}),
+      },
     });
 
     // Unlock first PUBLISHED unit in each category (TWK, TIU, TKP) as ACTIVE
@@ -85,6 +102,7 @@ export class AuthService {
     gamification: UserGamification,
     isNewUser: boolean,
     isPro: boolean,
+    welcomeBonus: { xp: number; gems: number } | null = null,
   ): Promise<AuthResponseDto> {
     const accessToken = signAccessToken({
       sub: user.id,
@@ -109,6 +127,7 @@ export class AuthService {
       refreshToken: rawToken,
       expiresIn: env.JWT_ACCESS_EXPIRES_IN,
       isNewUser,
+      welcomeBonus,
       user: {
         id: user.id,
         email: user.email,
@@ -150,7 +169,7 @@ export class AuthService {
       where: {
         userId,
         status: { in: ["ACTIVE", "GRACE_PERIOD"] },
-        expiresAt: { gt: new Date() },
+        expiryTime: { gt: new Date() },
       },
       select: { id: true },
     });
@@ -178,8 +197,12 @@ export class AuthService {
             fcmToken: fcmToken ?? null,
           },
         });
-        const gamification = await this.initializeNewUserState(tx, user.id);
-        return this.issueSession(tx, user, gamification, true, false);
+        const welcomeBonus = {
+          xp: AuthService.GOOGLE_WELCOME_XP,
+          gems: AuthService.GOOGLE_WELCOME_GEMS,
+        };
+        const gamification = await this.initializeNewUserState(tx, user.id, welcomeBonus);
+        return this.issueSession(tx, user, gamification, true, false, welcomeBonus);
       }
 
       if (fcmToken || profile.displayName || profile.avatarUrl) {
