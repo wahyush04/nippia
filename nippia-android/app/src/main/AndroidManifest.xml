@@ -37,6 +37,42 @@
                 android:name="app.rive.runtime.kotlin.RiveInitializer"
                 android:value="androidx.startup" />
         </provider>
+
+        <receiver
+            android:name=".ui.widget.NippiaSmallWidgetProvider"
+            android:exported="true"
+            android:label="Nippia Ringkas (2x2)">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_small" />
+        </receiver>
+
+        <receiver
+            android:name=".ui.widget.NippiaMediumWidgetProvider"
+            android:exported="true"
+            android:label="Nippia Harian (4x2)">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_medium" />
+        </receiver>
+
+        <receiver
+            android:name=".ui.widget.NippiaLargeWidgetProvider"
+            android:exported="true"
+            android:label="Nippia Lengkap (4x4)">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_large" />
+        </receiver>
     </application>
 
 </manifest>

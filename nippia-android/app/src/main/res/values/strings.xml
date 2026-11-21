@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Nippia</string>
     <string name="google_web_client_id" translatable="false">94497945304-28p54upe1db8kvhgn2ct5kgchh5t86o1.apps.googleusercontent.com</string>
+    <string name="widget_small_desc">Widget Ringkas Nippia (2x2): Streak &amp; Target XP Harian</string>
+    <string name="widget_medium_desc">Widget Horizontal Nippia (4x2): Streak, Nyawa &amp; Mulai Kuis</string>
+    <string name="widget_large_desc">Widget Lengkap Nippia (4x4): Streak, Liga, Tryout CAT &amp; Aksi Cepat</string>
 </resources>
