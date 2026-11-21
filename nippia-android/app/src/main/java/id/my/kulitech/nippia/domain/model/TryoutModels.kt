@@ -96,6 +96,36 @@ data class SubTopicBreakdownItem(
     val accuracyPercent: Double
 )
 
+data class SubtestAnswerStats(
+    val questionCount: Int = 0,
+    val correctCount: Int = 0,
+    val wrongCount: Int = 0,
+    val unansweredCount: Int = 0,
+    val averageScore: Int = 75
+)
+
+data class TkpAnswerStats(
+    val questionCount: Int = 0,
+    val point5Count: Int = 0,
+    val point4Or3Count: Int = 0,
+    val point2Or1Count: Int = 0,
+    val unansweredCount: Int = 0,
+    val averageScore: Int = 168
+)
+
+data class TryoutSubtestStats(
+    val twk: SubtestAnswerStats = SubtestAnswerStats(),
+    val tiu: SubtestAnswerStats = SubtestAnswerStats(averageScore = 90),
+    val tkp: TkpAnswerStats = TkpAnswerStats()
+)
+
+data class CatAnalysisReport(
+    val confidenceLevel: String = "TINGGI",
+    val passProbabilityPercent: Int = 85,
+    val recommendationText: String = "",
+    val benchmarkNote: String = ""
+)
+
 data class TryoutSubmitResult(
     val attemptId: String,
     val packageId: String,
@@ -108,6 +138,8 @@ data class TryoutSubmitResult(
     val twkGrade: SubtestGradeResult,
     val tiuGrade: SubtestGradeResult,
     val tkpGrade: SubtestGradeResult,
+    val subtestStats: TryoutSubtestStats = TryoutSubtestStats(),
+    val catAnalysis: CatAnalysisReport = CatAnalysisReport(),
     val isPassed: Boolean,
     val subTopicBreakdown: List<SubTopicBreakdownItem>
 )

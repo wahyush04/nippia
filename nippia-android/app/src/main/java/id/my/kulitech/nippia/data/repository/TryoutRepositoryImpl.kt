@@ -5,13 +5,16 @@ import id.my.kulitech.nippia.data.remote.api.TryoutApiService
 import id.my.kulitech.nippia.data.remote.dto.AnswerSubmissionDto
 import id.my.kulitech.nippia.data.remote.dto.StartDrillRequestDto
 import id.my.kulitech.nippia.data.remote.dto.SubmitTryoutRequestDto
+import id.my.kulitech.nippia.domain.model.CatAnalysisReport
 import id.my.kulitech.nippia.domain.model.QuestionPresentationParser
 import id.my.kulitech.nippia.domain.model.QuizAnswerSubmission
 import id.my.kulitech.nippia.domain.model.QuizOption
 import id.my.kulitech.nippia.domain.model.QuizQuestionType
 import id.my.kulitech.nippia.domain.model.ScheduledTryoutEvent
 import id.my.kulitech.nippia.domain.model.SubTopicBreakdownItem
+import id.my.kulitech.nippia.domain.model.SubtestAnswerStats
 import id.my.kulitech.nippia.domain.model.SubtestGradeResult
+import id.my.kulitech.nippia.domain.model.TkpAnswerStats
 import id.my.kulitech.nippia.domain.model.TryoutAttemptReview
 import id.my.kulitech.nippia.domain.model.TryoutAttemptSummary
 import id.my.kulitech.nippia.domain.model.TryoutCatalog
@@ -21,6 +24,7 @@ import id.my.kulitech.nippia.domain.model.TryoutQuestion
 import id.my.kulitech.nippia.domain.model.TryoutReviewItem
 import id.my.kulitech.nippia.domain.model.TryoutSession
 import id.my.kulitech.nippia.domain.model.TryoutSubmitResult
+import id.my.kulitech.nippia.domain.model.TryoutSubtestStats
 import id.my.kulitech.nippia.domain.model.TryoutType
 import id.my.kulitech.nippia.domain.repository.TryoutRepository
 import java.time.Instant
@@ -312,9 +316,30 @@ class TryoutRepositoryImpl @Inject constructor(
             tiuScore = tiu,
             tkpScore = tkp,
             totalScore = total,
+            nationalRank = if (isPassed) 142 else 1280,
+            totalParticipants = 8450,
             twkGrade = SubtestGradeResult(65, twk >= 65),
             tiuGrade = SubtestGradeResult(80, tiu >= 80),
             tkpGrade = SubtestGradeResult(166, tkp >= 166),
+            subtestStats = TryoutSubtestStats(
+                twk = SubtestAnswerStats(30, 19, 11, 0, 75),
+                tiu = SubtestAnswerStats(35, 25, 10, 0, 90),
+                tkp = TkpAnswerStats(45, 34, 9, 2, 0, 168)
+            ),
+            catAnalysis = CatAnalysisReport(
+                confidenceLevel = if (isPassed) "TINGGI" else "SEDANG",
+                passProbabilityPercent = if (isPassed) 86 else 52,
+                recommendationText = if (isPassed) {
+                    "Peluang Lolos Formasi Impian Sangat Tinggi. Disarankan perkuat sub-topik Silogisme Kategorik pada TIU agar posisi ranking semakin aman saat perangkingan 3x formasi SKB."
+                } else {
+                    "Fokus tingkatkan latihan soal TWK, TIU, dan TKP untuk menembus ambang batas resmi KepmenPAN-RB."
+                },
+                benchmarkNote = if (isPassed) {
+                    "Nilai ini setara dengan peserta SKD formasi kompetitif Peringkat 142"
+                } else {
+                    "Terus tingkatkan latihan agar skor Anda melampaui ambang batas SKD"
+                }
+            ),
             isPassed = isPassed,
             subTopicBreakdown = listOf(
                 SubTopicBreakdownItem("TWK", "Nasionalisme & Pilar Negara", 25, 30, 83.3),

@@ -1,11 +1,14 @@
 package id.my.kulitech.nippia.data.remote.dto
 
+import id.my.kulitech.nippia.domain.model.CatAnalysisReport
 import id.my.kulitech.nippia.domain.model.QuestionPresentationParser
 import id.my.kulitech.nippia.domain.model.QuizOption
 import id.my.kulitech.nippia.domain.model.QuizQuestionType
 import id.my.kulitech.nippia.domain.model.ScheduledTryoutEvent
 import id.my.kulitech.nippia.domain.model.SubTopicBreakdownItem
+import id.my.kulitech.nippia.domain.model.SubtestAnswerStats
 import id.my.kulitech.nippia.domain.model.SubtestGradeResult
+import id.my.kulitech.nippia.domain.model.TkpAnswerStats
 import id.my.kulitech.nippia.domain.model.TryoutAttemptReview
 import id.my.kulitech.nippia.domain.model.TryoutAttemptSummary
 import id.my.kulitech.nippia.domain.model.TryoutCatalog
@@ -15,6 +18,7 @@ import id.my.kulitech.nippia.domain.model.TryoutQuestion
 import id.my.kulitech.nippia.domain.model.TryoutReviewItem
 import id.my.kulitech.nippia.domain.model.TryoutSession
 import id.my.kulitech.nippia.domain.model.TryoutSubmitResult
+import id.my.kulitech.nippia.domain.model.TryoutSubtestStats
 import id.my.kulitech.nippia.domain.model.TryoutType
 import kotlinx.serialization.Serializable
 
@@ -204,6 +208,70 @@ data class SubTopicBreakdownDto(
 }
 
 @Serializable
+data class SubtestAnswerStatsDto(
+    val questionCount: Int = 0,
+    val correctCount: Int = 0,
+    val wrongCount: Int = 0,
+    val unansweredCount: Int = 0,
+    val averageScore: Int = 75
+) {
+    fun toDomain() = SubtestAnswerStats(
+        questionCount = questionCount,
+        correctCount = correctCount,
+        wrongCount = wrongCount,
+        unansweredCount = unansweredCount,
+        averageScore = averageScore
+    )
+}
+
+@Serializable
+data class TkpAnswerStatsDto(
+    val questionCount: Int = 0,
+    val point5Count: Int = 0,
+    val point4Or3Count: Int = 0,
+    val point2Or1Count: Int = 0,
+    val unansweredCount: Int = 0,
+    val averageScore: Int = 168
+) {
+    fun toDomain() = TkpAnswerStats(
+        questionCount = questionCount,
+        point5Count = point5Count,
+        point4Or3Count = point4Or3Count,
+        point2Or1Count = point2Or1Count,
+        unansweredCount = unansweredCount,
+        averageScore = averageScore
+    )
+}
+
+@Serializable
+data class TryoutSubtestStatsDto(
+    val twk: SubtestAnswerStatsDto = SubtestAnswerStatsDto(),
+    val tiu: SubtestAnswerStatsDto = SubtestAnswerStatsDto(averageScore = 90),
+    val tkp: TkpAnswerStatsDto = TkpAnswerStatsDto()
+) {
+    fun toDomain() = TryoutSubtestStats(
+        twk = twk.toDomain(),
+        tiu = tiu.toDomain(),
+        tkp = tkp.toDomain()
+    )
+}
+
+@Serializable
+data class CatAnalysisReportDto(
+    val confidenceLevel: String = "TINGGI",
+    val passProbabilityPercent: Int = 85,
+    val recommendationText: String = "",
+    val benchmarkNote: String = ""
+) {
+    fun toDomain() = CatAnalysisReport(
+        confidenceLevel = confidenceLevel,
+        passProbabilityPercent = passProbabilityPercent,
+        recommendationText = recommendationText,
+        benchmarkNote = benchmarkNote
+    )
+}
+
+@Serializable
 data class SubmitTryoutDataDto(
     val attemptId: String,
     val packageId: String,
@@ -214,6 +282,8 @@ data class SubmitTryoutDataDto(
     val nationalRank: Int = 1,
     val totalParticipants: Int = 1,
     val passingGrades: PassingGradesDto = PassingGradesDto(),
+    val subtestStats: TryoutSubtestStatsDto = TryoutSubtestStatsDto(),
+    val catAnalysis: CatAnalysisReportDto = CatAnalysisReportDto(),
     val isPassed: Boolean = false,
     val subTopicBreakdown: List<SubTopicBreakdownDto> = emptyList()
 ) {
@@ -229,6 +299,8 @@ data class SubmitTryoutDataDto(
         twkGrade = passingGrades.twk.toDomain(),
         tiuGrade = passingGrades.tiu.toDomain(),
         tkpGrade = passingGrades.tkp.toDomain(),
+        subtestStats = subtestStats.toDomain(),
+        catAnalysis = catAnalysis.toDomain(),
         isPassed = isPassed,
         subTopicBreakdown = subTopicBreakdown.map { it.toDomain() }
     )

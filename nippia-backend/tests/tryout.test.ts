@@ -185,6 +185,10 @@ describe("TryoutService", () => {
     expect(report.totalScore).toBe(15);
     expect(report.nationalRank).toBe(3);
     expect(report.totalParticipants).toBe(10);
+    expect(report.subtestStats.twk.correctCount).toBe(1);
+    expect(report.subtestStats.tkp.point5Count).toBe(1);
+    expect(report.catAnalysis.confidenceLevel).toBeDefined();
+    expect(report.catAnalysis.recommendationText.length).toBeGreaterThan(10);
     expect(report.subTopicBreakdown).toHaveLength(3);
   });
 

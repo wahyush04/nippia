@@ -232,6 +232,20 @@ export class TryoutService {
     let twkScore = 0;
     let tiuScore = 0;
     let tkpScore = 0;
+    let twkCount = 0;
+    let twkCorrect = 0;
+    let twkWrong = 0;
+    let twkUnanswered = 0;
+    let tiuCount = 0;
+    let tiuCorrect = 0;
+    let tiuWrong = 0;
+    let tiuUnanswered = 0;
+    let tkpCount = 0;
+    let tkpPoint5 = 0;
+    let tkpPoint4Or3 = 0;
+    let tkpPoint2Or1 = 0;
+    let tkpUnanswered = 0;
+
     const subTopicAgg = new Map<
       string,
       { categoryCode: string; subTopic: string; earnedScore: number; maxScore: number }
@@ -246,9 +260,26 @@ export class TryoutService {
       const earned = selectedOpt?.score ?? 0;
       const maxQ = 5;
 
-      if (q.categoryCode === "TWK") twkScore += earned;
-      else if (q.categoryCode === "TIU") tiuScore += earned;
-      else if (q.categoryCode === "TKP") tkpScore += earned;
+      if (q.categoryCode === "TWK") {
+        twkScore += earned;
+        twkCount += 1;
+        if (!selectedOpt) twkUnanswered += 1;
+        else if (earned >= 5) twkCorrect += 1;
+        else twkWrong += 1;
+      } else if (q.categoryCode === "TIU") {
+        tiuScore += earned;
+        tiuCount += 1;
+        if (!selectedOpt) tiuUnanswered += 1;
+        else if (earned >= 5) tiuCorrect += 1;
+        else tiuWrong += 1;
+      } else if (q.categoryCode === "TKP") {
+        tkpScore += earned;
+        tkpCount += 1;
+        if (!selectedOpt) tkpUnanswered += 1;
+        else if (earned === 5) tkpPoint5 += 1;
+        else if (earned >= 3) tkpPoint4Or3 += 1;
+        else tkpPoint2Or1 += 1;
+      }
 
       const key = `${q.categoryCode}:${q.subTopic}`;
       const existing = subTopicAgg.get(key) ?? {
@@ -287,6 +318,26 @@ export class TryoutService {
         s.maxScore > 0 ? Number(((s.earnedScore / s.maxScore) * 100).toFixed(1)) : 0,
     }));
 
+    const weakestSubTopic =
+      subTopicBreakdown.length > 0
+        ? [...subTopicBreakdown].sort((a, b) => a.accuracyPercent - b.accuracyPercent)[0]
+        : null;
+
+    const passProbabilityPercent = Math.min(
+      98,
+      Math.max(15, Math.round((totalScore / 550) * 100 + (isPassed ? 13 : -10)))
+    );
+    const confidenceLevel =
+      passProbabilityPercent >= 75 ? "TINGGI" : passProbabilityPercent >= 50 ? "SEDANG" : "RENDAH";
+
+    const recommendationText = isPassed
+      ? weakestSubTopic
+        ? `Peluang Lolos Formasi Impian Sangat Tinggi. Disarankan perkuat sub-topik ${weakestSubTopic.subTopic} pada ${weakestSubTopic.categoryCode} agar posisi ranking semakin aman saat perangkingan 3x formasi SKB.`
+        : "Peluang Lolos Formasi Impian Sangat Tinggi. Pertahankan konsistensi latihan CAT Anda."
+      : weakestSubTopic
+        ? `Fokus tingkatkan sub-topik ${weakestSubTopic.subTopic} pada ${weakestSubTopic.categoryCode} (akurasi ${weakestSubTopic.accuracyPercent}%) untuk menembus ambang batas KepmenPAN-RB.`
+        : "Tingkatkan latihan soal TWK, TIU, dan TKP secara rutin untuk menembus ambang batas BKN.";
+
     const [higherScoresCount, totalParticipants] = await Promise.all([
       prisma.tryoutAttempt.count({
         where: {
@@ -303,6 +354,12 @@ export class TryoutService {
       }),
     ]);
 
+    const nationalRank = higherScoresCount + 1;
+    const participantsTotal = Math.max(totalParticipants, 1);
+    const benchmarkNote = isPassed
+      ? `Nilai ini setara dengan peserta SKD formasi kompetitif Peringkat ${nationalRank}`
+      : "Terus tingkatkan latihan agar skor Anda melampaui ambang batas formasi SKD";
+
     return {
       attemptId: attempt.id,
       packageId: attempt.packageId,
@@ -312,12 +369,43 @@ export class TryoutService {
       tiuScore,
       tkpScore,
       totalScore,
-      nationalRank: higherScoresCount + 1,
-      totalParticipants: Math.max(totalParticipants, 1),
+      nationalRank,
+      totalParticipants: participantsTotal,
       passingGrades: {
         twk: { min: 65, passed: twkPassed },
         tiu: { min: 80, passed: tiuPassed },
         tkp: { min: 166, passed: tkpPassed },
+      },
+      subtestStats: {
+        twk: {
+          questionCount: twkCount,
+          correctCount: twkCorrect,
+          wrongCount: twkWrong,
+          unansweredCount: twkUnanswered,
+          averageScore: 75,
+        },
+        tiu: {
+          questionCount: tiuCount,
+          correctCount: tiuCorrect,
+          wrongCount: tiuWrong,
+          unansweredCount: tiuUnanswered,
+          averageScore: 90,
+        },
+        tkp: {
+          questionCount: tkpCount,
+          point5Count: tkpPoint5,
+          point4Or3Count: tkpPoint4Or3,
+          point2Or1Count: tkpPoint2Or1,
+          unansweredCount: tkpUnanswered,
+          averageScore: 168,
+        },
+      },
+      catAnalysis: {
+        confidenceLevel,
+        passProbabilityPercent,
+        weakestSubTopic,
+        recommendationText,
+        benchmarkNote,
       },
       isPassed,
       subTopicBreakdown,
