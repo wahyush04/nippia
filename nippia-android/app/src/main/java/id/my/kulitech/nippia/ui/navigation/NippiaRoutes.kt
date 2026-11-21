@@ -88,3 +88,9 @@ data object RescueQuizRoute
 
 @Serializable
 data object LeagueOutcomeRoute
+
+@Serializable
+data object SettingsOfflineRoute
+
+@Serializable
+data object LinkGuestAccountRoute

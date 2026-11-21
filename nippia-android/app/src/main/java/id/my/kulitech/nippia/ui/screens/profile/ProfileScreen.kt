@@ -81,6 +81,8 @@ fun ProfileScreen(
     onOpenMistakeBank: () -> Unit = {},
     onOpenPaywall: () -> Unit = {},
     onOpenSubscriptionHistory: () -> Unit = {},
+    onOpenSettingsOffline: () -> Unit = {},
+    onOpenLinkGuest: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -205,10 +207,19 @@ fun ProfileScreen(
                                 ProfileActionRow(
                                     icon = Icons.Rounded.Bookmarks,
                                     tint = NippiaNavyPrimary,
-                                    title = "Riwayat Transaksi Pro",
-                                    subtitle = "Lihat status langganan & bukti bayar Google Play",
-                                    onClick = onOpenSubscriptionHistory
+                                    title = "Pengaturan & Sinkronisasi Offline",
+                                    subtitle = "Kelola cache Room DB, pengingat belajar, dan Delta Sync",
+                                    onClick = onOpenSettingsOffline
                                 )
+                                if (overview.user.isGuest) {
+                                    ProfileActionRow(
+                                        icon = Icons.Rounded.Shield,
+                                        tint = NippiaEmeraldDark,
+                                        title = "Tautkan Akun Tamu ke Google",
+                                        subtitle = "Amankan streak, XP, dan progres secara permanen",
+                                        onClick = onOpenLinkGuest
+                                    )
+                                }
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(Icons.Rounded.CloudDone, contentDescription = null, tint = NippiaEmerald, modifier = Modifier.size(18.dp))
                                     Spacer(modifier = Modifier.width(8.dp))

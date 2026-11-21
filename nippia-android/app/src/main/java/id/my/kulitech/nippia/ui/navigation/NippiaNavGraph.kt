@@ -34,6 +34,8 @@ import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingViewModel
 import id.my.kulitech.nippia.ui.screens.path.ChooseLearningPathScreen
 import id.my.kulitech.nippia.ui.screens.quiz.QuizSessionScreen
 import id.my.kulitech.nippia.ui.screens.section.SectionListScreen
+import id.my.kulitech.nippia.ui.screens.settings.LinkGuestAccountScreen
+import id.my.kulitech.nippia.ui.screens.settings.SettingsOfflineScreen
 import id.my.kulitech.nippia.ui.screens.splash.SplashScreen
 import id.my.kulitech.nippia.ui.screens.subscription.PaywallScreen
 import id.my.kulitech.nippia.ui.screens.subscription.ProSuccessScreen
@@ -215,6 +217,12 @@ fun NippiaNavGraph(
                 onOpenLeagueOutcome = {
                     navController.navigate(LeagueOutcomeRoute)
                 },
+                onOpenSettingsOffline = {
+                    navController.navigate(SettingsOfflineRoute)
+                },
+                onOpenLinkGuest = {
+                    navController.navigate(LinkGuestAccountRoute)
+                },
                 onOpenTryout = { packageId, title ->
                     navController.navigate(TryoutGraphRoute(packageId, title))
                 },
@@ -314,6 +322,25 @@ fun NippiaNavGraph(
                         popUpTo<LeagueOutcomeRoute> { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable<SettingsOfflineRoute> {
+            SettingsOfflineScreen(
+                onBackClick = { navController.popBackStack() },
+                onOpenSubscriptionHistory = {
+                    navController.navigate(SubscriptionHistoryRoute)
+                },
+                onOpenLinkGuest = {
+                    navController.navigate(LinkGuestAccountRoute)
+                }
+            )
+        }
+
+        composable<LinkGuestAccountRoute> {
+            LinkGuestAccountScreen(
+                onLinkedSuccess = { navController.popBackStack() },
+                onContinueAsGuest = { navController.popBackStack() }
             )
         }
 

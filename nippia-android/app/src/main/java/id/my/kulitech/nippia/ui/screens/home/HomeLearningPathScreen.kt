@@ -95,6 +95,8 @@ fun HomeLearningPathScreen(
     onOpenSubscriptionHistory: () -> Unit = {},
     onOpenRescueQuiz: () -> Unit = {},
     onOpenLeagueOutcome: () -> Unit = {},
+    onOpenSettingsOffline: () -> Unit = {},
+    onOpenLinkGuest: () -> Unit = {},
     onOpenTryout: (String, String) -> Unit = { _, _ -> },
     onOpenTryoutReview: (String) -> Unit = {},
     onLoggedOut: () -> Unit = {},
@@ -237,7 +239,9 @@ fun HomeLearningPathScreen(
                     onLoggedOut = onLoggedOut,
                     onOpenMistakeBank = onOpenMistakeBank,
                     onOpenPaywall = onOpenPaywall,
-                    onOpenSubscriptionHistory = onOpenSubscriptionHistory
+                    onOpenSubscriptionHistory = onOpenSubscriptionHistory,
+                    onOpenSettingsOffline = onOpenSettingsOffline,
+                    onOpenLinkGuest = onOpenLinkGuest
                 )
                 return@Scaffold
             }
