@@ -98,10 +98,14 @@ export class TryoutService {
 
     const pkg = UUID_REGEX.test(packageId)
       ? await prisma.tryoutPackage.findUnique({ where: { id: packageId } })
-      : await prisma.tryoutPackage.findFirst({
+      : (await prisma.tryoutPackage.findFirst({
           where: { type: "FULL_CAT", status: { in: allowedStatuses } },
           orderBy: { createdAt: "desc" },
-        });
+        })) ??
+        (await prisma.tryoutPackage.findFirst({
+          where: { status: { in: allowedStatuses } },
+          orderBy: { createdAt: "desc" },
+        }));
 
     if (!pkg || (role !== "ADMIN" && pkg.status !== "PUBLISHED")) {
       throw AppError.notFound("Paket tryout tidak ditemukan.");
