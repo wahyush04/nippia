@@ -3,7 +3,10 @@
 
 package id.my.kulitech.nippia.ui.components.rive
 
+import android.content.Context
 import androidx.annotation.RawRes
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,12 +22,40 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import app.rive.runtime.kotlin.RiveAnimationView
 import app.rive.runtime.kotlin.core.Alignment as RiveAlignment
 import app.rive.runtime.kotlin.core.Fit
+import app.rive.runtime.kotlin.core.Rive
+import java.util.concurrent.ConcurrentHashMap
+
+/**
+ * In-memory cache of raw `.riv` byte arrays so repeated Rive views (such as `UnitNodeRive`
+ * in `LazyColumn`) avoid disk I/O while giving each [RiveAnimationView] its own native instance.
+ */
+object RiveFileCache {
+    private val cache = ConcurrentHashMap<Int, ByteArray>()
+
+    fun getOrLoad(context: Context, @RawRes resId: Int): ByteArray {
+        return cache[resId] ?: synchronized(this) {
+            cache[resId] ?: context.applicationContext.resources
+                .openRawResource(resId)
+                .use { it.readBytes() }
+                .also { cache[resId] = it }
+        }
+    }
+
+    fun preload(context: Context, @RawRes vararg resIds: Int) {
+        val appContext = context.applicationContext
+        runCatching { Rive.init(appContext) }
+        resIds.forEach { resId ->
+            runCatching { getOrLoad(appContext, resId) }
+        }
+    }
+}
 
 /**
  * Shared Jetpack Compose wrapper around [RiveAnimationView] for Nippia Rive assets.
@@ -57,13 +88,20 @@ fun NippiaRiveView(
     }
 
     var riveView by remember { mutableStateOf<RiveAnimationView?>(null) }
+    var isFirstFrameReady by remember { mutableStateOf(false) }
+    val contentAlpha by animateFloatAsState(
+        targetValue = if (isFirstFrameReady) 1f else 0f,
+        animationSpec = tween(durationMillis = 120),
+        label = "riveFadeIn",
+    )
 
     AndroidView(
-        modifier = modifier,
+        modifier = modifier.graphicsLayer { alpha = contentAlpha },
         factory = { context ->
             RiveAnimationView(context).apply {
-                setRiveResource(
-                    resId = resId,
+                isOpaque = false
+                setRiveBytes(
+                    bytes = RiveFileCache.getOrLoad(context, resId),
                     artboardName = artboardName,
                     stateMachineName = stateMachineName,
                     autoplay = true,
@@ -71,6 +109,7 @@ fun NippiaRiveView(
                     alignment = RiveAlignment.CENTER,
                 )
                 riveView = this
+                postOnAnimationDelayed({ isFirstFrameReady = true }, 120L)
             }
         },
         update = { view ->
