@@ -4,6 +4,8 @@
 package id.my.kulitech.nippia.ui.components.rive
 
 import android.content.Context
+import android.graphics.SurfaceTexture
+import android.view.TextureView
 import androidx.annotation.RawRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -69,6 +71,7 @@ fun NippiaRiveView(
     modifier: Modifier = Modifier,
     fit: Fit = Fit.CONTAIN,
     previewLabel: String = artboardName,
+    placeholder: (@Composable () -> Unit)? = null,
     onUpdate: (RiveAnimationView) -> Unit = {},
 ) {
     if (LocalInspectionMode.current) {
@@ -95,34 +98,88 @@ fun NippiaRiveView(
         label = "riveFadeIn",
     )
 
-    AndroidView(
-        modifier = modifier.graphicsLayer { alpha = contentAlpha },
-        factory = { context ->
-            RiveAnimationView(context).apply {
-                isOpaque = false
-                setRiveBytes(
-                    bytes = RiveFileCache.getOrLoad(context, resId),
-                    artboardName = artboardName,
-                    stateMachineName = stateMachineName,
-                    autoplay = true,
-                    fit = fit,
-                    alignment = RiveAlignment.CENTER,
-                )
-                riveView = this
-                postOnAnimationDelayed({ isFirstFrameReady = true }, 120L)
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        if (placeholder != null && contentAlpha < 1f) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .graphicsLayer { alpha = 1f - contentAlpha },
+                contentAlignment = Alignment.Center,
+            ) {
+                placeholder()
             }
-        },
-        update = { view ->
-            riveView = view
-            onUpdate(view)
-        },
-        onRelease = { view ->
-            view.stop()
-            if (riveView === view) {
-                riveView = null
-            }
-        },
-    )
+        }
+
+        AndroidView(
+            modifier = Modifier
+                .matchParentSize()
+                .graphicsLayer { alpha = contentAlpha },
+            factory = { context ->
+                RiveAnimationView(context).apply {
+                    alpha = 0f
+                    isOpaque = false
+                    setRiveBytes(
+                        bytes = RiveFileCache.getOrLoad(context, resId),
+                        artboardName = artboardName,
+                        stateMachineName = stateMachineName,
+                        autoplay = true,
+                        fit = fit,
+                        alignment = RiveAlignment.CENTER,
+                    )
+                    val delegate = surfaceTextureListener
+                    surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+                        private var updateCount = 0
+                        private fun markReady() {
+                            if (!isFirstFrameReady) {
+                                alpha = 1f
+                                isFirstFrameReady = true
+                            }
+                        }
+
+                        override fun onSurfaceTextureAvailable(
+                            surface: SurfaceTexture,
+                            width: Int,
+                            height: Int,
+                        ) {
+                            delegate?.onSurfaceTextureAvailable(surface, width, height)
+                        }
+
+                        override fun onSurfaceTextureSizeChanged(
+                            surface: SurfaceTexture,
+                            width: Int,
+                            height: Int,
+                        ) {
+                            delegate?.onSurfaceTextureSizeChanged(surface, width, height)
+                        }
+
+                        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+                            return delegate?.onSurfaceTextureDestroyed(surface) ?: true
+                        }
+
+                        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+                            delegate?.onSurfaceTextureUpdated(surface)
+                            updateCount += 1
+                            // Skip the very first surface buffer update (RIVE boot logo) and reveal on artboard frame
+                            if (updateCount >= 2) {
+                                post { markReady() }
+                            }
+                        }
+                    }
+                    riveView = this
+                }
+            },
+            update = { view ->
+                riveView = view
+                onUpdate(view)
+            },
+            onRelease = { view ->
+                view.stop()
+                if (riveView === view) {
+                    riveView = null
+                }
+            },
+        )
+    }
 }
 
 /**
