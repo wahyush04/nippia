@@ -10,11 +10,11 @@ const authService = new AuthService();
 
 const googleLoginSchema = z.object({
   idToken: z.string().min(1, "idToken wajib diisi."),
-  fcmToken: z.string().min(1).optional(),
+  fcmToken: z.string().nullish(),
 });
 
 const guestLoginSchema = z.object({
-  fcmToken: z.string().min(1).optional(),
+  fcmToken: z.string().nullish(),
 });
 
 const linkGoogleSchema = z.object({
@@ -27,13 +27,13 @@ const refreshSchema = z.object({
 
 authRouter.post("/google", validateBody(googleLoginSchema), async (req, res) => {
   const { idToken, fcmToken } = req.body as z.infer<typeof googleLoginSchema>;
-  const data = await authService.loginWithGoogle(idToken, fcmToken);
+  const data = await authService.loginWithGoogle(idToken, fcmToken || undefined);
   return sendSuccess(res, data);
 });
 
 authRouter.post("/guest", validateBody(guestLoginSchema), async (req, res) => {
   const { fcmToken } = req.body as z.infer<typeof guestLoginSchema>;
-  const data = await authService.loginAsGuest(fcmToken);
+  const data = await authService.loginAsGuest(fcmToken || undefined);
   return sendSuccess(res, data);
 });
 
