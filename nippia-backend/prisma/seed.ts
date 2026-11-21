@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { CategoryCode, ContentStatus, OptionLabel, PrismaClient, QuestionType } from "@prisma/client";
+import { CategoryCode, ContentStatus, OptionLabel, PrismaClient, QuestionType, TryoutType } from "@prisma/client";
 import { Pool } from "pg";
 
 const pool = new Pool({
@@ -313,7 +313,36 @@ async function main() {
     }
   }
 
-  console.log("Seed completed: 3 categories (TWK, TIU, TKP) & 9 PUBLISHED units.");
+  // 3. Seed default FULL_CAT TryoutPackage if none exists
+  const existingFullCat = await prisma.tryoutPackage.findFirst({
+    where: { type: TryoutType.FULL_CAT },
+  });
+  if (!existingFullCat) {
+    const allPublishedQuestions = await prisma.question.findMany({
+      where: { status: ContentStatus.PUBLISHED },
+      orderBy: [{ categoryCode: "asc" }, { orderIndex: "asc" }],
+      select: { id: true },
+    });
+    await prisma.tryoutPackage.create({
+      data: {
+        title: "Tryout Akbar Nasional SKD #12",
+        description: "Simulasi Berstandar KepmenPAN-RB Terbaru (TWK, TIU, TKP)",
+        type: TryoutType.FULL_CAT,
+        durationMinutes: 100,
+        totalQuestions: allPublishedQuestions.length,
+        isProOnly: false,
+        status: ContentStatus.PUBLISHED,
+        questions: {
+          create: allPublishedQuestions.map((q, idx) => ({
+            questionId: q.id,
+            orderIndex: idx + 1,
+          })),
+        },
+      },
+    });
+  }
+
+  console.log("Seed completed: 3 categories (TWK, TIU, TKP), 9 PUBLISHED units, & FULL_CAT tryout package.");
 }
 
 main()

@@ -54,9 +54,11 @@ class HomeLearningPathViewModel @Inject constructor(
         loadHome()
     }
 
-    fun loadHome() {
+    fun loadHome(showLoading: Boolean = true) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            if (showLoading) {
+                _uiState.update { it.copy(isLoading = true) }
+            }
             val preferred = SkdCategoryCode.fromCode(sessionPreferences.selectedCategory.first())
             val isPro = sessionPreferences.isProUser.first()
 
@@ -79,6 +81,8 @@ class HomeLearningPathViewModel @Inject constructor(
             }
         }
     }
+
+    fun refreshSilently() = loadHome(showLoading = false)
 
     fun onOpenCategorySheet() {
         _uiState.update { it.copy(showCategorySheet = true) }

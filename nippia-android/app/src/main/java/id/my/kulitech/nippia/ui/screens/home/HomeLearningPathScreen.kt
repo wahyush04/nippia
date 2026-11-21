@@ -53,6 +53,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.my.kulitech.nippia.domain.model.LearningCategoryPath
 import id.my.kulitech.nippia.domain.model.LearningUnit
@@ -110,7 +112,16 @@ fun HomeLearningPathScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val modalState by modalViewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    var selectedTab by remember { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.refreshSilently()
+        onPauseOrDispose {}
+    }
+
+    LaunchedEffect(selectedTab, modalState.showStreakModal) {
+        viewModel.refreshSilently()
+    }
 
     LaunchedEffect(uiState.selectedUnitMessage) {
         val msg = uiState.selectedUnitMessage ?: return@LaunchedEffect

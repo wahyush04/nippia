@@ -386,20 +386,35 @@ private fun parseGuideMarkdown(raw: String): List<GuideBlock> {
     for (line in lines) {
         val trimmed = line.trim()
         if (trimmed.isEmpty()) continue
+        val cleanText = trimmed.replace("**", "")
         when {
-            trimmed.startsWith("# ") -> {
+            cleanText.startsWith("# ") -> {
                 flushSection()
-                result += GuideBlock.Heading(trimmed.removePrefix("# ").trim())
+                result += GuideBlock.Heading(cleanText.removePrefix("# ").trim())
             }
-            trimmed.startsWith("## ") -> {
+            cleanText.startsWith("### ") -> {
                 flushSection()
-                currentSectionTitle = trimmed.removePrefix("## ").trim()
+                currentSectionTitle = cleanText.removePrefix("### ").trim()
+            }
+            cleanText.startsWith("## ") -> {
+                flushSection()
+                currentSectionTitle = cleanText.removePrefix("## ").trim()
             }
             currentSectionTitle != null -> {
-                currentBullets += trimmed
+                val bullet = when {
+                    cleanText.startsWith("- ") -> "• ${cleanText.removePrefix("- ").trim()}"
+                    cleanText.startsWith("* ") -> "• ${cleanText.removePrefix("* ").trim()}"
+                    else -> cleanText
+                }
+                currentBullets += bullet
             }
             else -> {
-                result += GuideBlock.Paragraph(trimmed)
+                val paragraph = when {
+                    cleanText.startsWith("- ") -> "• ${cleanText.removePrefix("- ").trim()}"
+                    cleanText.startsWith("* ") -> "• ${cleanText.removePrefix("* ").trim()}"
+                    else -> cleanText
+                }
+                result += GuideBlock.Paragraph(paragraph)
             }
         }
     }
