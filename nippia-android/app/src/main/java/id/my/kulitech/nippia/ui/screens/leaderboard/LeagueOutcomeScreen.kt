@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.my.kulitech.nippia.ui.components.TactileButton
+import id.my.kulitech.nippia.ui.components.rive.LeagueTierRive
 import id.my.kulitech.nippia.ui.components.rive.MascotRive
 import id.my.kulitech.nippia.ui.theme.NippiaCoralRed
 import id.my.kulitech.nippia.ui.theme.NippiaEmeraldDark
@@ -240,34 +241,12 @@ fun LeagueOutcomeScreen(
                                 val isCurrent = tierNum == info.tierIndex
                                 val isUnlocked = tierNum < info.tierIndex
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(RoundedCornerShape(12.dp))
-                                            .background(
-                                                when {
-                                                    isCurrent -> NippiaNavyPrimary
-                                                    isUnlocked -> Color(0xFFFFEDD5)
-                                                    else -> Color(0xFFF1F5F9)
-                                                }
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = when {
-                                                isCurrent -> Icons.Rounded.Diamond
-                                                isUnlocked -> Icons.Rounded.Check
-                                                else -> Icons.Rounded.Lock
-                                            },
-                                            contentDescription = null,
-                                            tint = when {
-                                                isCurrent -> NippiaWhite
-                                                isUnlocked -> Color(0xFFB45309)
-                                                else -> Color(0xFF94A3B8)
-                                            },
-                                            modifier = Modifier.size(18.dp)
-                                        )
-                                    }
+                                    LeagueTierRive(
+                                        tierIndex = idx,
+                                        isLocked = tierNum > info.tierIndex,
+                                        promoteTriggerCount = if (isCurrent && !isDemoted) 1 else 0,
+                                        modifier = Modifier.size(42.dp)
+                                    )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = name,

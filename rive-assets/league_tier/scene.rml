@@ -1,0 +1,436 @@
+<Rive version="1" kind="fragment">
+    <Artboard defaultStateMachineId="0:10" styleId="0:5" width="256" height="256" name="LeagueTierArtboard" id="0:2">
+        <LayoutComponentStyle name="Artboard Style" id="0:5"/>
+
+        <Fill name="Background">
+            <SolidColor colorValue="00000000" name="Transparent"/>
+        </Fill>
+
+        <StateMachine name="TierState" id="0:10">
+            <StateMachineNumber value="0" name="tier" id="0:11"/>
+            <StateMachineBool value="false" name="isLocked" id="0:12"/>
+            <StateMachineTrigger name="promoteTrigger" id="0:13"/>
+
+            <!-- Layer 1: Tier palette + emblem -->
+            <StateMachineLayer name="TierLayer" id="0:20">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="900" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:21"/>
+                </EntryState>
+                <!-- 0: Perunggu -->
+                <AnimationState x="160" y="40" animationId="0:30" id="0:21">
+                    <StateTransition stateToId="0:22" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="1"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="3"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:24" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="3"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="4"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:25" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="4"/>
+                    </StateTransition>
+                </AnimationState>
+                <!-- 1: Perak -->
+                <AnimationState x="340" y="40" animationId="0:31" id="0:22">
+                    <StateTransition stateToId="0:21" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="1"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="3"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:24" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="3"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="4"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:25" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="4"/>
+                    </StateTransition>
+                </AnimationState>
+                <!-- 2: Emas -->
+                <AnimationState x="520" y="40" animationId="0:32" id="0:23">
+                    <StateTransition stateToId="0:21" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="1"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:22" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="1"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:24" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="3"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="4"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:25" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="4"/>
+                    </StateTransition>
+                </AnimationState>
+                <!-- 3: Safir -->
+                <AnimationState x="700" y="40" animationId="0:33" id="0:24">
+                    <StateTransition stateToId="0:21" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="1"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:22" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="1"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="3"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:25" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="4"/>
+                    </StateTransition>
+                </AnimationState>
+                <!-- 4: Berlian -->
+                <AnimationState x="880" y="40" animationId="0:34" id="0:25">
+                    <StateTransition stateToId="0:21" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="1"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:22" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="1"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="2"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:23" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="2"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="3"/>
+                    </StateTransition>
+                    <StateTransition stateToId="0:24" duration="220">
+                        <TransitionNumberCondition inputId="0:11" opValue="greaterThanOrEqual" value="3"/>
+                        <TransitionNumberCondition inputId="0:11" opValue="lessThan" value="4"/>
+                    </StateTransition>
+                </AnimationState>
+            </StateMachineLayer>
+
+            <!-- Layer 2: Idle float, shine and sparkle twinkle -->
+            <StateMachineLayer name="IdleLayer" id="0:40">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="600" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:41"/>
+                </EntryState>
+                <AnimationState x="200" y="40" animationId="0:50" id="0:41"/>
+            </StateMachineLayer>
+
+            <!-- Layer 3: Promotion celebration -->
+            <StateMachineLayer name="PromoteLayer" id="0:60">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="600" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:61"/>
+                </EntryState>
+                <AnimationState x="200" y="40" animationId="0:51" id="0:61">
+                    <StateTransition stateToId="0:62" duration="0">
+                        <TransitionTriggerCondition inputId="0:13"/>
+                    </StateTransition>
+                </AnimationState>
+                <AnimationState x="420" y="40" animationId="0:52" reset="true" id="0:62">
+                    <StateTransition stateToId="0:61" duration="100" enableExitTime="true" exitTime="900"/>
+                </AnimationState>
+            </StateMachineLayer>
+
+            <!-- Layer 4: Locked overlay -->
+            <StateMachineLayer name="LockLayer" id="0:70">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="600" y="-120"/>
+                <EntryState>
+                    <StateTransition stateToId="0:71"/>
+                </EntryState>
+                <AnimationState x="200" y="40" animationId="0:53" id="0:71">
+                    <StateTransition stateToId="0:72" duration="180">
+                        <TransitionBoolCondition inputId="0:12" opValue="equal"/>
+                    </StateTransition>
+                </AnimationState>
+                <AnimationState x="420" y="40" animationId="0:54" id="0:72">
+                    <StateTransition stateToId="0:71" duration="180">
+                        <TransitionBoolCondition inputId="0:12" opValue="notEqual"/>
+                    </StateTransition>
+                </AnimationState>
+            </StateMachineLayer>
+        </StateMachine>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="TierPerunggu" id="0:30">
+            <KeyedObject objectId="0:201"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFE7A977" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:211"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFCD7F32" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:221"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF8A4B20" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:400"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:300"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:310"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:320"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:330"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:340"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="TierPerak" id="0:31">
+            <KeyedObject objectId="0:201"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFF1F5F9" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:211"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF94A3B8" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:221"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF64748B" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:400"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:300"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:310"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:320"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:330"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:340"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="TierEmas" id="0:32">
+            <KeyedObject objectId="0:201"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFFDE68A" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:211"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFF59E0B" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:221"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFB45309" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:400"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:300"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:310"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:320"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:330"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:340"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="TierSafir" id="0:33">
+            <KeyedObject objectId="0:201"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF93C5FD" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:211"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF2563EB" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:221"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF1E3A8A" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:400"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:300"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:310"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:320"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:330"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:340"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="TierBerlian" id="0:34">
+            <KeyedObject objectId="0:201"><KeyedProperty propertyKey="37"><KeyFrameColor value="FFE0F2FE" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:211"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF22D3EE" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:221"><KeyedProperty propertyKey="37"><KeyFrameColor value="FF0E7490" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:400"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:300"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:310"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:320"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:330"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:340"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="120" loopValue="loop" name="IdleFloat" id="0:50">
+            <KeyedObject objectId="0:120"><KeyedProperty propertyKey="14"><KeyFrameDouble value="0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="-6" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:240"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.35" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.7" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.35" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:410"><KeyedProperty propertyKey="16"><KeyFrameDouble value="0.5" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.15" frame="30" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:410"><KeyedProperty propertyKey="17"><KeyFrameDouble value="0.5" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.15" frame="30" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="60" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:420"><KeyedProperty propertyKey="16"><KeyFrameDouble value="0.5" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="40" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.15" frame="70" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="100" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:420"><KeyedProperty propertyKey="17"><KeyFrameDouble value="0.5" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="40" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.15" frame="70" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="100" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:430"><KeyedProperty propertyKey="16"><KeyFrameDouble value="0.5" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="20" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="80" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.15" frame="110" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:430"><KeyedProperty propertyKey="17"><KeyFrameDouble value="0.5" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="20" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="80" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.15" frame="110" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.5" frame="120" interpolationType="linear"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="PromoteIdle" id="0:51">
+            <KeyedObject objectId="0:110"><KeyedProperty propertyKey="16"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:110"><KeyedProperty propertyKey="17"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:130"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="54" loopValue="oneShot" name="PromotePop" id="0:52">
+            <KeyedObject objectId="0:110"><KeyedProperty propertyKey="16"><KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.28" frame="12" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.94" frame="26" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.04" frame="40" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.0" frame="54" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:110"><KeyedProperty propertyKey="17"><KeyFrameDouble value="1.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.28" frame="12" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.94" frame="26" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.04" frame="40" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.0" frame="54" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:110"><KeyedProperty propertyKey="15"><KeyFrameDouble value="0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="-0.12" frame="12" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.08" frame="26" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0" frame="40" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0" frame="54" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:130"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.0" frame="8" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="0.0" frame="54" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:130"><KeyedProperty propertyKey="16"><KeyFrameDouble value="0.7" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.45" frame="54" interpolationType="linear"/></KeyedProperty></KeyedObject>
+            <KeyedObject objectId="0:130"><KeyedProperty propertyKey="17"><KeyFrameDouble value="0.7" frame="0" interpolationType="cubic"><CubicEaseInterpolator x1="0.42" y1="0" x2="0.58" y2="1"/></KeyFrameDouble><KeyFrameDouble value="1.45" frame="54" interpolationType="linear"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="Unlocked" id="0:53">
+            <KeyedObject objectId="0:500"><KeyedProperty propertyKey="18"><KeyFrameDouble value="0.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <LinearAnimation duration="10" loopValue="oneShot" name="Locked" id="0:54">
+            <KeyedObject objectId="0:500"><KeyedProperty propertyKey="18"><KeyFrameDouble value="1.0" frame="0" interpolationType="hold"/></KeyedProperty></KeyedObject>
+        </LinearAnimation>
+
+        <!-- Promotion glow ring (front) -->
+        <Shape x="128" y="132" opacity="0" name="PromoteRing" id="0:130">
+            <Ellipse width="200" height="200" originX="0.5" originY="0.5" name="Path"/>
+            <Stroke thickness="8" name="Ring"><SolidColor colorValue="FFFDE047" name="Glow"/></Stroke>
+        </Shape>
+
+        <Node x="128" y="124" name="PromoteRoot" id="0:110">
+            <Node x="0" y="0" name="BobGroup" id="0:120">
+                <!-- Lock overlay (isLocked) -->
+                <Node x="0" y="0" opacity="0" name="LockOverlay" id="0:500">
+                    <Shape x="0" y="-10" name="Shackle">
+                        <Rectangle width="30" height="30" cornerRadiusTL="15" originX="0.5" originY="0.5" name="Path"/>
+                        <Stroke thickness="7" name="Stroke"><SolidColor colorValue="FFFFFFFF" name="White"/></Stroke>
+                    </Shape>
+                    <Shape x="0" y="14" name="LockBody">
+                        <Rectangle width="48" height="36" cornerRadiusTL="8" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="White"/></Fill>
+                    </Shape>
+                    <Shape x="0" y="0" name="Dim">
+                        <PointsPath isClosed="true" name="Path">
+                        <StraightVertex x="-66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="64.0" y="12.0" radius="34.0"/>
+                        <StraightVertex x="0.0" y="86.0" radius="12.0"/>
+                        <StraightVertex x="-64.0" y="12.0" radius="34.0"/>
+                    </PointsPath>
+                        <Fill name="Fill"><SolidColor colorValue="C8475569" name="Slate"/></Fill>
+                    </Shape>
+                    <Shape x="0" y="8" name="DimLedge">
+                        <PointsPath isClosed="true" name="Path">
+                        <StraightVertex x="-66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="64.0" y="12.0" radius="34.0"/>
+                        <StraightVertex x="0.0" y="86.0" radius="12.0"/>
+                        <StraightVertex x="-64.0" y="12.0" radius="34.0"/>
+                    </PointsPath>
+                        <Fill name="Fill"><SolidColor colorValue="C8334155" name="Slate"/></Fill>
+                    </Shape>
+                </Node>
+
+                <!-- Sparkles (Emas, Safir, Berlian) -->
+                <Node x="0" y="0" opacity="0" name="Sparkles" id="0:400">
+                    <Shape x="-86" y="-66" name="SparkleA" id="0:410">
+                        <Star width="26" height="26" points="4" innerRadius="0.28" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="84" y="-52" name="SparkleB" id="0:420">
+                        <Star width="20" height="20" points="4" innerRadius="0.28" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFEF3C7" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="78" y="62" name="SparkleC" id="0:430">
+                        <Star width="22" height="22" points="4" innerRadius="0.28" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="Color"/></Fill>
+                    </Shape>
+                </Node>
+
+                <!-- Perunggu: 1 bintang -->
+                <Node x="0" y="2" name="GlyphPerunggu" id="0:300">
+                    <Shape x="0" y="0" name="Star">
+                        <Star width="64" height="64" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFF1E0" name="Color"/></Fill>
+                    </Shape>
+                </Node>
+
+                <!-- Perak: 2 bintang -->
+                <Node x="0" y="2" opacity="0" name="GlyphPerak" id="0:310">
+                    <Shape x="-24" y="0" name="StarL">
+                        <Star width="46" height="46" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="24" y="0" name="StarR">
+                        <Star width="46" height="46" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="Color"/></Fill>
+                    </Shape>
+                </Node>
+
+                <!-- Emas: mahkota 3 bintang -->
+                <Node x="0" y="4" opacity="0" name="GlyphEmas" id="0:320">
+                    <Shape x="0" y="-10" name="StarC">
+                        <Star width="54" height="54" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFBEB" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="-36" y="8" name="StarL">
+                        <Star width="34" height="34" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFBEB" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="36" y="8" name="StarR">
+                        <Star width="34" height="34" points="5" innerRadius="0.48" cornerRadius="3" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFBEB" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="0" y="30" name="CrownBase">
+                        <Rectangle width="76" height="10" cornerRadiusTL="5" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFBEB" name="Color"/></Fill>
+                    </Shape>
+                </Node>
+
+                <!-- Safir: permata heksagon -->
+                <Node x="0" y="2" opacity="0" name="GlyphSafir" id="0:330">
+                    <Shape x="-8" y="-12" name="Facet">
+                        <Polygon width="26" height="30" points="6" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="88FFFFFF" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="0" y="0" name="GemCore">
+                        <Polygon width="52" height="60" points="6" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FF60A5FA" name="Color"/></Fill>
+                    </Shape>
+                    <Shape x="0" y="0" name="GemRim">
+                        <Polygon width="74" height="84" points="6" cornerRadius="6" originX="0.5" originY="0.5" name="Path"/>
+                        <Fill name="Fill"><SolidColor colorValue="FFDBEAFE" name="Color"/></Fill>
+                    </Shape>
+                </Node>
+
+                <!-- Berlian: permata berlian -->
+                <Node x="0" y="4" opacity="0" name="GlyphBerlian" id="0:340">
+                    <Shape x="0" y="0" name="Facets">
+                        <PointsPath isClosed="false" name="Path">
+                            <StraightVertex x="-38" y="-14"/>
+                            <StraightVertex x="38" y="-14"/>
+                        </PointsPath>
+                        <Stroke thickness="4" join="round" name="Line"><SolidColor colorValue="FF67E8F9" name="Color"/></Stroke>
+                    </Shape>
+                    <Shape x="0" y="0" name="FacetV">
+                        <PointsPath isClosed="false" name="Path">
+                            <StraightVertex x="-14" y="-14"/>
+                            <StraightVertex x="0" y="36"/>
+                            <StraightVertex x="14" y="-14"/>
+                        </PointsPath>
+                        <Stroke thickness="4" join="round" name="Line"><SolidColor colorValue="FF67E8F9" name="Color"/></Stroke>
+                    </Shape>
+                    <Shape x="0" y="0" name="Gem">
+                        <PointsPath isClosed="true" name="Path">
+                            <StraightVertex x="-38" y="-14" radius="3"/>
+                            <StraightVertex x="-20" y="-34" radius="3"/>
+                            <StraightVertex x="20" y="-34" radius="3"/>
+                            <StraightVertex x="38" y="-14" radius="3"/>
+                            <StraightVertex x="0" y="38" radius="3"/>
+                        </PointsPath>
+                        <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="Color"/></Fill>
+                    </Shape>
+                </Node>
+
+                <!-- Specular shine -->
+                <Shape x="-30" y="-50" rotation="-0.5" name="Shine" id="0:240">
+                    <Ellipse width="36" height="14" originX="0.5" originY="0.5" name="Path"/>
+                    <Fill name="Fill"><SolidColor colorValue="FFFFFFFF" name="Shine"/></Fill>
+                </Shape>
+
+                <!-- Inner shield -->
+                <Shape x="0" y="2" name="ShieldInner">
+                    <PointsPath isClosed="true" name="Path">
+                        <StraightVertex x="-52.8" y="-57.6" radius="14.4"/>
+                        <StraightVertex x="52.8" y="-57.6" radius="14.4"/>
+                        <StraightVertex x="51.2" y="9.6" radius="27.2"/>
+                        <StraightVertex x="0.0" y="68.8" radius="9.6"/>
+                        <StraightVertex x="-51.2" y="9.6" radius="27.2"/>
+                    </PointsPath>
+                    <Fill name="Fill"><SolidColor colorValue="FFCD7F32" name="InnerColor" id="0:211"/></Fill>
+                </Shape>
+
+                <!-- Outer rim -->
+                <Shape x="0" y="0" name="ShieldRim">
+                    <PointsPath isClosed="true" name="Path">
+                        <StraightVertex x="-66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="64.0" y="12.0" radius="34.0"/>
+                        <StraightVertex x="0.0" y="86.0" radius="12.0"/>
+                        <StraightVertex x="-64.0" y="12.0" radius="34.0"/>
+                    </PointsPath>
+                    <Fill name="Fill"><SolidColor colorValue="FFE7A977" name="RimColor" id="0:201"/></Fill>
+                </Shape>
+
+                <!-- 3D ledge -->
+                <Shape x="0" y="8" name="ShieldLedge">
+                    <PointsPath isClosed="true" name="Path">
+                        <StraightVertex x="-66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="66.0" y="-72.0" radius="18.0"/>
+                        <StraightVertex x="64.0" y="12.0" radius="34.0"/>
+                        <StraightVertex x="0.0" y="86.0" radius="12.0"/>
+                        <StraightVertex x="-64.0" y="12.0" radius="34.0"/>
+                    </PointsPath>
+                    <Fill name="Fill"><SolidColor colorValue="FF8A4B20" name="LedgeColor" id="0:221"/></Fill>
+                </Shape>
+            </Node>
+        </Node>
+    </Artboard>
+</Rive>

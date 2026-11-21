@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Diamond
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.LocalFireDepartment
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -236,6 +239,65 @@ fun LessonCompleteRive(
         previewLabel = "LessonComplete(T$accuracyTier)",
         onUpdate = { view ->
             view.setNumberState("CelebrationState", "accuracyTier", accuracyTier.coerceIn(1, 3).toFloat())
+        },
+    )
+}
+
+/**
+ * League Tier shield badge (`league_tier.riv` -> `TierState`).
+ * [tierIndex]: `0` = Perunggu, `1` = Perak, `2` = Emas, `3` = Safir, `4` = Berlian.
+ */
+@Composable
+fun LeagueTierRive(
+    tierIndex: Int,
+    modifier: Modifier = Modifier.size(44.dp),
+    isLocked: Boolean = false,
+    promoteTriggerCount: Int = 0,
+) {
+    val clampedTier = tierIndex.coerceIn(0, 4)
+    var viewRef by remember { mutableStateOf<RiveAnimationView?>(null) }
+
+    rememberRiveTriggerEffect(viewRef, "TierState", "promoteTrigger", promoteTriggerCount)
+
+    val badgeColor = when {
+        isLocked -> Color(0xFF64748B)
+        clampedTier == 0 -> Color(0xFFCD7F32)
+        clampedTier == 1 -> Color(0xFF94A3B8)
+        clampedTier == 2 -> Color(0xFFF59E0B)
+        clampedTier == 3 -> Color(0xFF2563EB)
+        else -> Color(0xFF22D3EE)
+    }
+
+    NippiaRiveView(
+        resId = R.raw.league_tier,
+        artboardName = "LeagueTierArtboard",
+        stateMachineName = "TierState",
+        modifier = modifier,
+        previewLabel = "Tier($clampedTier)",
+        placeholder = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(0.82f)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(badgeColor.copy(alpha = 0.22f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = when {
+                        isLocked -> Icons.Rounded.Lock
+                        clampedTier == 4 -> Icons.Rounded.Diamond
+                        else -> Icons.Rounded.Shield
+                    },
+                    contentDescription = null,
+                    tint = badgeColor,
+                    modifier = Modifier.fillMaxSize(0.72f),
+                )
+            }
+        },
+        onUpdate = { view ->
+            viewRef = view
+            view.setNumberState("TierState", "tier", clampedTier.toFloat())
+            view.setBooleanState("TierState", "isLocked", isLocked)
         },
     )
 }

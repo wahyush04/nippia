@@ -53,6 +53,7 @@ import id.my.kulitech.nippia.domain.model.LeaderboardEntry
 import id.my.kulitech.nippia.domain.model.LeaderboardZone
 import id.my.kulitech.nippia.domain.model.LeagueTier
 import id.my.kulitech.nippia.ui.components.TactileButton
+import id.my.kulitech.nippia.ui.components.rive.LeagueTierRive
 import id.my.kulitech.nippia.ui.theme.NippiaCoralRed
 import id.my.kulitech.nippia.ui.theme.NippiaEmerald
 import id.my.kulitech.nippia.ui.theme.NippiaEmeraldDark
@@ -244,11 +245,9 @@ private fun LeagueHeaderCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Rounded.MilitaryTech,
-                        contentDescription = null,
-                        tint = NippiaGold,
-                        modifier = Modifier.size(26.dp)
+                    LeagueTierRive(
+                        tierIndex = leagueTier.tierNumber - 1,
+                        modifier = Modifier.size(38.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
@@ -298,12 +297,20 @@ private fun LeagueHeaderCard(
             ) {
                 LeagueTier.entries.forEach { tier ->
                     val isCurrent = tier == leagueTier
-                    Box(
+                    val isLocked = tier.tierNumber > leagueTier.tierNumber
+                    Column(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .background(if (isCurrent) NippiaGold else NippiaWhite.copy(alpha = 0.1f))
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        LeagueTierRive(
+                            tierIndex = tier.tierNumber - 1,
+                            isLocked = isLocked,
+                            modifier = Modifier.size(26.dp)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = tier.shortCode,
                             color = if (isCurrent) Color(0xFF2A1700) else NippiaWhite,

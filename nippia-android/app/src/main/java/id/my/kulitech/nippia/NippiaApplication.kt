@@ -29,6 +29,7 @@ class NippiaApplication : Application(), Configuration.Provider {
                 R.raw.heart_status,
                 R.raw.mascot_nippia,
                 R.raw.lesson_complete,
+                R.raw.league_tier,
             )
         }
     }
