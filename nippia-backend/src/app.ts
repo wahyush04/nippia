@@ -9,6 +9,7 @@ import { healthRouter } from "./presentation/routes/healthRoutes.js";
 import { leaderboardRouter } from "./presentation/routes/leaderboardRoutes.js";
 import { learningRouter } from "./presentation/routes/learningRoutes.js";
 import { onboardingRouter } from "./presentation/routes/onboardingRoutes.js";
+import { subscriptionRouter } from "./presentation/routes/subscriptionRoutes.js";
 import { tryoutRouter } from "./presentation/routes/tryoutRoutes.js";
 import { unitRouter } from "./presentation/routes/unitRoutes.js";
 import { userRouter } from "./presentation/routes/userRoutes.js";
@@ -29,6 +30,7 @@ export function createApp(): Express {
   app.use("/api/v1/units", unitRouter);
   app.use("/api/v1/learning", learningRouter);
   app.use("/api/v1/tryouts", tryoutRouter);
+  app.use("/api/v1/subscriptions", subscriptionRouter);
   app.use("/api/v1/leaderboard", leaderboardRouter);
 
   app.use((_req, _res, next) => {

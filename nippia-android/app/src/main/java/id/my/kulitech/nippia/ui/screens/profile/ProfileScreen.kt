@@ -78,6 +78,9 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     onLoggedOut: () -> Unit = {},
+    onOpenMistakeBank: () -> Unit = {},
+    onOpenPaywall: () -> Unit = {},
+    onOpenSubscriptionHistory: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -188,14 +191,23 @@ fun ProfileScreen(
                                     tint = NippiaCoralRed,
                                     title = "Bank Kesalahan",
                                     subtitle = "${overview.pendingMistakesCount} soal perlu dilatih ulang",
-                                    onClick = { viewModel.onActionPlaceholder("Buka Bank Kesalahan dari Peta Belajar.") }
+                                    onClick = onOpenMistakeBank
+                                )
+                                ProfileActionRow(
+                                    icon = Icons.Rounded.MilitaryTech,
+                                    tint = Color(0xFFD97706),
+                                    title = if (overview.user.isPro) "Langganan & Pembayaran Pro" else "Upgrade ke Nippia Pro",
+                                    subtitle = if (overview.user.isPro) "Kelola paket, riwayat transaksi, atau jeda Pro" else "Unlimited Hearts, bebas iklan, 15+ Tryout CAT BKN",
+                                    onClick = {
+                                        if (overview.user.isPro) onOpenSubscriptionHistory() else onOpenPaywall()
+                                    }
                                 )
                                 ProfileActionRow(
                                     icon = Icons.Rounded.Bookmarks,
                                     tint = NippiaNavyPrimary,
-                                    title = "Buku Panduan & Ringkasan",
-                                    subtitle = "Intisari UUD 1945 & Rumus Cepat TIU",
-                                    onClick = { viewModel.onActionPlaceholder("Buka Panduan Materi dari Daftar Bagian.") }
+                                    title = "Riwayat Transaksi Pro",
+                                    subtitle = "Lihat status langganan & bukti bayar Google Play",
+                                    onClick = onOpenSubscriptionHistory
                                 )
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(Icons.Rounded.CloudDone, contentDescription = null, tint = NippiaEmerald, modifier = Modifier.size(18.dp))

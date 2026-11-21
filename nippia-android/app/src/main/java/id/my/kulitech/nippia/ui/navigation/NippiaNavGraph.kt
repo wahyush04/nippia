@@ -33,6 +33,10 @@ import id.my.kulitech.nippia.ui.screens.path.ChooseLearningPathScreen
 import id.my.kulitech.nippia.ui.screens.quiz.QuizSessionScreen
 import id.my.kulitech.nippia.ui.screens.section.SectionListScreen
 import id.my.kulitech.nippia.ui.screens.splash.SplashScreen
+import id.my.kulitech.nippia.ui.screens.subscription.PaywallScreen
+import id.my.kulitech.nippia.ui.screens.subscription.ProSuccessScreen
+import id.my.kulitech.nippia.ui.screens.subscription.SubscriptionHistoryScreen
+import id.my.kulitech.nippia.ui.screens.subscription.SubscriptionViewModel
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutAnswerSheetScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutExamScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutLobbyScreen
@@ -197,6 +201,12 @@ fun NippiaNavGraph(
                 onOpenMistakeBank = {
                     navController.navigate(MistakeBankRoute)
                 },
+                onOpenPaywall = {
+                    navController.navigate(SubscriptionGraphRoute)
+                },
+                onOpenSubscriptionHistory = {
+                    navController.navigate(SubscriptionHistoryRoute)
+                },
                 onOpenTryout = { packageId, title ->
                     navController.navigate(TryoutGraphRoute(packageId, title))
                 },
@@ -227,6 +237,53 @@ fun NippiaNavGraph(
         composable<MistakeBankRoute> {
             MistakeBankScreen(
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        navigation<SubscriptionGraphRoute>(
+            startDestination = PaywallRoute
+        ) {
+            composable<PaywallRoute> { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<SubscriptionGraphRoute>()
+                }
+                val viewModel: SubscriptionViewModel = hiltViewModel(parentEntry)
+                PaywallScreen(
+                    viewModel = viewModel,
+                    onCloseClick = { navController.popBackStack() },
+                    onPurchaseSuccess = {
+                        navController.navigate(ProSuccessRoute) {
+                            popUpTo<PaywallRoute> { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable<ProSuccessRoute> { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<SubscriptionGraphRoute>()
+                }
+                val viewModel: SubscriptionViewModel = hiltViewModel(parentEntry)
+                ProSuccessScreen(
+                    viewModel = viewModel,
+                    onStartUnlimited = {
+                        navController.popBackStack(SubscriptionGraphRoute, inclusive = true)
+                    },
+                    onDownloadOffline = {
+                        navController.popBackStack(SubscriptionGraphRoute, inclusive = true)
+                    }
+                )
+            }
+        }
+
+        composable<SubscriptionHistoryRoute> {
+            val viewModel: SubscriptionViewModel = hiltViewModel()
+            SubscriptionHistoryScreen(
+                viewModel = viewModel,
+                onBackClick = { navController.popBackStack() },
+                onOpenPaywall = {
+                    navController.navigate(SubscriptionGraphRoute)
+                }
             )
         }
 

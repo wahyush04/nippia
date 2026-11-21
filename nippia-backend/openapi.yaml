@@ -1030,3 +1030,107 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+
+  /subscriptions/plans:
+    get:
+      tags: [Subscriptions]
+      summary: Ambil katalog paket Nippia Pro dan status langganan pengguna
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Katalog paket Nippia Pro berhasil diambil
+
+  /subscriptions/verify:
+    post:
+      tags: [Subscriptions]
+      summary: Verifikasi purchase token Google Play Billing dan aktifkan Nippia Pro
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [productId, purchaseToken]
+              properties:
+                productId:
+                  type: string
+                purchaseToken:
+                  type: string
+                paymentMethod:
+                  type: string
+      responses:
+        "200":
+          description: Langganan Pro terverifikasi dan aktif
+        "400":
+          description: Produk langganan tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /subscriptions/restore:
+    post:
+      tags: [Subscriptions]
+      summary: Pulihkan pembelian Nippia Pro yang masih aktif
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Status pemulihan pembelian berhasil dikembalikan
+
+  /subscriptions/history:
+    get:
+      tags: [Subscriptions]
+      summary: Ambil ringkasan langganan aktif, statistik penggunaan Pro, dan riwayat transaksi
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Riwayat transaksi & langganan Pro berhasil diambil
+
+  /subscriptions/pause:
+    post:
+      tags: [Subscriptions]
+      summary: Jeda (Pause) langganan Nippia Pro selama 14, 30, atau 60 hari
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [durationDays]
+              properties:
+                durationDays:
+                  type: integer
+                  enum: [14, 30, 60]
+      responses:
+        "200":
+          description: Langganan Pro berhasil dijeda
+        "404":
+          description: Tidak ada langganan Pro aktif
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /subscriptions/cancel:
+    post:
+      tags: [Subscriptions]
+      summary: Batalkan perpanjangan otomatis langganan Nippia Pro
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Langganan Pro berhasil dibatalkan
+        "404":
+          description: Tidak ada langganan Pro aktif
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

@@ -91,6 +91,8 @@ fun HomeLearningPathScreen(
     onOpenUnitQuiz: (String, String) -> Unit = { _, _ -> },
     onOpenStudyGuide: (String) -> Unit = {},
     onOpenMistakeBank: () -> Unit = {},
+    onOpenPaywall: () -> Unit = {},
+    onOpenSubscriptionHistory: () -> Unit = {},
     onOpenTryout: (String, String) -> Unit = { _, _ -> },
     onOpenTryoutReview: (String) -> Unit = {},
     onLoggedOut: () -> Unit = {},
@@ -228,7 +230,10 @@ fun HomeLearningPathScreen(
             3 -> {
                 ProfileScreen(
                     modifier = Modifier.padding(innerPadding),
-                    onLoggedOut = onLoggedOut
+                    onLoggedOut = onLoggedOut,
+                    onOpenMistakeBank = onOpenMistakeBank,
+                    onOpenPaywall = onOpenPaywall,
+                    onOpenSubscriptionHistory = onOpenSubscriptionHistory
                 )
                 return@Scaffold
             }

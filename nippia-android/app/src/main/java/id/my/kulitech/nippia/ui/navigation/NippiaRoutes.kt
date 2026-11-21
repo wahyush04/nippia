@@ -70,3 +70,15 @@ data class StudyGuideRoute(val unitId: String)
 
 @Serializable
 data object MistakeBankRoute
+
+@Serializable
+data object SubscriptionGraphRoute
+
+@Serializable
+data object PaywallRoute
+
+@Serializable
+data object ProSuccessRoute
+
+@Serializable
+data object SubscriptionHistoryRoute
