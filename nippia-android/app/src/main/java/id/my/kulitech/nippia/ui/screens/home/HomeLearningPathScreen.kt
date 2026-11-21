@@ -280,7 +280,10 @@ fun HomeLearningPathScreen(
 
         val activePath = uiState.activeCategoryPath
         val units = activePath?.units.orEmpty()
-        val sectionTitle = units.firstOrNull()?.sectionTitle ?: "Bagian 1 • Materi Dasar"
+        val activeUnit = units.firstOrNull { it.status == LearningUnitStatus.ACTIVE }
+        val sectionTitle = activeUnit?.sectionTitle
+            ?: units.firstOrNull()?.sectionTitle
+            ?: "Bagian 1 • Materi Dasar"
 
         LazyColumn(
             modifier = Modifier
@@ -311,11 +314,20 @@ fun HomeLearningPathScreen(
                 )
             }
 
-            // S-Curve Winding Path Nodes
+            // S-Curve Winding Path Nodes with Section Dividers
             itemsIndexed(
                 items = units,
                 key = { _, unit -> unit.id }
             ) { index, unit ->
+                val prevSection = units.getOrNull(index - 1)?.sectionTitle
+                if (index > 0 && unit.sectionTitle != prevSection) {
+                    SectionDividerBanner(
+                        title = unit.sectionTitle,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp)
+                    )
+                }
                 val xOffset = sCurveOffsetDp(index)
                 WindingUnitNodeItem(
                     unit = unit,
@@ -338,6 +350,44 @@ fun HomeLearningPathScreen(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SectionDividerBanner(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(1.dp)
+                .background(Color(0xFFCBD5E1))
+        )
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = Color(0xFFEFF4FF),
+            border = BorderStroke(1.dp, Color(0xFFBFDBFE))
+        ) {
+            Text(
+                text = title,
+                color = NippiaNavyPrimary,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(1.dp)
+                .background(Color(0xFFCBD5E1))
+        )
     }
 }
 
