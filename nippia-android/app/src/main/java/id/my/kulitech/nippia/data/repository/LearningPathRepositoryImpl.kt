@@ -53,8 +53,9 @@ class LearningPathRepositoryImpl @Inject constructor(
                     sampleUnit("twk-1", "cat-twk", "Bagian 1 • Pilar Negara & Nasionalisme", 1, "Pancasila I", "Nasionalisme", LearningUnitStatus.COMPLETED, 100),
                     sampleUnit("twk-2", "cat-twk", "Bagian 1 • Pilar Negara & Nasionalisme", 2, "UUD 1945", "Pilar Negara", LearningUnitStatus.ACTIVE, 0),
                     sampleUnit("twk-3", "cat-twk", "Bagian 1 • Pilar Negara & Nasionalisme", 3, "Bhinneka Tunggal Ika", "Integritas", LearningUnitStatus.LOCKED, 0),
-                    sampleUnit("twk-4", "cat-twk", "Bagian 1 • Pilar Negara & Nasionalisme", 4, "NKRI & Wawasan", "Bela Negara", LearningUnitStatus.LOCKED, 0),
-                    sampleUnit("twk-5", "cat-twk", "Bagian 1 • Pilar Negara & Nasionalisme", 5, "Ujian Unit 1", "Bahasa Negara", LearningUnitStatus.LOCKED, 0)
+                    sampleUnit("twk-4", "cat-twk", "Bagian 2 • Konstitusi & Bela Negara", 4, "NKRI & Wawasan", "Bela Negara", LearningUnitStatus.LOCKED, 0),
+                    sampleUnit("twk-5", "cat-twk", "Bagian 2 • Konstitusi & Bela Negara", 5, "Bahasa Negara & EYD", "Bahasa Negara", LearningUnitStatus.LOCKED, 0),
+                    sampleUnit("twk-6", "cat-twk", "Bagian 3 • Evaluasi Pilar Kebangsaan", 6, "Ujian Unit TWK", "Evaluasi", LearningUnitStatus.LOCKED, 0)
                 )
             ),
             LearningCategoryPath(
@@ -65,8 +66,8 @@ class LearningPathRepositoryImpl @Inject constructor(
                 units = listOf(
                     sampleUnit("tiu-1", "cat-tiu", "Bagian 1 • Verbal & Silogisme", 1, "Analogi Kata", "Verbal", LearningUnitStatus.ACTIVE, 0),
                     sampleUnit("tiu-2", "cat-tiu", "Bagian 1 • Verbal & Silogisme", 2, "Silogisme Dasar", "Logika", LearningUnitStatus.LOCKED, 0),
-                    sampleUnit("tiu-3", "cat-tiu", "Bagian 1 • Verbal & Silogisme", 3, "Deret Angka", "Numerik", LearningUnitStatus.LOCKED, 0),
-                    sampleUnit("tiu-4", "cat-tiu", "Bagian 1 • Verbal & Silogisme", 4, "Figural 2D", "Figural", LearningUnitStatus.LOCKED, 0)
+                    sampleUnit("tiu-3", "cat-tiu", "Bagian 2 • Numerik & Deret", 3, "Deret Angka", "Numerik", LearningUnitStatus.LOCKED, 0),
+                    sampleUnit("tiu-4", "cat-tiu", "Bagian 3 • Figural 2D", 4, "Figural 2D", "Figural", LearningUnitStatus.LOCKED, 0)
                 )
             ),
             LearningCategoryPath(
@@ -77,8 +78,8 @@ class LearningPathRepositoryImpl @Inject constructor(
                 units = listOf(
                     sampleUnit("tkp-1", "cat-tkp", "Bagian 1 • Pelayanan & Jejaring", 1, "Pelayanan Publik", "Pelayanan Publik", LearningUnitStatus.ACTIVE, 0),
                     sampleUnit("tkp-2", "cat-tkp", "Bagian 1 • Pelayanan & Jejaring", 2, "Jejaring Kerja", "Jejaring Kerja", LearningUnitStatus.LOCKED, 0),
-                    sampleUnit("tkp-3", "cat-tkp", "Bagian 1 • Pelayanan & Jejaring", 3, "Sosial Budaya", "Sosial Budaya", LearningUnitStatus.LOCKED, 0),
-                    sampleUnit("tkp-4", "cat-tkp", "Bagian 1 • Pelayanan & Jejaring", 4, "Profesionalisme", "Profesionalisme", LearningUnitStatus.LOCKED, 0)
+                    sampleUnit("tkp-3", "cat-tkp", "Bagian 2 • Sosial Budaya & TIK", 3, "Sosial Budaya", "Sosial Budaya", LearningUnitStatus.LOCKED, 0),
+                    sampleUnit("tkp-4", "cat-tkp", "Bagian 2 • Sosial Budaya & TIK", 4, "Profesionalisme", "Profesionalisme", LearningUnitStatus.LOCKED, 0)
                 )
             )
         )

@@ -83,6 +83,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLearningPathScreen(
+    onOpenSectionList: (SkdCategoryCode) -> Unit = {},
     viewModel: HomeLearningPathViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -243,7 +244,8 @@ fun HomeLearningPathScreen(
                     completedCount = activePath?.completedCount ?: 0,
                     totalCount = activePath?.totalCount ?: 0,
                     progress = activePath?.progressFraction ?: 0f,
-                    onGuideClick = viewModel::onOpenGuideSheet
+                    onGuideClick = viewModel::onOpenGuideSheet,
+                    onSectionsClick = { onOpenSectionList(uiState.selectedCategory) }
                 )
             }
 
@@ -380,13 +382,17 @@ private fun SectionHeaderCard(
     completedCount: Int,
     totalCount: Int,
     progress: Float,
-    onGuideClick: () -> Unit
+    onGuideClick: () -> Unit,
+    onSectionsClick: () -> Unit
 ) {
     val pct = (progress * 100).toInt()
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = NippiaNavyPrimary,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .clickable(onClick = onSectionsClick)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(

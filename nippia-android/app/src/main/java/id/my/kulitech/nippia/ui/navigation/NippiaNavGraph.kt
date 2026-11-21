@@ -28,6 +28,7 @@ import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep2Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep3Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingViewModel
 import id.my.kulitech.nippia.ui.screens.path.ChooseLearningPathScreen
+import id.my.kulitech.nippia.ui.screens.section.SectionListScreen
 import id.my.kulitech.nippia.ui.screens.splash.SplashScreen
 
 @Composable
@@ -174,7 +175,20 @@ fun NippiaNavGraph(
         }
 
         composable<HomeRoute> {
-            HomeLearningPathScreen()
+            HomeLearningPathScreen(
+                onOpenSectionList = { category ->
+                    navController.navigate(SectionListRoute(category.code))
+                }
+            )
+        }
+
+        composable<SectionListRoute> { backStackEntry ->
+            val args = backStackEntry.toRoute<SectionListRoute>()
+            SectionListScreen(
+                categoryCode = args.categoryCode,
+                onBackClick = { navController.popBackStack() },
+                onContinueSection = { navController.popBackStack() }
+            )
         }
     }
 }

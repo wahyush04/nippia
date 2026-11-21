@@ -34,3 +34,6 @@ data object ChoosePathRoute
 
 @Serializable
 data object HomeRoute
+
+@Serializable
+data class SectionListRoute(val categoryCode: String)

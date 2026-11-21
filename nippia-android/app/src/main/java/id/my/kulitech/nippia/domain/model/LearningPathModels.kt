@@ -74,6 +74,53 @@ data class LearningCategoryPath(
     val completedCount: Int get() = units.count { it.status == LearningUnitStatus.COMPLETED }
     val totalCount: Int get() = units.size
     val progressFraction: Float get() = if (totalCount == 0) 0f else completedCount.toFloat() / totalCount
+
+    val sections: List<LearningSection>
+        get() = units
+            .groupBy { it.sectionTitle }
+            .entries
+            .mapIndexed { idx, (title, sectionUnits) ->
+                val completed = sectionUnits.count { it.status == LearningUnitStatus.COMPLETED }
+                val hasActive = sectionUnits.any { it.status == LearningUnitStatus.ACTIVE }
+                val allCompleted = sectionUnits.isNotEmpty() && completed == sectionUnits.size
+                val allLocked = sectionUnits.all { it.status == LearningUnitStatus.LOCKED }
+                val sectionStatus = when {
+                    allCompleted -> LearningSectionStatus.COMPLETED
+                    hasActive -> LearningSectionStatus.ACTIVE
+                    allLocked -> LearningSectionStatus.LOCKED
+                    else -> LearningSectionStatus.UNLOCKED
+                }
+                LearningSection(
+                    index = idx + 1,
+                    title = title,
+                    units = sectionUnits,
+                    completedCount = completed,
+                    totalCount = sectionUnits.size,
+                    status = sectionStatus,
+                    subTopics = sectionUnits.map { it.subTopic }.distinct(),
+                    guideMarkdown = sectionUnits.firstOrNull { it.guideMarkdown.isNotBlank() }?.guideMarkdown.orEmpty()
+                )
+            }
+}
+
+enum class LearningSectionStatus {
+    LOCKED,
+    UNLOCKED,
+    ACTIVE,
+    COMPLETED
+}
+
+data class LearningSection(
+    val index: Int,
+    val title: String,
+    val units: List<LearningUnit>,
+    val completedCount: Int,
+    val totalCount: Int,
+    val status: LearningSectionStatus,
+    val subTopics: List<String>,
+    val guideMarkdown: String
+) {
+    val progressFraction: Float get() = if (totalCount == 0) 0f else completedCount.toFloat() / totalCount
 }
 
 data class LearningPathOverview(
