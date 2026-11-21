@@ -8,6 +8,7 @@
   - Seluruh desain UI/UX aplikasi menggunakan **Google Stitch** melalui **StitchMCP** pada project: `https://stitch.google.com/projects/6573748658328314582` (`projectId`: `6573748658328314582`, resource name: `projects/6573748658328314582`, Design System: `Nippia CAT Learning System` / `assets/701ef1c2a35c460ba534b9ec6f225507`).
   - Gunakan tool `StitchMCP` (`get_project`, `list_screens`, `get_screen`, `generate_screen_from_text`, `edit_screens`, `apply_design_system`) untuk membaca spesifikasi visual/HTML screen atau memperbarui desain. Jangan gunakan FigCraft atau Figma.
 - **Aturan Contract-First & OpenAPI:** Jika ada perubahan struktur data atau endpoint, perbarui `docs/API_CONTRACT.md` terlebih dahulu sebelum menyentuh kode Backend maupun Android. Setiap ada endpoint baru di `nippia-backend/`, wajib mendokumentasikan spesifikasi API-nya dalam format Swagger di `nippia-backend/openapi.yaml`.
+- **Kelengkapan API Backend untuk Fitur Android:** Jangan terpaku pada `docs/API_CONTRACT.md` jika kontraknya belum lengkap. Jika ada fitur di `nippia-android/` yang belum tercover oleh Backend API, langsung buat implementasi backend-nya dengan standar production (validasi Zod, Clean Architecture, unit test) sekaligus dokumentasikan di `nippia-backend/openapi.yaml`.
 
 ## 2. Aturan Backend (`nippia-backend/`)
 - **Tech Stack:** Node.js (LTS), Express.js, TypeScript (Strict Mode), PostgreSQL 16, Prisma ORM, Redis 7, Zod, Cloudinary, Google Play Developer API, Firebase Admin SDK.
