@@ -32,6 +32,11 @@ userRouter.get("/me", requireAuth, async (req: AuthenticatedRequest, res) => {
   return sendSuccess(res, data);
 });
 
+userRouter.get("/me/stats", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const data = await userService.getProfileStats(req.auth!.sub);
+  return sendSuccess(res, data);
+});
+
 userRouter.patch(
   "/me/onboarding",
   requireAuth,

@@ -9,8 +9,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import id.my.kulitech.nippia.BuildConfig
 import id.my.kulitech.nippia.data.remote.api.AuthApiService
+import id.my.kulitech.nippia.data.remote.api.LeaderboardApiService
 import id.my.kulitech.nippia.data.remote.api.LearningPathApiService
 import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
+import id.my.kulitech.nippia.data.remote.api.ProfileApiService
 import id.my.kulitech.nippia.data.remote.api.TryoutApiService
 import id.my.kulitech.nippia.data.remote.interceptor.AuthInterceptor
 import kotlinx.serialization.json.Json
@@ -99,4 +101,14 @@ object NetworkModule {
     @Singleton
     fun provideTryoutApiService(retrofit: Retrofit): TryoutApiService =
         retrofit.create(TryoutApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideLeaderboardApiService(retrofit: Retrofit): LeaderboardApiService =
+        retrofit.create(LeaderboardApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideProfileApiService(retrofit: Retrofit): ProfileApiService =
+        retrofit.create(ProfileApiService::class.java)
 }

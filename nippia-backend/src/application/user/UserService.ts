@@ -79,6 +79,60 @@ export class UserService {
     };
   }
 
+  async getProfileStats(userId: string) {
+    const [profile, attempts, pendingMistakesCount, completedUnitsCount] = await Promise.all([
+      this.getProfile(userId),
+      prisma.tryoutAttempt.findMany({
+        where: { userId, submittedAt: { not: null } },
+        select: {
+          twkScore: true,
+          tiuScore: true,
+          tkpScore: true,
+          totalScore: true,
+          isPassed: true,
+        },
+      }),
+      prisma.userMistake.count({ where: { userId, isResolved: false } }),
+      prisma.userUnitProgress.count({ where: { userId, status: "COMPLETED" } }),
+    ]);
+
+    const totalAttempts = attempts.length;
+    const avgTotalScore =
+      totalAttempts > 0
+        ? Math.round(attempts.reduce((acc, a) => acc + a.totalScore, 0) / totalAttempts)
+        : 0;
+    const avgTwkScore =
+      totalAttempts > 0
+        ? Math.round(attempts.reduce((acc, a) => acc + a.twkScore, 0) / totalAttempts)
+        : 0;
+    const avgTiuScore =
+      totalAttempts > 0
+        ? Math.round(attempts.reduce((acc, a) => acc + a.tiuScore, 0) / totalAttempts)
+        : 0;
+    const avgTkpScore =
+      totalAttempts > 0
+        ? Math.round(attempts.reduce((acc, a) => acc + a.tkpScore, 0) / totalAttempts)
+        : 0;
+    const passRatePercent =
+      totalAttempts > 0
+        ? Number(((attempts.filter((a) => a.isPassed).length / totalAttempts) * 100).toFixed(1))
+        : 0;
+
+    return {
+      ...profile,
+      catStats: {
+        totalAttempts,
+        avgTotalScore,
+        passRatePercent,
+        avgTwkScore,
+        avgTiuScore,
+        avgTkpScore,
+      },
+      pendingMistakesCount,
+      completedUnitsCount,
+    };
+  }
+
   async updateOnboarding(userId: string, input: OnboardingInput) {
     return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const existing = await tx.user.findUnique({

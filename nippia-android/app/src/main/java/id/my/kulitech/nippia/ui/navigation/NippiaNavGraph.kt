@@ -178,6 +178,11 @@ fun NippiaNavGraph(
             HomeLearningPathScreen(
                 onOpenSectionList = { category ->
                     navController.navigate(SectionListRoute(category.code))
+                },
+                onLoggedOut = {
+                    navController.navigate(LoginRoute) {
+                        popUpTo<HomeRoute> { inclusive = true }
+                    }
                 }
             )
         }

@@ -74,6 +74,8 @@ import id.my.kulitech.nippia.ui.components.rive.MascotRive
 import id.my.kulitech.nippia.ui.components.rive.StreakFlameRive
 import id.my.kulitech.nippia.ui.components.rive.UnitNodeRive
 import id.my.kulitech.nippia.ui.components.rive.UnitNodeStatus
+import id.my.kulitech.nippia.ui.screens.leaderboard.LeaderboardScreen
+import id.my.kulitech.nippia.ui.screens.profile.ProfileScreen
 import id.my.kulitech.nippia.ui.screens.simulasi.SimulasiCatScreen
 import id.my.kulitech.nippia.ui.theme.NippiaEmerald
 import id.my.kulitech.nippia.ui.theme.NippiaEmeraldDark
@@ -85,6 +87,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 @Composable
 fun HomeLearningPathScreen(
     onOpenSectionList: (SkdCategoryCode) -> Unit = {},
+    onLoggedOut: () -> Unit = {},
     viewModel: HomeLearningPathViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -186,36 +189,22 @@ fun HomeLearningPathScreen(
             }
         }
     ) { innerPadding ->
-        if (selectedTab == 1) {
-            SimulasiCatScreen(modifier = Modifier.padding(innerPadding))
-            return@Scaffold
-        }
-
-        if (selectedTab != 0) {
-            val tabNames = listOf("Belajar", "Simulasi CAT", "Ranking Liga", "Profil & Statistik")
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    MascotRive(modifier = Modifier.size(110.dp), waveTriggerCount = 1)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = tabNames[selectedTab],
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF0F172A)
-                    )
-                    Text(
-                        text = "Halaman ini siap diimplementasikan pada tahap berikutnya.",
-                        fontSize = 13.sp,
-                        color = Color(0xFF64748B)
-                    )
-                }
+        when (selectedTab) {
+            1 -> {
+                SimulasiCatScreen(modifier = Modifier.padding(innerPadding))
+                return@Scaffold
             }
-            return@Scaffold
+            2 -> {
+                LeaderboardScreen(modifier = Modifier.padding(innerPadding))
+                return@Scaffold
+            }
+            3 -> {
+                ProfileScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onLoggedOut = onLoggedOut
+                )
+                return@Scaffold
+            }
         }
 
         if (uiState.isLoading) {
