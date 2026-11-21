@@ -11,6 +11,7 @@ import id.my.kulitech.nippia.BuildConfig
 import id.my.kulitech.nippia.data.remote.api.AuthApiService
 import id.my.kulitech.nippia.data.remote.api.LearningPathApiService
 import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
+import id.my.kulitech.nippia.data.remote.api.TryoutApiService
 import id.my.kulitech.nippia.data.remote.interceptor.AuthInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -93,4 +94,9 @@ object NetworkModule {
     @Singleton
     fun provideLearningPathApiService(retrofit: Retrofit): LearningPathApiService =
         retrofit.create(LearningPathApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTryoutApiService(retrofit: Retrofit): TryoutApiService =
+        retrofit.create(TryoutApiService::class.java)
 }

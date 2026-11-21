@@ -74,6 +74,7 @@ import id.my.kulitech.nippia.ui.components.rive.MascotRive
 import id.my.kulitech.nippia.ui.components.rive.StreakFlameRive
 import id.my.kulitech.nippia.ui.components.rive.UnitNodeRive
 import id.my.kulitech.nippia.ui.components.rive.UnitNodeStatus
+import id.my.kulitech.nippia.ui.screens.simulasi.SimulasiCatScreen
 import id.my.kulitech.nippia.ui.theme.NippiaEmerald
 import id.my.kulitech.nippia.ui.theme.NippiaEmeraldDark
 import id.my.kulitech.nippia.ui.theme.NippiaGold
@@ -185,6 +186,11 @@ fun HomeLearningPathScreen(
             }
         }
     ) { innerPadding ->
+        if (selectedTab == 1) {
+            SimulasiCatScreen(modifier = Modifier.padding(innerPadding))
+            return@Scaffold
+        }
+
         if (selectedTab != 0) {
             val tabNames = listOf("Belajar", "Simulasi CAT", "Ranking Liga", "Profil & Statistik")
             Box(

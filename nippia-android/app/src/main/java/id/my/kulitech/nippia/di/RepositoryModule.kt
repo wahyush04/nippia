@@ -7,9 +7,11 @@ import dagger.hilt.components.SingletonComponent
 import id.my.kulitech.nippia.data.repository.AuthRepositoryImpl
 import id.my.kulitech.nippia.data.repository.LearningPathRepositoryImpl
 import id.my.kulitech.nippia.data.repository.OnboardingRepositoryImpl
+import id.my.kulitech.nippia.data.repository.TryoutRepositoryImpl
 import id.my.kulitech.nippia.domain.repository.AuthRepository
 import id.my.kulitech.nippia.domain.repository.LearningPathRepository
 import id.my.kulitech.nippia.domain.repository.OnboardingRepository
+import id.my.kulitech.nippia.domain.repository.TryoutRepository
 import javax.inject.Singleton
 
 @Module
@@ -27,4 +29,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindLearningPathRepository(impl: LearningPathRepositoryImpl): LearningPathRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTryoutRepository(impl: TryoutRepositoryImpl): TryoutRepository
 }

@@ -25,6 +25,8 @@ tags:
     description: Peta belajar (Learning Path) dan Incremental Delta Sync
   - name: Units
     description: Soal latihan mikro dan penyelesaian unit
+  - name: Tryouts
+    description: Katalog Simulasi CAT BKN (Mandiri & Tryout Akbar Terjadwal)
 
 components:
   securitySchemes:
@@ -639,6 +641,22 @@ paths:
           description: Unit selesai dan XP tercatat
         "400":
           description: Header Idempotency-Key tidak ada atau input tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tryouts:
+    get:
+      tags: [Tryouts]
+      summary: Ambil daftar paket Simulasi CAT (Mini CAT / Full CAT) dan event Tryout Akbar terjadwal
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Katalog paket tryout dan jadwal Tryout Akbar berhasil diambil
+        "401":
+          description: Token autentikasi tidak valid
           content:
             application/json:
               schema:
