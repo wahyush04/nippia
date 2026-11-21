@@ -28,6 +28,7 @@ import androidx.compose.material.icons.rounded.SmartToy
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,6 +55,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 @Composable
 fun TryoutReportScreen(
     viewModel: TryoutSessionViewModel,
+    onOpenReview: (attemptId: String) -> Unit = {},
     onBackToSimulasi: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +69,18 @@ fun TryoutReportScreen(
                 shadowElevation = 8.dp,
                 modifier = Modifier.navigationBarsPadding()
             ) {
-                Box(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (result != null) {
+                        OutlinedButton(
+                            onClick = { onOpenReview(result.attemptId) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Lihat Pembahasan Soal", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
                     TactileButton(
                         onClick = onBackToSimulasi,
                         containerColor = NippiaNavyPrimary,

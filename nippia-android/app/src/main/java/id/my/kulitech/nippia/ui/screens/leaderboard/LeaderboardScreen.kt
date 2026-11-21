@@ -62,6 +62,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 @Composable
 fun LeaderboardScreen(
     modifier: Modifier = Modifier,
+    onNavigateToLearn: () -> Unit = {},
     viewModel: LeaderboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -133,7 +134,7 @@ fun LeaderboardScreen(
 
                 item {
                     TactileButton(
-                        onClick = viewModel::onQuickPracticeClicked,
+                        onClick = onNavigateToLearn,
                         containerColor = NippiaEmerald,
                         shadowColor = NippiaEmeraldDark,
                         contentColor = NippiaWhite

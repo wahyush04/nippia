@@ -35,6 +35,7 @@ import id.my.kulitech.nippia.ui.screens.tryout.TryoutAnswerSheetScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutExamScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutLobbyScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutReportScreen
+import id.my.kulitech.nippia.ui.screens.tryout.TryoutReviewScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutSessionViewModel
 
 @Composable
@@ -191,6 +192,9 @@ fun NippiaNavGraph(
                 onOpenTryout = { packageId, title ->
                     navController.navigate(TryoutGraphRoute(packageId, title))
                 },
+                onOpenTryoutReview = { attemptId ->
+                    navController.navigate(TryoutReviewRoute(attemptId))
+                },
                 onLoggedOut = {
                     navController.navigate(LoginRoute) {
                         popUpTo<HomeRoute> { inclusive = true }
@@ -274,11 +278,22 @@ fun NippiaNavGraph(
                 val viewModel: TryoutSessionViewModel = hiltViewModel(parentEntry)
                 TryoutReportScreen(
                     viewModel = viewModel,
+                    onOpenReview = { attemptId ->
+                        navController.navigate(TryoutReviewRoute(attemptId))
+                    },
                     onBackToSimulasi = {
                         navController.popBackStack<TryoutGraphRoute>(inclusive = true)
                     }
                 )
             }
+        }
+
+        composable<TryoutReviewRoute> { backStackEntry ->
+            val args = backStackEntry.toRoute<TryoutReviewRoute>()
+            TryoutReviewScreen(
+                attemptId = args.attemptId,
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable<SectionListRoute> { backStackEntry ->

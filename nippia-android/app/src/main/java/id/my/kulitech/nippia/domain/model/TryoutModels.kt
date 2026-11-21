@@ -103,9 +103,45 @@ data class TryoutSubmitResult(
     val tiuScore: Int,
     val tkpScore: Int,
     val totalScore: Int,
+    val nationalRank: Int = 1,
+    val totalParticipants: Int = 1,
     val twkGrade: SubtestGradeResult,
     val tiuGrade: SubtestGradeResult,
     val tkpGrade: SubtestGradeResult,
     val isPassed: Boolean,
     val subTopicBreakdown: List<SubTopicBreakdownItem>
+)
+
+data class TryoutLobbyInfo(
+    val packageId: String,
+    val title: String,
+    val durationMinutes: Int,
+    val totalQuestions: Int,
+    val sessionToken: String,
+    val participantsCount: Int
+)
+
+data class TryoutReviewItem(
+    val questionId: String,
+    val orderIndex: Int,
+    val categoryCode: String,
+    val subTopic: String,
+    val type: QuizQuestionType,
+    val contentText: String,
+    val explanation: String,
+    val selectedOptionId: String?,
+    val earnedScore: Int,
+    val bestOptionId: String?,
+    val options: List<QuizOption>
+)
+
+data class TryoutAttemptReview(
+    val attemptId: String,
+    val packageTitle: String,
+    val totalScore: Int,
+    val twkScore: Int,
+    val tiuScore: Int,
+    val tkpScore: Int,
+    val isPassed: Boolean,
+    val items: List<TryoutReviewItem>
 )

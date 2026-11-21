@@ -6,10 +6,13 @@ import id.my.kulitech.nippia.domain.model.QuizQuestionType
 import id.my.kulitech.nippia.domain.model.ScheduledTryoutEvent
 import id.my.kulitech.nippia.domain.model.SubTopicBreakdownItem
 import id.my.kulitech.nippia.domain.model.SubtestGradeResult
+import id.my.kulitech.nippia.domain.model.TryoutAttemptReview
 import id.my.kulitech.nippia.domain.model.TryoutAttemptSummary
 import id.my.kulitech.nippia.domain.model.TryoutCatalog
+import id.my.kulitech.nippia.domain.model.TryoutLobbyInfo
 import id.my.kulitech.nippia.domain.model.TryoutPackageItem
 import id.my.kulitech.nippia.domain.model.TryoutQuestion
+import id.my.kulitech.nippia.domain.model.TryoutReviewItem
 import id.my.kulitech.nippia.domain.model.TryoutSession
 import id.my.kulitech.nippia.domain.model.TryoutSubmitResult
 import id.my.kulitech.nippia.domain.model.TryoutType
@@ -208,6 +211,8 @@ data class SubmitTryoutDataDto(
     val tiuScore: Int = 0,
     val tkpScore: Int = 0,
     val totalScore: Int = 0,
+    val nationalRank: Int = 1,
+    val totalParticipants: Int = 1,
     val passingGrades: PassingGradesDto = PassingGradesDto(),
     val isPassed: Boolean = false,
     val subTopicBreakdown: List<SubTopicBreakdownDto> = emptyList()
@@ -219,10 +224,105 @@ data class SubmitTryoutDataDto(
         tiuScore = tiuScore,
         tkpScore = tkpScore,
         totalScore = totalScore,
+        nationalRank = nationalRank,
+        totalParticipants = totalParticipants,
         twkGrade = passingGrades.twk.toDomain(),
         tiuGrade = passingGrades.tiu.toDomain(),
         tkpGrade = passingGrades.tkp.toDomain(),
         isPassed = isPassed,
         subTopicBreakdown = subTopicBreakdown.map { it.toDomain() }
+    )
+}
+
+@Serializable
+data class TryoutLobbyDataDto(
+    val packageId: String,
+    val title: String,
+    val durationMinutes: Int,
+    val totalQuestions: Int,
+    val sessionToken: String,
+    val participantsCount: Int
+) {
+    fun toDomain() = TryoutLobbyInfo(
+        packageId = packageId,
+        title = title,
+        durationMinutes = durationMinutes,
+        totalQuestions = totalQuestions,
+        sessionToken = sessionToken,
+        participantsCount = participantsCount
+    )
+}
+
+@Serializable
+data class StartDrillRequestDto(
+    val categoryCode: String
+)
+
+@Serializable
+data class ReviewOptionDto(
+    val id: String,
+    val label: String,
+    val optionText: String,
+    val imageUrl: String? = null,
+    val score: Int = 0
+) {
+    fun toDomain() = QuizOption(
+        id = id,
+        label = label,
+        text = optionText,
+        imageUrl = imageUrl,
+        score = score
+    )
+}
+
+@Serializable
+data class TryoutReviewItemDto(
+    val questionId: String,
+    val orderIndex: Int,
+    val categoryCode: String,
+    val subTopic: String,
+    val type: String,
+    val contentText: String,
+    val explanation: String = "",
+    val selectedOptionId: String? = null,
+    val earnedScore: Int = 0,
+    val bestOptionId: String? = null,
+    val options: List<ReviewOptionDto> = emptyList()
+) {
+    fun toDomain() = TryoutReviewItem(
+        questionId = questionId,
+        orderIndex = orderIndex,
+        categoryCode = categoryCode,
+        subTopic = subTopic,
+        type = QuizQuestionType.fromApi(type),
+        contentText = contentText,
+        explanation = explanation,
+        selectedOptionId = selectedOptionId,
+        earnedScore = earnedScore,
+        bestOptionId = bestOptionId,
+        options = options.map { it.toDomain() }
+    )
+}
+
+@Serializable
+data class TryoutReviewDataDto(
+    val attemptId: String,
+    val packageTitle: String,
+    val totalScore: Int = 0,
+    val twkScore: Int = 0,
+    val tiuScore: Int = 0,
+    val tkpScore: Int = 0,
+    val isPassed: Boolean = false,
+    val items: List<TryoutReviewItemDto> = emptyList()
+) {
+    fun toDomain() = TryoutAttemptReview(
+        attemptId = attemptId,
+        packageTitle = packageTitle,
+        totalScore = totalScore,
+        twkScore = twkScore,
+        tiuScore = tiuScore,
+        tkpScore = tkpScore,
+        isPassed = isPassed,
+        items = items.map { it.toDomain() }
     )
 }

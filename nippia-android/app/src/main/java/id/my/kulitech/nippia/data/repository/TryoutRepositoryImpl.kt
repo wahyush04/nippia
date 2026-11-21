@@ -3,6 +3,7 @@ package id.my.kulitech.nippia.data.repository
 import id.my.kulitech.nippia.core.common.AppResult
 import id.my.kulitech.nippia.data.remote.api.TryoutApiService
 import id.my.kulitech.nippia.data.remote.dto.AnswerSubmissionDto
+import id.my.kulitech.nippia.data.remote.dto.StartDrillRequestDto
 import id.my.kulitech.nippia.data.remote.dto.SubmitTryoutRequestDto
 import id.my.kulitech.nippia.domain.model.QuestionPresentationParser
 import id.my.kulitech.nippia.domain.model.QuizAnswerSubmission
@@ -11,10 +12,13 @@ import id.my.kulitech.nippia.domain.model.QuizQuestionType
 import id.my.kulitech.nippia.domain.model.ScheduledTryoutEvent
 import id.my.kulitech.nippia.domain.model.SubTopicBreakdownItem
 import id.my.kulitech.nippia.domain.model.SubtestGradeResult
+import id.my.kulitech.nippia.domain.model.TryoutAttemptReview
 import id.my.kulitech.nippia.domain.model.TryoutAttemptSummary
 import id.my.kulitech.nippia.domain.model.TryoutCatalog
+import id.my.kulitech.nippia.domain.model.TryoutLobbyInfo
 import id.my.kulitech.nippia.domain.model.TryoutPackageItem
 import id.my.kulitech.nippia.domain.model.TryoutQuestion
+import id.my.kulitech.nippia.domain.model.TryoutReviewItem
 import id.my.kulitech.nippia.domain.model.TryoutSession
 import id.my.kulitech.nippia.domain.model.TryoutSubmitResult
 import id.my.kulitech.nippia.domain.model.TryoutType
@@ -42,6 +46,27 @@ class TryoutRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getTryoutLobby(
+        packageId: String,
+        fallbackTitle: String
+    ): AppResult<TryoutLobbyInfo> {
+        return try {
+            val response = tryoutApiService.getTryoutLobby(packageId)
+            val data = response.data
+            if (response.success && data != null) {
+                AppResult.Success(data.toDomain())
+            } else {
+                AppResult.Success(
+                    TryoutLobbyInfo(packageId, fallbackTitle, 100, 110, "NIP-2025-CAT", 1280)
+                )
+            }
+        } catch (_: Exception) {
+            AppResult.Success(
+                TryoutLobbyInfo(packageId, fallbackTitle, 100, 110, "NIP-2025-CAT", 1280)
+            )
+        }
+    }
+
     override suspend fun startTryout(packageId: String, title: String): AppResult<TryoutSession> {
         return try {
             val response = tryoutApiService.startTryout(packageId)
@@ -53,6 +78,20 @@ class TryoutRepositoryImpl @Inject constructor(
             }
         } catch (_: Exception) {
             AppResult.Success(fallbackSession(packageId, title))
+        }
+    }
+
+    override suspend fun startCategoryDrill(categoryCode: String): AppResult<TryoutSession> {
+        return try {
+            val response = tryoutApiService.startCategoryDrill(StartDrillRequestDto(categoryCode))
+            val data = response.data
+            if (response.success && data != null && data.questions.isNotEmpty()) {
+                AppResult.Success(data.toDomain())
+            } else {
+                AppResult.Success(fallbackSession("drill-$categoryCode", "Drill Khusus $categoryCode"))
+            }
+        } catch (_: Exception) {
+            AppResult.Success(fallbackSession("drill-$categoryCode", "Drill Khusus $categoryCode"))
         }
     }
 
@@ -75,6 +114,48 @@ class TryoutRepositoryImpl @Inject constructor(
             AppResult.Success(fallbackSubmitResult(attemptId, answers))
         }
     }
+
+    override suspend fun getAttemptReview(attemptId: String): AppResult<TryoutAttemptReview> {
+        return try {
+            val response = tryoutApiService.getAttemptReview(attemptId)
+            val data = response.data
+            if (response.success && data != null && data.items.isNotEmpty()) {
+                AppResult.Success(data.toDomain())
+            } else {
+                AppResult.Success(fallbackReview(attemptId))
+            }
+        } catch (_: Exception) {
+            AppResult.Success(fallbackReview(attemptId))
+        }
+    }
+
+    private fun fallbackReview(attemptId: String): TryoutAttemptReview = TryoutAttemptReview(
+        attemptId = attemptId,
+        packageTitle = "Simulasi CAT SKD BKN",
+        totalScore = 412,
+        twkScore = 95,
+        tiuScore = 135,
+        tkpScore = 182,
+        isPassed = true,
+        items = listOf(
+            TryoutReviewItem(
+                questionId = "rev-1",
+                orderIndex = 1,
+                categoryCode = "TWK",
+                subTopic = "Nasionalisme & Pilar Negara",
+                type = QuizQuestionType.MULTIPLE_CHOICE,
+                contentText = "Sikap paling tepat yang mencerminkan pemahaman Bhinneka Tunggal Ika dalam pelayanan masyarakat adalah...",
+                explanation = "Pelayanan publik wajib adil, inklusif, dan nondiskriminatif tanpa membedakan latar belakang suku, agama, ras, dan golongan.",
+                selectedOptionId = "rev-o1b",
+                earnedScore = 5,
+                bestOptionId = "rev-o1b",
+                options = listOf(
+                    QuizOption("rev-o1a", "A", "Menolak melayani masyarakat yang berbeda pandangan politik.", null, 0),
+                    QuizOption("rev-o1b", "B", "Mengedepankan pelayanan publik yang adil, inklusif, dan nondiskriminatif.", null, 5)
+                )
+            )
+        )
+    )
 
     private fun fallbackCatalog(): TryoutCatalog = TryoutCatalog(
         packages = listOf(

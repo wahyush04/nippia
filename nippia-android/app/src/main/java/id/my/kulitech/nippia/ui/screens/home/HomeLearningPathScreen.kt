@@ -89,6 +89,7 @@ fun HomeLearningPathScreen(
     onOpenSectionList: (SkdCategoryCode) -> Unit = {},
     onOpenUnitQuiz: (String, String) -> Unit = { _, _ -> },
     onOpenTryout: (String, String) -> Unit = { _, _ -> },
+    onOpenTryoutReview: (String) -> Unit = {},
     onLoggedOut: () -> Unit = {},
     viewModel: HomeLearningPathViewModel = hiltViewModel()
 ) {
@@ -195,12 +196,16 @@ fun HomeLearningPathScreen(
             1 -> {
                 SimulasiCatScreen(
                     modifier = Modifier.padding(innerPadding),
-                    onStartTryout = onOpenTryout
+                    onStartTryout = onOpenTryout,
+                    onOpenReview = onOpenTryoutReview
                 )
                 return@Scaffold
             }
             2 -> {
-                LeaderboardScreen(modifier = Modifier.padding(innerPadding))
+                LeaderboardScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onNavigateToLearn = { selectedTab = 0 }
+                )
                 return@Scaffold
             }
             3 -> {

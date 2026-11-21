@@ -61,3 +61,6 @@ data object TryoutAnswerSheetRoute
 
 @Serializable
 data object TryoutReportRoute
+
+@Serializable
+data class TryoutReviewRoute(val attemptId: String)

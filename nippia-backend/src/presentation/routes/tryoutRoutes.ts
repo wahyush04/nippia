@@ -1,3 +1,4 @@
+import type { CategoryCode } from "@prisma/client";
 import { Router } from "express";
 import { z } from "zod";
 import { TryoutService } from "../../application/tryout/TryoutService.js";
@@ -19,10 +20,35 @@ const submitTryoutSchema = z.object({
     .default([]),
 });
 
+const startDrillSchema = z.object({
+  categoryCode: z.enum(["TWK", "TIU", "TKP"]),
+});
+
 tryoutRouter.get("/", requireAuth, async (req: AuthenticatedRequest, res) => {
   const data = await tryoutService.getTryoutCatalog(req.auth!.sub, req.auth!.role);
   return sendSuccess(res, data);
 });
+
+tryoutRouter.get("/:packageId/lobby", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const packageId = String(req.params.packageId);
+  const data = await tryoutService.getTryoutLobby(req.auth!.role, packageId);
+  return sendSuccess(res, data);
+});
+
+tryoutRouter.post(
+  "/drill/start",
+  requireAuth,
+  validateBody(startDrillSchema),
+  async (req: AuthenticatedRequest, res) => {
+    const body = req.body as z.infer<typeof startDrillSchema>;
+    const data = await tryoutService.startCategoryDrill(
+      req.auth!.sub,
+      req.auth!.role,
+      body.categoryCode as CategoryCode,
+    );
+    return sendSuccess(res, data, 201);
+  },
+);
 
 tryoutRouter.post("/:packageId/start", requireAuth, async (req: AuthenticatedRequest, res) => {
   const packageId = String(req.params.packageId);
@@ -38,6 +64,16 @@ tryoutRouter.post(
     const attemptId = String(req.params.attemptId);
     const body = req.body as z.infer<typeof submitTryoutSchema>;
     const data = await tryoutService.submitTryout(req.auth!.sub, attemptId, body.answers);
+    return sendSuccess(res, data);
+  },
+);
+
+tryoutRouter.get(
+  "/attempts/:attemptId/review",
+  requireAuth,
+  async (req: AuthenticatedRequest, res) => {
+    const attemptId = String(req.params.attemptId);
+    const data = await tryoutService.getAttemptReview(req.auth!.sub, attemptId);
     return sendSuccess(res, data);
   },
 );

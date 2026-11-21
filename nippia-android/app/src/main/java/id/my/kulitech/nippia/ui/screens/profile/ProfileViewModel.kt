@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.my.kulitech.nippia.core.common.AppResult
+import id.my.kulitech.nippia.core.datastore.SessionPreferences
+import id.my.kulitech.nippia.data.remote.api.ContentSyncApiService
 import id.my.kulitech.nippia.domain.model.ProfileStatsOverview
 import id.my.kulitech.nippia.domain.usecase.GetProfileStatsUseCase
 import id.my.kulitech.nippia.domain.usecase.LogoutUseCase
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +34,9 @@ sealed interface ProfileNavEvent {
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getProfileStatsUseCase: GetProfileStatsUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val logoutUseCase: LogoutUseCase,
+    private val contentSyncApiService: ContentSyncApiService,
+    private val sessionPreferences: SessionPreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -63,9 +68,19 @@ class ProfileViewModel @Inject constructor(
     fun onQuickSync() {
         viewModelScope.launch {
             _uiState.update { it.copy(isSyncing = true) }
+            try {
+                val since = sessionPreferences.lastContentSync.firstOrNull()
+                val syncResp = contentSyncApiService.deltaSync(since)
+                val ts = syncResp.data?.syncTimestamp
+                if (!ts.isNullOrBlank()) {
+                    sessionPreferences.updateLastContentSync(ts)
+                }
+            } catch (_: Exception) {
+                // Best-effort sync; still refresh profile stats
+            }
             loadProfile()
             _uiState.update {
-                it.copy(isSyncing = false, actionMessage = "Sinkronisasi profil & statistik selesai!")
+                it.copy(isSyncing = false, actionMessage = "Sinkronisasi konten & statistik selesai!")
             }
         }
     }

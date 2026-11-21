@@ -1,6 +1,8 @@
-import type { ContentStatus, UserRole } from "@prisma/client";
+import type { CategoryCode, ContentStatus, UserRole } from "@prisma/client";
 import { AppError } from "../../domain/errors/AppError.js";
 import { prisma } from "../../infrastructure/database/prisma.js";
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export interface ScheduledTryoutEventDto {
   id: string;
@@ -72,9 +74,45 @@ export class TryoutService {
     };
   }
 
+  async getTryoutLobby(role: UserRole, packageId: string) {
+    const pkg = await this.resolveTryoutPackage(role, packageId);
+    const participantsCount = await prisma.tryoutAttempt.count({
+      where: { packageId: pkg.id },
+    });
+
+    return {
+      packageId: pkg.id,
+      title: pkg.title,
+      durationMinutes: pkg.durationMinutes,
+      totalQuestions: pkg.totalQuestions,
+      sessionToken: `NIP-${pkg.id.slice(0, 8).toUpperCase()}`,
+      participantsCount: participantsCount + 1280,
+      serverTime: new Date().toISOString(),
+      isReady: true,
+    };
+  }
+
+  private async resolveTryoutPackage(role: UserRole, packageId: string) {
+    const allowedStatuses: ContentStatus[] =
+      role === "ADMIN" ? ["DRAFT", "PUBLISHED"] : ["PUBLISHED"];
+
+    const pkg = UUID_REGEX.test(packageId)
+      ? await prisma.tryoutPackage.findUnique({ where: { id: packageId } })
+      : await prisma.tryoutPackage.findFirst({
+          where: { type: "FULL_CAT", status: { in: allowedStatuses } },
+          orderBy: { createdAt: "desc" },
+        });
+
+    if (!pkg || (role !== "ADMIN" && pkg.status !== "PUBLISHED")) {
+      throw AppError.notFound("Paket tryout tidak ditemukan.");
+    }
+    return pkg;
+  }
+
   async startTryout(userId: string, role: UserRole, packageId: string) {
+    const resolved = await this.resolveTryoutPackage(role, packageId);
     const pkg = await prisma.tryoutPackage.findUnique({
-      where: { id: packageId },
+      where: { id: resolved.id },
       include: {
         questions: {
           orderBy: { orderIndex: "asc" },
@@ -87,7 +125,7 @@ export class TryoutService {
       },
     });
 
-    if (!pkg || (role !== "ADMIN" && pkg.status !== "PUBLISHED")) {
+    if (!pkg) {
       throw AppError.notFound("Paket tryout tidak ditemukan.");
     }
 
@@ -249,6 +287,22 @@ export class TryoutService {
         s.maxScore > 0 ? Number(((s.earnedScore / s.maxScore) * 100).toFixed(1)) : 0,
     }));
 
+    const [higherScoresCount, totalParticipants] = await Promise.all([
+      prisma.tryoutAttempt.count({
+        where: {
+          packageId: attempt.packageId,
+          submittedAt: { not: null },
+          totalScore: { gt: totalScore },
+        },
+      }),
+      prisma.tryoutAttempt.count({
+        where: {
+          packageId: attempt.packageId,
+          submittedAt: { not: null },
+        },
+      }),
+    ]);
+
     return {
       attemptId: attempt.id,
       packageId: attempt.packageId,
@@ -258,6 +312,8 @@ export class TryoutService {
       tiuScore,
       tkpScore,
       totalScore,
+      nationalRank: higherScoresCount + 1,
+      totalParticipants: Math.max(totalParticipants, 1),
       passingGrades: {
         twk: { min: 65, passed: twkPassed },
         tiu: { min: 80, passed: tiuPassed },
@@ -265,6 +321,159 @@ export class TryoutService {
       },
       isPassed,
       subTopicBreakdown,
+    };
+  }
+
+  async startCategoryDrill(userId: string, role: UserRole, categoryCode: CategoryCode) {
+    const allowedStatuses: ContentStatus[] =
+      role === "ADMIN" ? ["DRAFT", "PUBLISHED"] : ["PUBLISHED"];
+
+    const limitByCat: Record<CategoryCode, number> = {
+      TWK: 30,
+      TIU: 35,
+      TKP: 45,
+    };
+    const durationMinutes = limitByCat[categoryCode];
+
+    const questions = await prisma.question.findMany({
+      where: {
+        categoryCode,
+        status: { in: allowedStatuses },
+      },
+      take: durationMinutes,
+      orderBy: { orderIndex: "asc" },
+      include: { options: { orderBy: { label: "asc" } } },
+    });
+
+    if (questions.length === 0) {
+      throw AppError.notFound(`Soal drill untuk kategori ${categoryCode} belum tersedia.`);
+    }
+
+    const pkg = await prisma.tryoutPackage.create({
+      data: {
+        title: `Drill Khusus ${categoryCode}`,
+        description: `Latihan fokus ${questions.length} soal ${categoryCode}`,
+        type: "MINI_CAT",
+        durationMinutes,
+        totalQuestions: questions.length,
+        isProOnly: false,
+        status: "PUBLISHED",
+        questions: {
+          create: questions.map((q, idx) => ({
+            questionId: q.id,
+            orderIndex: idx + 1,
+          })),
+        },
+      },
+    });
+
+    const startedAt = new Date();
+    const expiresAt = new Date(startedAt.getTime() + durationMinutes * 60_000);
+    const attempt = await prisma.tryoutAttempt.create({
+      data: {
+        userId,
+        packageId: pkg.id,
+        startedAt,
+        expiresAt,
+      },
+    });
+
+    return {
+      attemptId: attempt.id,
+      packageId: pkg.id,
+      title: pkg.title,
+      type: pkg.type,
+      durationMinutes,
+      startedAt: attempt.startedAt.toISOString(),
+      expiresAt: attempt.expiresAt.toISOString(),
+      questions: questions.map((q, idx) => ({
+        id: q.id,
+        orderIndex: idx + 1,
+        categoryCode: q.categoryCode,
+        subTopic: q.subTopic,
+        type: q.type,
+        contentText: q.contentText,
+        imageUrl: q.imageUrl,
+        options: q.options.map((o) => ({
+          id: o.id,
+          label: o.label,
+          optionText: o.optionText,
+          imageUrl: o.imageUrl,
+        })),
+      })),
+    };
+  }
+
+  async getAttemptReview(userId: string, attemptId: string) {
+    const attempt = await prisma.tryoutAttempt.findUnique({
+      where: { id: attemptId },
+      include: {
+        package: {
+          include: {
+            questions: {
+              orderBy: { orderIndex: "asc" },
+              include: {
+                question: {
+                  include: { options: { orderBy: { label: "asc" } } },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!attempt || attempt.userId !== userId) {
+      throw AppError.notFound("Riwayat ujian CAT tidak ditemukan.");
+    }
+    if (!attempt.submittedAt) {
+      throw AppError.validation("Ujian ini belum dikumpulkan sehingga pembahasan belum tersedia.");
+    }
+
+    const rawAnswers = Array.isArray(attempt.answersJson)
+      ? (attempt.answersJson as Array<{ questionId: string; selectedOptionId: string }>)
+      : [];
+    const selectedMap = new Map(rawAnswers.map((a) => [a.questionId, a.selectedOptionId]));
+
+    return {
+      attemptId: attempt.id,
+      packageTitle: attempt.package.title,
+      totalScore: attempt.totalScore,
+      twkScore: attempt.twkScore,
+      tiuScore: attempt.tiuScore,
+      tkpScore: attempt.tkpScore,
+      isPassed: attempt.isPassed,
+      items: attempt.package.questions.map((pq) => {
+        const q = pq.question;
+        const selectedOptionId = selectedMap.get(q.id) ?? null;
+        const selectedOption = selectedOptionId
+          ? q.options.find((o) => o.id === selectedOptionId)
+          : undefined;
+        const bestOption = q.options.reduce(
+          (best, cur) => (cur.score > best.score ? cur : best),
+          q.options[0]!,
+        );
+        return {
+          questionId: q.id,
+          orderIndex: pq.orderIndex,
+          categoryCode: q.categoryCode,
+          subTopic: q.subTopic,
+          type: q.type,
+          contentText: q.contentText,
+          imageUrl: q.imageUrl,
+          explanation: q.explanation,
+          selectedOptionId,
+          earnedScore: selectedOption?.score ?? 0,
+          bestOptionId: bestOption?.id ?? null,
+          options: q.options.map((o) => ({
+            id: o.id,
+            label: o.label,
+            optionText: o.optionText,
+            imageUrl: o.imageUrl,
+            score: o.score,
+          })),
+        };
+      }),
     };
   }
 }

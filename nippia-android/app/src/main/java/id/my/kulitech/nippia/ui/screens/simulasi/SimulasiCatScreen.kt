@@ -74,6 +74,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 fun SimulasiCatScreen(
     modifier: Modifier = Modifier,
     onStartTryout: (packageId: String, title: String) -> Unit = { _, _ -> },
+    onOpenReview: (attemptId: String) -> Unit = {},
     viewModel: SimulasiCatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -254,7 +255,7 @@ fun SimulasiCatScreen(
                         item {
                             LastTryoutHistoryCard(
                                 attempt = lastFullAttempt,
-                                onReviewClick = { viewModel.onStartActionClicked("Review Pembahasan CAT") }
+                                onReviewClick = { onOpenReview(lastFullAttempt.id) }
                             )
                         }
                     }
@@ -281,19 +282,19 @@ fun SimulasiCatScreen(
                                 icon = Icons.Rounded.Flag,
                                 title = "Drill Khusus TWK",
                                 subtitle = "30 Soal • 30 Menit • Target PG 65",
-                                onClick = { viewModel.onStartActionClicked("Drill Khusus TWK") }
+                                onClick = { onStartTryout("DRILL:TWK", "Drill Khusus TWK") }
                             )
                             DrillSubtestCard(
                                 icon = Icons.Rounded.Calculate,
                                 title = "Drill Khusus TIU",
                                 subtitle = "35 Soal • 35 Menit • Target PG 80",
-                                onClick = { viewModel.onStartActionClicked("Drill Khusus TIU") }
+                                onClick = { onStartTryout("DRILL:TIU", "Drill Khusus TIU") }
                             )
                             DrillSubtestCard(
                                 icon = Icons.Rounded.Diversity3,
                                 title = "Drill Khusus TKP",
                                 subtitle = "45 Soal • 45 Menit • Target PG 166",
-                                onClick = { viewModel.onStartActionClicked("Drill Khusus TKP") }
+                                onClick = { onStartTryout("DRILL:TKP", "Drill Khusus TKP") }
                             )
                         }
                     }

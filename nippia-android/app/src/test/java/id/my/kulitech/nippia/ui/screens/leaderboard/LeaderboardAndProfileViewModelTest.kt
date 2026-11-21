@@ -2,6 +2,8 @@ package id.my.kulitech.nippia.ui.screens.leaderboard
 
 import app.cash.turbine.test
 import id.my.kulitech.nippia.core.common.AppResult
+import id.my.kulitech.nippia.core.datastore.SessionPreferences
+import id.my.kulitech.nippia.data.remote.api.ContentSyncApiService
 import id.my.kulitech.nippia.domain.model.CatStatsSummary
 import id.my.kulitech.nippia.domain.model.GamificationSummary
 import id.my.kulitech.nippia.domain.model.LeaderboardEntry
@@ -38,6 +40,8 @@ class LeaderboardAndProfileViewModelTest {
     private val getWeeklyLeaderboardUseCase: GetWeeklyLeaderboardUseCase = mockk()
     private val getProfileStatsUseCase: GetProfileStatsUseCase = mockk()
     private val logoutUseCase: LogoutUseCase = mockk(relaxed = true)
+    private val contentSyncApiService: ContentSyncApiService = mockk(relaxed = true)
+    private val sessionPreferences: SessionPreferences = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -84,7 +88,12 @@ class LeaderboardAndProfileViewModelTest {
         )
         coEvery { getProfileStatsUseCase() } returns AppResult.Success(overview)
 
-        val viewModel = ProfileViewModel(getProfileStatsUseCase, logoutUseCase)
+        val viewModel = ProfileViewModel(
+            getProfileStatsUseCase,
+            logoutUseCase,
+            contentSyncApiService,
+            sessionPreferences
+        )
         advanceUntilIdle()
 
         assertFalse(viewModel.uiState.value.isLoading)

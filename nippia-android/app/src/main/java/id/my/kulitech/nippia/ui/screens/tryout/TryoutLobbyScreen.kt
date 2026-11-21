@@ -228,7 +228,12 @@ fun TryoutLobbyScreen(
                         Spacer(modifier = Modifier.width(10.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text("Token Sesi Ujian", color = Color(0xFF64748B), fontSize = 11.sp)
-                            Text("NIP-2025-CAT", color = Color(0xFF0F172A), fontSize = 15.sp, fontWeight = FontWeight.ExtraBold)
+                            Text(
+                                text = uiState.lobbyInfo?.sessionToken ?: "NIP-2025-CAT",
+                                color = Color(0xFF0F172A),
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Rounded.CheckCircle, contentDescription = null, tint = NippiaEmerald, modifier = Modifier.size(16.dp))

@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import id.my.kulitech.nippia.BuildConfig
 import id.my.kulitech.nippia.data.remote.api.AuthApiService
+import id.my.kulitech.nippia.data.remote.api.ContentSyncApiService
 import id.my.kulitech.nippia.data.remote.api.LeaderboardApiService
 import id.my.kulitech.nippia.data.remote.api.LearningPathApiService
 import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
@@ -117,4 +118,9 @@ object NetworkModule {
     @Singleton
     fun provideQuizApiService(retrofit: Retrofit): QuizApiService =
         retrofit.create(QuizApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideContentSyncApiService(retrofit: Retrofit): ContentSyncApiService =
+        retrofit.create(ContentSyncApiService::class.java)
 }

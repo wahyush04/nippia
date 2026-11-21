@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.my.kulitech.nippia.core.common.AppResult
 import id.my.kulitech.nippia.domain.model.QuizAnswerSubmission
+import id.my.kulitech.nippia.domain.model.TryoutLobbyInfo
 import id.my.kulitech.nippia.domain.model.TryoutQuestion
 import id.my.kulitech.nippia.domain.model.TryoutSession
 import id.my.kulitech.nippia.domain.model.TryoutSubmitResult
+import id.my.kulitech.nippia.domain.usecase.GetTryoutLobbyUseCase
+import id.my.kulitech.nippia.domain.usecase.StartCategoryDrillUseCase
 import id.my.kulitech.nippia.domain.usecase.StartTryoutUseCase
 import id.my.kulitech.nippia.domain.usecase.SubmitTryoutUseCase
 import kotlinx.coroutines.Job
@@ -33,6 +36,7 @@ enum class AnswerSheetFilter {
 data class TryoutSessionUiState(
     val packageId: String = "",
     val title: String = "Tryout Akbar Nasional SKD #12",
+    val lobbyInfo: TryoutLobbyInfo? = null,
     val isStarting: Boolean = false,
     val session: TryoutSession? = null,
     val currentIndex: Int = 0,
@@ -75,7 +79,9 @@ sealed interface TryoutNavEvent {
 
 @HiltViewModel
 class TryoutSessionViewModel @Inject constructor(
+    private val getTryoutLobbyUseCase: GetTryoutLobbyUseCase,
     private val startTryoutUseCase: StartTryoutUseCase,
+    private val startCategoryDrillUseCase: StartCategoryDrillUseCase,
     private val submitTryoutUseCase: SubmitTryoutUseCase
 ) : ViewModel() {
 
@@ -93,12 +99,21 @@ class TryoutSessionViewModel @Inject constructor(
             it.copy(
                 packageId = packageId,
                 title = title,
+                lobbyInfo = null,
                 session = null,
                 submitResult = null,
                 selectedOptions = emptyMap(),
                 flaggedQuestionIds = emptySet(),
                 currentIndex = 0
             )
+        }
+        if (!packageId.startsWith("DRILL:")) {
+            viewModelScope.launch {
+                val res = getTryoutLobbyUseCase(packageId, title)
+                if (res is AppResult.Success) {
+                    _uiState.update { it.copy(lobbyInfo = res.data) }
+                }
+            }
         }
     }
 
@@ -108,7 +123,12 @@ class TryoutSessionViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isStarting = true, errorMessage = null) }
-            when (val result = startTryoutUseCase(state.packageId, state.title)) {
+            val result = if (state.packageId.startsWith("DRILL:")) {
+                startCategoryDrillUseCase(state.packageId.removePrefix("DRILL:"))
+            } else {
+                startTryoutUseCase(state.packageId, state.title)
+            }
+            when (result) {
                 is AppResult.Success -> {
                     val session = result.data
                     _uiState.update {
