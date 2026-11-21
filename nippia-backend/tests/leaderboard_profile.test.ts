@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockPrisma } = vi.hoisted(() => ({
   mockPrisma: {
-    userGamification: { findUnique: vi.fn(), findMany: vi.fn() },
+    userGamification: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn(), update: vi.fn() },
+    question: { findMany: vi.fn() },
     user: { findUnique: vi.fn() },
     subscription: { findFirst: vi.fn() },
     tryoutAttempt: { findMany: vi.fn() },
@@ -101,5 +102,63 @@ describe("LeaderboardService & UserService.getProfileStats", () => {
     expect(stats.catStats.passRatePercent).toBe(100);
     expect(stats.pendingMistakesCount).toBe(12);
     expect(stats.completedUnitsCount).toBe(8);
+  });
+});
+
+describe("LeaderboardService Rescue & League Outcome", () => {
+  const leaderboardService = new LeaderboardService();
+
+  it("returns rescue quiz and submits +50 XP to escape demotion", async () => {
+    mockPrisma.userGamification.upsert.mockResolvedValue({
+      leagueTier: "GOLD",
+      weeklyXp: 435,
+      currentStreak: 14,
+    });
+    mockPrisma.question.findMany.mockResolvedValue([
+      {
+        id: "q1",
+        categoryCode: "TIU",
+        subTopic: "Numerik",
+        type: "MULTIPLE_CHOICE",
+        contentText: "2x + y = ?",
+        imageUrl: null,
+        explanation: "21",
+        options: [{ id: "o1", label: "A", optionText: "21", imageUrl: null, score: 5 }],
+      },
+    ]);
+
+    const quiz = await leaderboardService.getRescueQuiz("me");
+    expect(quiz.xpBonus).toBe(50);
+    expect(quiz.questions).toHaveLength(1);
+
+    mockPrisma.userGamification.update.mockResolvedValue({
+      leagueTier: "GOLD",
+      weeklyXp: 485,
+      currentStreak: 14,
+    });
+    const res = await leaderboardService.submitRescueQuiz("me", [
+      { questionId: "q1", selectedOptionId: "o1" },
+    ]);
+    expect(res.xpEarned).toBe(50);
+    expect(res.escapedDemotion).toBe(true);
+    expect(res.newXp).toBe(485);
+  });
+
+  it("evaluates league outcome and claims reward", async () => {
+    mockPrisma.userGamification.upsert.mockResolvedValue({
+      leagueTier: "SAPPHIRE",
+      weeklyXp: 1290,
+      currentStreak: 14,
+      gems: 500,
+      streakFreezes: 3,
+    });
+
+    const outcome = await leaderboardService.getLeagueOutcome("me");
+    expect(outcome.outcome).toBe("PROMOTED");
+    expect(outcome.rewardGems).toBe(500);
+
+    const claimed = await leaderboardService.claimLeagueOutcomeReward("me", "PROMOTED");
+    expect(claimed.gems).toBe(500);
+    expect(claimed.streakFreezes).toBe(3);
   });
 });

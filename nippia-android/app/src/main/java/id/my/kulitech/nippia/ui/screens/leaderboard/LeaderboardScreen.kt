@@ -3,6 +3,7 @@ package id.my.kulitech.nippia.ui.screens.leaderboard
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,6 +64,8 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 fun LeaderboardScreen(
     modifier: Modifier = Modifier,
     onNavigateToLearn: () -> Unit = {},
+    onOpenRescueQuiz: () -> Unit = {},
+    onOpenLeagueOutcome: () -> Unit = {},
     viewModel: LeaderboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -105,6 +108,70 @@ fun LeaderboardScreen(
                 if (myEntry != null) {
                     item {
                         MyRankHighlightCard(entry = myEntry)
+                    }
+                }
+
+                // Demotion Rescue & League Outcome Actions
+                item {
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = if (myEntry?.zone == LeaderboardZone.DEMOTION) Color(0xFFFEE2E2) else Color(0xFFEFF4FF),
+                        border = BorderStroke(
+                            1.dp,
+                            if (myEntry?.zone == LeaderboardZone.DEMOTION) NippiaCoralRed else Color(0xFFD3E4FE)
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(14.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = if (myEntry?.zone == LeaderboardZone.DEMOTION) {
+                                    "PERINGATAN DEGRADASI! Selesaikan Kuis Kilat (+50 XP) untuk keluar dari zona merah."
+                                } else {
+                                    "Kuis Kilat Penyelamat Liga (+50 XP) & Hasil Liga Mingguan"
+                                },
+                                color = if (myEntry?.zone == LeaderboardZone.DEMOTION) NippiaCoralRed else NippiaNavyPrimary,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = if (myEntry?.zone == LeaderboardZone.DEMOTION) NippiaCoralRed else NippiaEmeraldDark,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable(onClick = onOpenRescueQuiz)
+                                ) {
+                                    Text(
+                                        text = "Kuis Kilat +50 XP",
+                                        color = NippiaWhite,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+                                    )
+                                }
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = NippiaNavyPrimary,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable(onClick = onOpenLeagueOutcome)
+                                ) {
+                                    Text(
+                                        text = "Hasil Liga Pekan",
+                                        color = NippiaWhite,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 

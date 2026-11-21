@@ -43,3 +43,61 @@ data class WeeklyLeaderboard(
     val myWeeklyXp: Int,
     val entries: List<LeaderboardEntry>
 )
+
+data class RescueQuizQuestion(
+    val id: String,
+    val categoryCode: String,
+    val subTopic: String,
+    val type: QuizQuestionType,
+    val contentText: String,
+    val explanation: String,
+    val options: List<QuizOption>
+)
+
+data class RescueQuizSession(
+    val missionTitle: String,
+    val leagueTier: LeagueTier,
+    val xpBonus: Int,
+    val gemsBonus: Int,
+    val timeLimitSeconds: Int,
+    val currentRank: Int,
+    val targetSafeRank: Int,
+    val currentXp: Int,
+    val targetSafeXp: Int,
+    val rivalName: String,
+    val questions: List<RescueQuizQuestion>
+)
+
+data class RescueQuizSubmitResult(
+    val previousRank: Int,
+    val newRank: Int,
+    val previousXp: Int,
+    val newXp: Int,
+    val xpEarned: Int,
+    val gemsEarned: Int,
+    val currentStreak: Int,
+    val correctCount: Int,
+    val totalQuestions: Int,
+    val leagueTier: LeagueTier,
+    val escapedDemotion: Boolean
+)
+
+data class LeagueOutcomeInfo(
+    val leagueTier: LeagueTier,
+    val tierName: String,
+    val tierIndex: Int,
+    val outcome: String, // "PROMOTED", "DEMOTED", "STAYED"
+    val rank: Int,
+    val weeklyXp: Int,
+    val currentStreak: Int,
+    val rewardGems: Int,
+    val rewardFreezes: Int,
+    val weakestSubTopic: String,
+    val xpGapToSafe: Int
+)
+
+data class ClaimLeagueRewardResult(
+    val gems: Int,
+    val streakFreezes: Int,
+    val leagueTier: LeagueTier
+)

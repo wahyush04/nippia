@@ -93,6 +93,8 @@ fun HomeLearningPathScreen(
     onOpenMistakeBank: () -> Unit = {},
     onOpenPaywall: () -> Unit = {},
     onOpenSubscriptionHistory: () -> Unit = {},
+    onOpenRescueQuiz: () -> Unit = {},
+    onOpenLeagueOutcome: () -> Unit = {},
     onOpenTryout: (String, String) -> Unit = { _, _ -> },
     onOpenTryoutReview: (String) -> Unit = {},
     onLoggedOut: () -> Unit = {},
@@ -223,7 +225,9 @@ fun HomeLearningPathScreen(
             2 -> {
                 LeaderboardScreen(
                     modifier = Modifier.padding(innerPadding),
-                    onNavigateToLearn = { selectedTab = 0 }
+                    onNavigateToLearn = { selectedTab = 0 },
+                    onOpenRescueQuiz = onOpenRescueQuiz,
+                    onOpenLeagueOutcome = onOpenLeagueOutcome
                 )
                 return@Scaffold
             }

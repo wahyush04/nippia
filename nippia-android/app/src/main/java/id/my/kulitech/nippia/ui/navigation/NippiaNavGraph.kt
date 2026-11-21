@@ -24,6 +24,8 @@ import id.my.kulitech.nippia.ui.screens.auth.AuthSuccessScreen
 import id.my.kulitech.nippia.ui.screens.auth.LoginScreen
 import id.my.kulitech.nippia.ui.screens.guide.StudyGuideScreen
 import id.my.kulitech.nippia.ui.screens.home.HomeLearningPathScreen
+import id.my.kulitech.nippia.ui.screens.leaderboard.LeagueOutcomeScreen
+import id.my.kulitech.nippia.ui.screens.leaderboard.RescueQuizScreen
 import id.my.kulitech.nippia.ui.screens.mistakes.MistakeBankScreen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep1Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep2Screen
@@ -207,6 +209,12 @@ fun NippiaNavGraph(
                 onOpenSubscriptionHistory = {
                     navController.navigate(SubscriptionHistoryRoute)
                 },
+                onOpenRescueQuiz = {
+                    navController.navigate(RescueQuizRoute)
+                },
+                onOpenLeagueOutcome = {
+                    navController.navigate(LeagueOutcomeRoute)
+                },
                 onOpenTryout = { packageId, title ->
                     navController.navigate(TryoutGraphRoute(packageId, title))
                 },
@@ -283,6 +291,28 @@ fun NippiaNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onOpenPaywall = {
                     navController.navigate(SubscriptionGraphRoute)
+                }
+            )
+        }
+
+        composable<RescueQuizRoute> {
+            RescueQuizScreen(
+                onCloseClick = { navController.popBackStack() },
+                onContinueLearning = {
+                    navController.popBackStack(HomeRoute, inclusive = false)
+                },
+                onBackToLeaderboard = { navController.popBackStack() }
+            )
+        }
+
+        composable<LeagueOutcomeRoute> {
+            LeagueOutcomeScreen(
+                onCloseClick = { navController.popBackStack() },
+                onGoToLearn = { navController.popBackStack(HomeRoute, inclusive = false) },
+                onOpenMistakeBank = {
+                    navController.navigate(MistakeBankRoute) {
+                        popUpTo<LeagueOutcomeRoute> { inclusive = true }
+                    }
                 }
             )
         }

@@ -82,3 +82,9 @@ data object ProSuccessRoute
 
 @Serializable
 data object SubscriptionHistoryRoute
+
+@Serializable
+data object RescueQuizRoute
+
+@Serializable
+data object LeagueOutcomeRoute

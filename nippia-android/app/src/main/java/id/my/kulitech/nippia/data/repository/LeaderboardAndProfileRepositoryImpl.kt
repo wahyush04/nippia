@@ -3,12 +3,23 @@ package id.my.kulitech.nippia.data.repository
 import id.my.kulitech.nippia.core.common.AppResult
 import id.my.kulitech.nippia.data.remote.api.LeaderboardApiService
 import id.my.kulitech.nippia.data.remote.api.ProfileApiService
+import id.my.kulitech.nippia.data.remote.dto.AnswerSubmissionDto
+import id.my.kulitech.nippia.data.remote.dto.ClaimLeagueOutcomeRequestDto
+import id.my.kulitech.nippia.data.remote.dto.SubmitRescueQuizRequestDto
 import id.my.kulitech.nippia.domain.model.CatStatsSummary
+import id.my.kulitech.nippia.domain.model.ClaimLeagueRewardResult
 import id.my.kulitech.nippia.domain.model.GamificationSummary
 import id.my.kulitech.nippia.domain.model.LeaderboardEntry
 import id.my.kulitech.nippia.domain.model.LeaderboardZone
+import id.my.kulitech.nippia.domain.model.LeagueOutcomeInfo
 import id.my.kulitech.nippia.domain.model.LeagueTier
 import id.my.kulitech.nippia.domain.model.ProfileStatsOverview
+import id.my.kulitech.nippia.domain.model.QuizAnswerSubmission
+import id.my.kulitech.nippia.domain.model.QuizOption
+import id.my.kulitech.nippia.domain.model.QuizQuestionType
+import id.my.kulitech.nippia.domain.model.RescueQuizQuestion
+import id.my.kulitech.nippia.domain.model.RescueQuizSession
+import id.my.kulitech.nippia.domain.model.RescueQuizSubmitResult
 import id.my.kulitech.nippia.domain.model.UserProfile
 import id.my.kulitech.nippia.domain.model.WeeklyLeaderboard
 import id.my.kulitech.nippia.domain.repository.LeaderboardRepository
@@ -34,6 +45,153 @@ class LeaderboardRepositoryImpl @Inject constructor(
             AppResult.Success(fallbackLeaderboard())
         }
     }
+
+    override suspend fun getRescueQuiz(): AppResult<RescueQuizSession> {
+        return try {
+            val response = leaderboardApiService.getRescueQuiz()
+            val data = response.data
+            if (response.success && data != null && data.questions.isNotEmpty()) {
+                AppResult.Success(data.toDomain())
+            } else {
+                AppResult.Success(fallbackRescueQuiz())
+            }
+        } catch (_: Exception) {
+            AppResult.Success(fallbackRescueQuiz())
+        }
+    }
+
+    override suspend fun submitRescueQuiz(answers: List<QuizAnswerSubmission>): AppResult<RescueQuizSubmitResult> {
+        return try {
+            val response = leaderboardApiService.submitRescueQuiz(
+                SubmitRescueQuizRequestDto(
+                    answers = answers.map { AnswerSubmissionDto(it.questionId, it.selectedOptionId) }
+                )
+            )
+            val data = response.data
+            if (response.success && data != null) {
+                AppResult.Success(data.toDomain())
+            } else {
+                AppResult.Success(fallbackRescueSubmit(answers.size))
+            }
+        } catch (_: Exception) {
+            AppResult.Success(fallbackRescueSubmit(answers.size))
+        }
+    }
+
+    override suspend fun getLeagueOutcome(): AppResult<LeagueOutcomeInfo> {
+        return try {
+            val response = leaderboardApiService.getLeagueOutcome()
+            val data = response.data
+            if (response.success && data != null) {
+                AppResult.Success(data.toDomain())
+            } else {
+                AppResult.Success(fallbackLeagueOutcome())
+            }
+        } catch (_: Exception) {
+            AppResult.Success(fallbackLeagueOutcome())
+        }
+    }
+
+    override suspend fun claimLeagueOutcomeReward(outcome: String): AppResult<ClaimLeagueRewardResult> {
+        return try {
+            val response = leaderboardApiService.claimLeagueOutcomeReward(
+                ClaimLeagueOutcomeRequestDto(outcome)
+            )
+            val data = response.data
+            if (response.success && data != null) {
+                AppResult.Success(data.toDomain())
+            } else {
+                AppResult.Success(ClaimLeagueRewardResult(500, 3, LeagueTier.SAPPHIRE))
+            }
+        } catch (_: Exception) {
+            AppResult.Success(ClaimLeagueRewardResult(500, 3, LeagueTier.SAPPHIRE))
+        }
+    }
+
+    private fun fallbackRescueQuiz() = RescueQuizSession(
+        missionTitle = "Misi Penyelamat Liga Emas",
+        leagueTier = LeagueTier.GOLD,
+        xpBonus = 50,
+        gemsBonus = 10,
+        timeLimitSeconds = 180,
+        currentRank = 28,
+        targetSafeRank = 25,
+        currentXp = 435,
+        targetSafeXp = 485,
+        rivalName = "Gilang R.",
+        questions = listOf(
+            RescueQuizQuestion(
+                id = "rq-1",
+                categoryCode = "TIU",
+                subTopic = "Numerik Kilat",
+                type = QuizQuestionType.MULTIPLE_CHOICE,
+                contentText = "Jika 3x + 7 = 28, dan 2y - 4 = 10, berapakah nilai dari (2x + y)?",
+                explanation = "3x = 21 → x = 7; 2y = 14 → y = 7. Jadi 2(7) + 7 = 21.",
+                options = listOf(
+                    QuizOption("rq1-a", "A", "18", null, 0),
+                    QuizOption("rq1-b", "B", "21", null, 5),
+                    QuizOption("rq1-c", "C", "24", null, 0),
+                    QuizOption("rq1-d", "D", "16", null, 0)
+                )
+            ),
+            RescueQuizQuestion(
+                id = "rq-2",
+                categoryCode = "TWK",
+                subTopic = "Pilar Negara",
+                type = QuizQuestionType.MULTIPLE_CHOICE,
+                contentText = "Pasal UUD 1945 yang menegaskan bahwa Indonesia adalah negara hukum tercantum pada...",
+                explanation = "Pasal 1 Ayat (3) UUD 1945 hasil Amandemen III.",
+                options = listOf(
+                    QuizOption("rq2-a", "A", "Pasal 1 Ayat (1)", null, 0),
+                    QuizOption("rq2-b", "B", "Pasal 1 Ayat (3)", null, 5),
+                    QuizOption("rq2-c", "C", "Pasal 27 Ayat (1)", null, 0),
+                    QuizOption("rq2-d", "D", "Pasal 28D Ayat (1)", null, 0)
+                )
+            ),
+            RescueQuizQuestion(
+                id = "rq-3",
+                categoryCode = "TKP",
+                subTopic = "Pelayanan Publik",
+                type = QuizQuestionType.WEIGHTED_SCALE,
+                contentText = "Saat sistem antrean mengalami gangguan dan warga mulai mengeluh, tindakan paling tepat adalah...",
+                explanation = "Memberikan informasi transparan dan solusi alternatif menunjukkan pelayanan prima.",
+                options = listOf(
+                    QuizOption("rq3-a", "A", "Menjelaskan situasi dengan tenang dan membuka pencatatan manual sementara.", null, 5),
+                    QuizOption("rq3-b", "B", "Meminta warga menunggu tanpa kepastian.", null, 2),
+                    QuizOption("rq3-c", "C", "Menutup loket hingga sistem pulih.", null, 1),
+                    QuizOption("rq3-d", "D", "Menyarankan warga datang besok.", null, 3)
+                )
+            )
+        )
+    )
+
+    private fun fallbackRescueSubmit(total: Int) = RescueQuizSubmitResult(
+        previousRank = 28,
+        newRank = 25,
+        previousXp = 435,
+        newXp = 485,
+        xpEarned = 50,
+        gemsEarned = 10,
+        currentStreak = 14,
+        correctCount = total,
+        totalQuestions = total,
+        leagueTier = LeagueTier.GOLD,
+        escapedDemotion = true
+    )
+
+    private fun fallbackLeagueOutcome() = LeagueOutcomeInfo(
+        leagueTier = LeagueTier.SAPPHIRE,
+        tierName = "Safir",
+        tierIndex = 4,
+        outcome = "PROMOTED",
+        rank = 4,
+        weeklyXp = 1290,
+        currentStreak = 14,
+        rewardGems = 500,
+        rewardFreezes = 3,
+        weakestSubTopic = "TIU Numerik",
+        xpGapToSafe = 0
+    )
 
     private fun fallbackLeaderboard(): WeeklyLeaderboard = WeeklyLeaderboard(
         leagueTier = LeagueTier.GOLD,
