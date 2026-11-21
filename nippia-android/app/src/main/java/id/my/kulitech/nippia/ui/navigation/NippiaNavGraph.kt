@@ -31,6 +31,11 @@ import id.my.kulitech.nippia.ui.screens.path.ChooseLearningPathScreen
 import id.my.kulitech.nippia.ui.screens.quiz.QuizSessionScreen
 import id.my.kulitech.nippia.ui.screens.section.SectionListScreen
 import id.my.kulitech.nippia.ui.screens.splash.SplashScreen
+import id.my.kulitech.nippia.ui.screens.tryout.TryoutAnswerSheetScreen
+import id.my.kulitech.nippia.ui.screens.tryout.TryoutExamScreen
+import id.my.kulitech.nippia.ui.screens.tryout.TryoutLobbyScreen
+import id.my.kulitech.nippia.ui.screens.tryout.TryoutReportScreen
+import id.my.kulitech.nippia.ui.screens.tryout.TryoutSessionViewModel
 
 @Composable
 fun NippiaNavGraph(
@@ -183,6 +188,9 @@ fun NippiaNavGraph(
                 onOpenUnitQuiz = { unitId, categoryCode ->
                     navController.navigate(QuizSessionRoute(unitId, categoryCode))
                 },
+                onOpenTryout = { packageId, title ->
+                    navController.navigate(TryoutGraphRoute(packageId, title))
+                },
                 onLoggedOut = {
                     navController.navigate(LoginRoute) {
                         popUpTo<HomeRoute> { inclusive = true }
@@ -199,6 +207,78 @@ fun NippiaNavGraph(
                 onCloseClick = { navController.popBackStack() },
                 onCompleted = { navController.popBackStack() }
             )
+        }
+
+        navigation<TryoutGraphRoute>(
+            startDestination = TryoutLobbyRoute
+        ) {
+            composable<TryoutLobbyRoute> { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<TryoutGraphRoute>()
+                }
+                val args = parentEntry.toRoute<TryoutGraphRoute>()
+                val viewModel: TryoutSessionViewModel = hiltViewModel(parentEntry)
+                TryoutLobbyScreen(
+                    packageId = args.packageId,
+                    title = args.title,
+                    viewModel = viewModel,
+                    onBackClick = { navController.popBackStack() },
+                    onNavigateToExam = {
+                        navController.navigate(TryoutExamRoute) {
+                            popUpTo<TryoutLobbyRoute> { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable<TryoutExamRoute> { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<TryoutGraphRoute>()
+                }
+                val viewModel: TryoutSessionViewModel = hiltViewModel(parentEntry)
+                TryoutExamScreen(
+                    viewModel = viewModel,
+                    onExitExam = {
+                        navController.popBackStack<TryoutGraphRoute>(inclusive = true)
+                    },
+                    onOpenAnswerSheet = {
+                        navController.navigate(TryoutAnswerSheetRoute)
+                    },
+                    onNavigateToReport = {
+                        navController.navigate(TryoutReportRoute) {
+                            popUpTo<TryoutExamRoute> { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable<TryoutAnswerSheetRoute> { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<TryoutGraphRoute>()
+                }
+                val viewModel: TryoutSessionViewModel = hiltViewModel(parentEntry)
+                TryoutAnswerSheetScreen(
+                    viewModel = viewModel,
+                    onBackToExam = { navController.popBackStack() },
+                    onJumpToQuestion = { index ->
+                        viewModel.onJumpToQuestion(index)
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable<TryoutReportRoute> { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<TryoutGraphRoute>()
+                }
+                val viewModel: TryoutSessionViewModel = hiltViewModel(parentEntry)
+                TryoutReportScreen(
+                    viewModel = viewModel,
+                    onBackToSimulasi = {
+                        navController.popBackStack<TryoutGraphRoute>(inclusive = true)
+                    }
+                )
+            }
         }
 
         composable<SectionListRoute> { backStackEntry ->

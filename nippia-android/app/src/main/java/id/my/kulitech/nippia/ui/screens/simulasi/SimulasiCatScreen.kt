@@ -73,6 +73,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 @Composable
 fun SimulasiCatScreen(
     modifier: Modifier = Modifier,
+    onStartTryout: (packageId: String, title: String) -> Unit = { _, _ -> },
     viewModel: SimulasiCatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -241,7 +242,7 @@ fun SimulasiCatScreen(
                         item {
                             LiveAkbarHeroCard(
                                 event = event,
-                                onEnterLobby = { viewModel.onStartActionClicked("Lobby ${event.title}") }
+                                onEnterLobby = { onStartTryout(event.id, event.title) }
                             )
                         }
                     }
@@ -264,7 +265,7 @@ fun SimulasiCatScreen(
                     ) { pkg ->
                         MandiriPackageCard(
                             pkg = pkg,
-                            onStartClick = { viewModel.onStartActionClicked(pkg.title) }
+                            onStartClick = { onStartTryout(pkg.id, pkg.title) }
                         )
                     }
 

@@ -43,3 +43,21 @@ data class QuizSessionRoute(
     val unitId: String,
     val categoryCode: String
 )
+
+@Serializable
+data class TryoutGraphRoute(
+    val packageId: String,
+    val title: String
+)
+
+@Serializable
+data object TryoutLobbyRoute
+
+@Serializable
+data object TryoutExamRoute
+
+@Serializable
+data object TryoutAnswerSheetRoute
+
+@Serializable
+data object TryoutReportRoute

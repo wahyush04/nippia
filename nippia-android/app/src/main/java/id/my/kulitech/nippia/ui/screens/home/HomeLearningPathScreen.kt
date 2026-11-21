@@ -88,6 +88,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 fun HomeLearningPathScreen(
     onOpenSectionList: (SkdCategoryCode) -> Unit = {},
     onOpenUnitQuiz: (String, String) -> Unit = { _, _ -> },
+    onOpenTryout: (String, String) -> Unit = { _, _ -> },
     onLoggedOut: () -> Unit = {},
     viewModel: HomeLearningPathViewModel = hiltViewModel()
 ) {
@@ -192,7 +193,10 @@ fun HomeLearningPathScreen(
     ) { innerPadding ->
         when (selectedTab) {
             1 -> {
-                SimulasiCatScreen(modifier = Modifier.padding(innerPadding))
+                SimulasiCatScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onStartTryout = onOpenTryout
+                )
                 return@Scaffold
             }
             2 -> {

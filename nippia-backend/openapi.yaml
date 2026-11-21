@@ -712,6 +712,79 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /tryouts/{packageId}/start:
+    post:
+      tags: [Tryouts]
+      summary: Mulai sesi ujian Simulasi CAT dengan timer server
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: packageId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Sesi ujian dimulai dan soal dikirim tanpa kunci skor
+        "403":
+          description: Paket tryout khusus Nippia Pro
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Paket tryout tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tryouts/attempts/{attemptId}/submit:
+    post:
+      tags: [Tryouts]
+      summary: Kumpulkan jawaban ujian CAT, evaluasi passing grade, dan hitung breakdown sub-topik
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: attemptId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    required: [questionId, selectedOptionId]
+                    properties:
+                      questionId:
+                        type: string
+                      selectedOptionId:
+                        type: string
+      responses:
+        "200":
+          description: Rapor hasil akhir ujian CAT berhasil dihitung
+        "400":
+          description: Batas waktu ujian telah habis (INVALID_TIMER_EXPIRED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Ujian sudah pernah dikumpulkan (ATTEMPT_ALREADY_SUBMITTED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /leaderboard/weekly:
     get:
       tags: [Leaderboard]

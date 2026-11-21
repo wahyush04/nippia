@@ -1,9 +1,17 @@
 package id.my.kulitech.nippia.data.remote.dto
 
+import id.my.kulitech.nippia.domain.model.QuestionPresentationParser
+import id.my.kulitech.nippia.domain.model.QuizOption
+import id.my.kulitech.nippia.domain.model.QuizQuestionType
 import id.my.kulitech.nippia.domain.model.ScheduledTryoutEvent
+import id.my.kulitech.nippia.domain.model.SubTopicBreakdownItem
+import id.my.kulitech.nippia.domain.model.SubtestGradeResult
 import id.my.kulitech.nippia.domain.model.TryoutAttemptSummary
 import id.my.kulitech.nippia.domain.model.TryoutCatalog
 import id.my.kulitech.nippia.domain.model.TryoutPackageItem
+import id.my.kulitech.nippia.domain.model.TryoutQuestion
+import id.my.kulitech.nippia.domain.model.TryoutSession
+import id.my.kulitech.nippia.domain.model.TryoutSubmitResult
 import id.my.kulitech.nippia.domain.model.TryoutType
 import kotlinx.serialization.Serializable
 
@@ -85,5 +93,136 @@ data class TryoutCatalogDataDto(
             durationMinutes = 100,
             totalQuestions = 110
         )
+    )
+}
+
+@Serializable
+data class TryoutOptionDto(
+    val id: String,
+    val label: String,
+    val optionText: String,
+    val imageUrl: String? = null
+) {
+    fun toDomain() = QuizOption(
+        id = id,
+        label = label,
+        text = optionText,
+        imageUrl = imageUrl,
+        score = 0
+    )
+}
+
+@Serializable
+data class TryoutQuestionDto(
+    val id: String,
+    val orderIndex: Int,
+    val categoryCode: String,
+    val subTopic: String,
+    val type: String,
+    val contentText: String,
+    val imageUrl: String? = null,
+    val options: List<TryoutOptionDto> = emptyList()
+) {
+    fun toDomain(): TryoutQuestion {
+        val parsed = QuestionPresentationParser.parse(contentText)
+        return TryoutQuestion(
+            id = id,
+            orderIndex = orderIndex,
+            categoryCode = categoryCode,
+            subTopic = subTopic,
+            type = QuizQuestionType.fromApi(type),
+            contentText = contentText,
+            imageUrl = imageUrl,
+            presentation = parsed.presentation,
+            hint = parsed.hint,
+            options = options.map { it.toDomain() }
+        )
+    }
+}
+
+@Serializable
+data class StartTryoutDataDto(
+    val attemptId: String,
+    val packageId: String,
+    val title: String = "Simulasi CAT BKN",
+    val type: String = "FULL_CAT",
+    val durationMinutes: Int = 100,
+    val startedAt: String = "",
+    val expiresAt: String = "",
+    val questions: List<TryoutQuestionDto> = emptyList()
+) {
+    fun toDomain() = TryoutSession(
+        attemptId = attemptId,
+        packageId = packageId,
+        title = title,
+        type = TryoutType.fromApi(type),
+        durationMinutes = durationMinutes,
+        startedAt = startedAt,
+        expiresAt = expiresAt,
+        questions = questions.map { it.toDomain() }
+    )
+}
+
+@Serializable
+data class SubmitTryoutRequestDto(
+    val answers: List<AnswerSubmissionDto>
+)
+
+@Serializable
+data class SubtestGradeDto(
+    val min: Int,
+    val passed: Boolean
+) {
+    fun toDomain() = SubtestGradeResult(min = min, passed = passed)
+}
+
+@Serializable
+data class PassingGradesDto(
+    val twk: SubtestGradeDto = SubtestGradeDto(65, false),
+    val tiu: SubtestGradeDto = SubtestGradeDto(80, false),
+    val tkp: SubtestGradeDto = SubtestGradeDto(166, false)
+)
+
+@Serializable
+data class SubTopicBreakdownDto(
+    val categoryCode: String,
+    val subTopic: String,
+    val earnedScore: Int,
+    val maxScore: Int,
+    val accuracyPercent: Double
+) {
+    fun toDomain() = SubTopicBreakdownItem(
+        categoryCode = categoryCode,
+        subTopic = subTopic,
+        earnedScore = earnedScore,
+        maxScore = maxScore,
+        accuracyPercent = accuracyPercent
+    )
+}
+
+@Serializable
+data class SubmitTryoutDataDto(
+    val attemptId: String,
+    val packageId: String,
+    val twkScore: Int = 0,
+    val tiuScore: Int = 0,
+    val tkpScore: Int = 0,
+    val totalScore: Int = 0,
+    val passingGrades: PassingGradesDto = PassingGradesDto(),
+    val isPassed: Boolean = false,
+    val subTopicBreakdown: List<SubTopicBreakdownDto> = emptyList()
+) {
+    fun toDomain() = TryoutSubmitResult(
+        attemptId = attemptId,
+        packageId = packageId,
+        twkScore = twkScore,
+        tiuScore = tiuScore,
+        tkpScore = tkpScore,
+        totalScore = totalScore,
+        twkGrade = passingGrades.twk.toDomain(),
+        tiuGrade = passingGrades.tiu.toDomain(),
+        tkpGrade = passingGrades.tkp.toDomain(),
+        isPassed = isPassed,
+        subTopicBreakdown = subTopicBreakdown.map { it.toDomain() }
     )
 }
