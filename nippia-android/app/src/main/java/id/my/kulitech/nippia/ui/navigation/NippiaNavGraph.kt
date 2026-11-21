@@ -28,6 +28,7 @@ import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep2Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep3Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingViewModel
 import id.my.kulitech.nippia.ui.screens.path.ChooseLearningPathScreen
+import id.my.kulitech.nippia.ui.screens.quiz.QuizSessionScreen
 import id.my.kulitech.nippia.ui.screens.section.SectionListScreen
 import id.my.kulitech.nippia.ui.screens.splash.SplashScreen
 
@@ -179,11 +180,24 @@ fun NippiaNavGraph(
                 onOpenSectionList = { category ->
                     navController.navigate(SectionListRoute(category.code))
                 },
+                onOpenUnitQuiz = { unitId, categoryCode ->
+                    navController.navigate(QuizSessionRoute(unitId, categoryCode))
+                },
                 onLoggedOut = {
                     navController.navigate(LoginRoute) {
                         popUpTo<HomeRoute> { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable<QuizSessionRoute> { backStackEntry ->
+            val args = backStackEntry.toRoute<QuizSessionRoute>()
+            QuizSessionScreen(
+                unitId = args.unitId,
+                categoryCode = args.categoryCode,
+                onCloseClick = { navController.popBackStack() },
+                onCompleted = { navController.popBackStack() }
             )
         }
 

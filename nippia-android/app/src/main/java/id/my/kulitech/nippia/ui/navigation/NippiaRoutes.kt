@@ -37,3 +37,9 @@ data object HomeRoute
 
 @Serializable
 data class SectionListRoute(val categoryCode: String)
+
+@Serializable
+data class QuizSessionRoute(
+    val unitId: String,
+    val categoryCode: String
+)

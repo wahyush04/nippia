@@ -87,6 +87,7 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 @Composable
 fun HomeLearningPathScreen(
     onOpenSectionList: (SkdCategoryCode) -> Unit = {},
+    onOpenUnitQuiz: (String, String) -> Unit = { _, _ -> },
     onLoggedOut: () -> Unit = {},
     viewModel: HomeLearningPathViewModel = hiltViewModel()
 ) {
@@ -254,10 +255,11 @@ fun HomeLearningPathScreen(
                     unit = unit,
                     xOffset = xOffset,
                     onClick = {
-                        viewModel.onUnitClicked(
-                            title = unit.title,
-                            isLocked = unit.status == LearningUnitStatus.LOCKED
-                        )
+                        if (unit.status == LearningUnitStatus.LOCKED) {
+                            viewModel.onUnitClicked(title = unit.title, isLocked = true)
+                        } else {
+                            onOpenUnitQuiz(unit.id, uiState.selectedCategory.code)
+                        }
                     }
                 )
             }

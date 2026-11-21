@@ -240,6 +240,8 @@ export class ContentService {
       },
       questions: unit.questions.map((q) => ({
         id: q.id,
+        categoryCode: q.categoryCode,
+        subTopic: q.subTopic,
         type: q.type,
         orderIndex: q.orderIndex,
         contentText: q.contentText,

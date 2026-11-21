@@ -13,6 +13,7 @@ import id.my.kulitech.nippia.data.remote.api.LeaderboardApiService
 import id.my.kulitech.nippia.data.remote.api.LearningPathApiService
 import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
 import id.my.kulitech.nippia.data.remote.api.ProfileApiService
+import id.my.kulitech.nippia.data.remote.api.QuizApiService
 import id.my.kulitech.nippia.data.remote.api.TryoutApiService
 import id.my.kulitech.nippia.data.remote.interceptor.AuthInterceptor
 import kotlinx.serialization.json.Json
@@ -111,4 +112,9 @@ object NetworkModule {
     @Singleton
     fun provideProfileApiService(retrofit: Retrofit): ProfileApiService =
         retrofit.create(ProfileApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideQuizApiService(retrofit: Retrofit): QuizApiService =
+        retrofit.create(QuizApiService::class.java)
 }
