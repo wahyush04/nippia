@@ -9,6 +9,7 @@ import id.my.kulitech.nippia.domain.model.QuizOption
 import id.my.kulitech.nippia.domain.model.QuizQuestion
 import id.my.kulitech.nippia.domain.model.QuizQuestionType
 import id.my.kulitech.nippia.domain.model.UnitCompletionResult
+import id.my.kulitech.nippia.domain.repository.LearningGamificationRepository
 import id.my.kulitech.nippia.domain.usecase.CompleteUnitUseCase
 import id.my.kulitech.nippia.domain.usecase.GetUnitQuestionsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,12 @@ data class QuizUiState(
     val heartCrackTrigger: Int = 0,
     val zoomImageUrl: String? = null,
     val isSubmitting: Boolean = false,
-    val completionResult: UnitCompletionResult? = null
+    val completionResult: UnitCompletionResult? = null,
+    val gems: Int = 480,
+    val currentStreak: Int = 7,
+    val isRefillingHearts: Boolean = false,
+    val heartRefillMessage: String? = null,
+    val durationSeconds: Int = 165
 ) {
     val currentQuestion: QuizQuestion? get() = questions.getOrNull(currentIndex)
     val totalQuestions: Int get() = questions.size
@@ -63,7 +69,8 @@ data class QuizUiState(
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val getUnitQuestionsUseCase: GetUnitQuestionsUseCase,
-    private val completeUnitUseCase: CompleteUnitUseCase
+    private val completeUnitUseCase: CompleteUnitUseCase,
+    private val gamificationRepository: LearningGamificationRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QuizUiState())
@@ -179,13 +186,18 @@ class QuizViewModel @Inject constructor(
             ) {
                 is AppResult.Success -> {
                     _uiState.update {
-                        it.copy(isSubmitting = false, completionResult = result.data)
+                        it.copy(
+                            isSubmitting = false,
+                            durationSeconds = durationSeconds,
+                            completionResult = result.data
+                        )
                     }
                 }
                 is AppResult.Error -> {
                     _uiState.update {
                         it.copy(
                             isSubmitting = false,
+                            durationSeconds = durationSeconds,
                             completionResult = UnitCompletionResult(
                                 xpEarned = state.xpReward,
                                 totalXp = state.xpReward,
@@ -195,6 +207,27 @@ class QuizViewModel @Inject constructor(
                             )
                         )
                     }
+                }
+            }
+        }
+    }
+
+    fun refillHearts(method: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isRefillingHearts = true, heartRefillMessage = null) }
+            when (val res = gamificationRepository.refillHearts(method)) {
+                is AppResult.Success -> _uiState.update {
+                    it.copy(
+                        isRefillingHearts = false,
+                        hearts = res.data.hearts,
+                        gems = res.data.gems
+                    )
+                }
+                is AppResult.Error -> _uiState.update {
+                    it.copy(
+                        isRefillingHearts = false,
+                        heartRefillMessage = res.message
+                    )
                 }
             }
         }

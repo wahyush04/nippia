@@ -47,3 +47,34 @@ userRouter.patch(
     return sendSuccess(res, data);
   },
 );
+
+const gamificationMethodSchema = z.object({
+  method: z.enum(["GEMS", "AD_REWARD"]),
+});
+
+userRouter.get("/me/gamification", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const data = await userService.getGamificationStatus(req.auth!.sub);
+  return sendSuccess(res, data);
+});
+
+userRouter.post(
+  "/me/streak-freeze",
+  requireAuth,
+  validateBody(gamificationMethodSchema),
+  async (req: AuthenticatedRequest, res) => {
+    const body = req.body as z.infer<typeof gamificationMethodSchema>;
+    const data = await userService.purchaseStreakFreeze(req.auth!.sub, body.method);
+    return sendSuccess(res, data);
+  },
+);
+
+userRouter.post(
+  "/me/hearts/refill",
+  requireAuth,
+  validateBody(gamificationMethodSchema),
+  async (req: AuthenticatedRequest, res) => {
+    const body = req.body as z.infer<typeof gamificationMethodSchema>;
+    const data = await userService.refillHearts(req.auth!.sub, body.method);
+    return sendSuccess(res, data);
+  },
+);

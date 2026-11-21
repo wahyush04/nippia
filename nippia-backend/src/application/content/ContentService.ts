@@ -257,4 +257,37 @@ export class ContentService {
       })),
     };
   }
+
+  async getUnitGuide(role: UserRole, unitId: string) {
+    const allowedStatuses: ContentStatus[] =
+      role === "ADMIN" ? ["DRAFT", "PUBLISHED"] : ["PUBLISHED"];
+
+    const unit = await prisma.unit.findUnique({
+      where: { id: unitId },
+      include: {
+        category: { select: { code: true, name: true } },
+        _count: { select: { questions: true } },
+      },
+    });
+
+    if (!unit || !allowedStatuses.includes(unit.status)) {
+      throw AppError.notFound("Buku panduan unit tidak ditemukan.");
+    }
+
+    const wordCount = unit.guideMarkdown.trim().split(/\s+/).filter(Boolean).length;
+    const readMinutes = Math.max(2, Math.ceil(wordCount / 160));
+
+    return {
+      unitId: unit.id,
+      title: unit.title,
+      sectionTitle: unit.sectionTitle,
+      categoryCode: unit.category.code,
+      categoryName: unit.category.name,
+      subTopic: unit.subTopic ?? unit.title,
+      xpReward: unit.xpReward,
+      questionCount: unit._count.questions,
+      readMinutes,
+      guideMarkdown: unit.guideMarkdown,
+    };
+  }
 }

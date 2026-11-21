@@ -877,3 +877,156 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+
+  /units/{unitId}/guide:
+    get:
+      tags: [Units]
+      summary: Ambil buku panduan materi (study guide markdown) untuk suatu unit belajar
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: unitId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Buku panduan materi berhasil diambil
+        "404":
+          description: Buku panduan unit tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /learning/mistakes:
+    get:
+      tags: [Learning]
+      summary: Ambil daftar soal Bank Kesalahan (Mistake Bank) milik pengguna
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: categoryCode
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [TWK, TIU, TKP]
+        - name: unresolvedOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+      responses:
+        "200":
+          description: Daftar kesalahan berhasil diambil
+
+  /learning/mistakes/{questionId}/attempt:
+    post:
+      tags: [Learning]
+      summary: Kirim jawaban latihan ulang untuk soal di Bank Kesalahan
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [selectedOptionId]
+              properties:
+                selectedOptionId:
+                  type: string
+                  format: uuid
+      responses:
+        "200":
+          description: Evaluasi latihan ulang soal kesalahan berhasil
+        "404":
+          description: Soal kesalahan tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /learning/mistakes/resolved:
+    delete:
+      tags: [Learning]
+      summary: Hapus riwayat soal kesalahan yang sudah tuntas (resolved)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Riwayat soal kesalahan tuntas berhasil dibersihkan
+
+  /users/me/gamification:
+    get:
+      tags: [Users]
+      summary: Ambil status gamifikasi lengkap (streak, streak freezes, hearts, gems, kalender mingguan)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Status gamifikasi berhasil diambil
+
+  /users/me/streak-freeze:
+    post:
+      tags: [Users]
+      summary: Aktifkan atau beli slot Pelindung Streak (200 Gems atau Ad Reward)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [method]
+              properties:
+                method:
+                  type: string
+                  enum: [GEMS, AD_REWARD]
+      responses:
+        "200":
+          description: Slot Pelindung Streak berhasil ditambahkan
+        "400":
+          description: Gems tidak cukup atau slot sudah penuh
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users/me/hearts/refill:
+    post:
+      tags: [Users]
+      summary: Isi ulang nyawa belajar (5 Hearts via 350 Gems atau +1 Heart via Ad Reward)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [method]
+              properties:
+                method:
+                  type: string
+                  enum: [GEMS, AD_REWARD]
+      responses:
+        "200":
+          description: Nyawa berhasil diisi ulang
+        "400":
+          description: Gems tidak mencukupi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

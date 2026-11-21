@@ -69,6 +69,7 @@ import id.my.kulitech.nippia.domain.model.LearningCategoryPath
 import id.my.kulitech.nippia.domain.model.LearningUnit
 import id.my.kulitech.nippia.domain.model.LearningUnitStatus
 import id.my.kulitech.nippia.domain.model.SkdCategoryCode
+import id.my.kulitech.nippia.ui.components.DailyStreakModal
 import id.my.kulitech.nippia.ui.components.rive.HeartStatusRive
 import id.my.kulitech.nippia.ui.components.rive.MascotRive
 import id.my.kulitech.nippia.ui.components.rive.StreakFlameRive
@@ -88,12 +89,16 @@ import id.my.kulitech.nippia.ui.theme.NippiaWhite
 fun HomeLearningPathScreen(
     onOpenSectionList: (SkdCategoryCode) -> Unit = {},
     onOpenUnitQuiz: (String, String) -> Unit = { _, _ -> },
+    onOpenStudyGuide: (String) -> Unit = {},
+    onOpenMistakeBank: () -> Unit = {},
     onOpenTryout: (String, String) -> Unit = { _, _ -> },
     onOpenTryoutReview: (String) -> Unit = {},
     onLoggedOut: () -> Unit = {},
-    viewModel: HomeLearningPathViewModel = hiltViewModel()
+    viewModel: HomeLearningPathViewModel = hiltViewModel(),
+    modalViewModel: GamificationModalViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val modalState by modalViewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var selectedTab by remember { mutableIntStateOf(0) }
 
@@ -150,6 +155,17 @@ fun HomeLearningPathScreen(
         }
     }
 
+    if (modalState.showStreakModal) {
+        DailyStreakModal(
+            status = modalState.status,
+            isPurchasing = modalState.isBusy,
+            feedbackMessage = modalState.feedbackMessage,
+            onPurchaseWithGems = { modalViewModel.purchaseStreakFreeze("GEMS") },
+            onClaimFreeAd = { modalViewModel.purchaseStreakFreeze("AD_REWARD") },
+            onDismiss = modalViewModel::closeStreakModal
+        )
+    }
+
     Scaffold(
         containerColor = Color(0xFFF8FAFC),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -160,7 +176,8 @@ fun HomeLearningPathScreen(
                 gems = uiState.gamification.gems,
                 hearts = uiState.gamification.hearts,
                 isPro = uiState.isPro,
-                onCategoryClick = viewModel::onOpenCategorySheet
+                onCategoryClick = viewModel::onOpenCategorySheet,
+                onStreakClick = modalViewModel::openStreakModal
             )
         },
         bottomBar = {
@@ -249,7 +266,15 @@ fun HomeLearningPathScreen(
                     completedCount = activePath?.completedCount ?: 0,
                     totalCount = activePath?.totalCount ?: 0,
                     progress = activePath?.progressFraction ?: 0f,
-                    onGuideClick = viewModel::onOpenGuideSheet,
+                    onGuideClick = {
+                        val targetUnit = units.firstOrNull { it.status == LearningUnitStatus.ACTIVE }
+                            ?: units.firstOrNull()
+                        if (targetUnit != null) {
+                            onOpenStudyGuide(targetUnit.id)
+                        } else {
+                            viewModel.onOpenGuideSheet()
+                        }
+                    },
                     onSectionsClick = { onOpenSectionList(uiState.selectedCategory) }
                 )
             }
@@ -277,9 +302,7 @@ fun HomeLearningPathScreen(
             item {
                 MistakeBankBannerCard(
                     pendingCount = uiState.pendingMistakesCount,
-                    onClick = {
-                        viewModel.onUnitClicked("Bank Kesalahan (${uiState.pendingMistakesCount} soal)", false)
-                    }
+                    onClick = onOpenMistakeBank
                 )
             }
         }
@@ -293,7 +316,8 @@ private fun HomeTopStickyHud(
     gems: Int,
     hearts: Int,
     isPro: Boolean,
-    onCategoryClick: () -> Unit
+    onCategoryClick: () -> Unit,
+    onStreakClick: () -> Unit
 ) {
     Surface(
         color = NippiaWhite,
@@ -332,7 +356,13 @@ private fun HomeTopStickyHud(
             }
 
             // Streak Flame Rive
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .clickable(onClick = onStreakClick)
+                    .padding(horizontal = 6.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 StreakFlameRive(
                     isActive = streak > 0,
                     modifier = Modifier.size(26.dp)

@@ -11,6 +11,7 @@ import id.my.kulitech.nippia.BuildConfig
 import id.my.kulitech.nippia.data.remote.api.AuthApiService
 import id.my.kulitech.nippia.data.remote.api.ContentSyncApiService
 import id.my.kulitech.nippia.data.remote.api.LeaderboardApiService
+import id.my.kulitech.nippia.data.remote.api.LearningGamificationApiService
 import id.my.kulitech.nippia.data.remote.api.LearningPathApiService
 import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
 import id.my.kulitech.nippia.data.remote.api.ProfileApiService
@@ -123,4 +124,9 @@ object NetworkModule {
     @Singleton
     fun provideContentSyncApiService(retrofit: Retrofit): ContentSyncApiService =
         retrofit.create(ContentSyncApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideLearningGamificationApiService(retrofit: Retrofit): LearningGamificationApiService =
+        retrofit.create(LearningGamificationApiService::class.java)
 }

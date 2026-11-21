@@ -197,4 +197,125 @@ export class UserService {
       };
     });
   }
+
+  async getGamificationStatus(userId: string) {
+    const gam = await prisma.userGamification.upsert({
+      where: { userId },
+      update: {},
+      create: { userId },
+    });
+
+    const dayLabels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+    const now = new Date();
+    const jsDay = now.getDay(); // 0=Sun..6=Sat
+    const todayIdx = jsDay === 0 ? 6 : jsDay - 1;
+    const activeCount = Math.min(gam.currentStreak, 7);
+    const weekDays = dayLabels.map((label, idx) => ({
+      dayLabel: label,
+      active: idx <= todayIdx && todayIdx - idx < activeCount,
+      isToday: idx === todayIdx,
+    }));
+
+    return {
+      totalXp: gam.totalXp,
+      weeklyXp: gam.weeklyXp,
+      gems: gam.gems,
+      currentStreak: gam.currentStreak,
+      longestStreak: gam.longestStreak,
+      streakFreezes: gam.streakFreezes,
+      maxStreakFreezes: 2,
+      hearts: gam.hearts,
+      maxHearts: 5,
+      nextHeartRegenSeconds: gam.hearts >= 5 ? 0 : 14384,
+      weekDays,
+    };
+  }
+
+  async purchaseStreakFreeze(userId: string, method: "GEMS" | "AD_REWARD") {
+    return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const gam = await tx.userGamification.upsert({
+        where: { userId },
+        update: {},
+        create: { userId },
+      });
+
+      if (gam.streakFreezes >= 2) {
+        throw new AppError(
+          400,
+          "MAX_STREAK_FREEZE_REACHED",
+          "Slot Pelindung Streak sudah penuh (maksimal 2 slot).",
+        );
+      }
+
+      const cost = method === "GEMS" ? 200 : 0;
+      if (gam.gems < cost) {
+        throw new AppError(
+          400,
+          "INSUFFICIENT_GEMS",
+          "Gems tidak mencukupi (butuh 200 Gems).",
+        );
+      }
+
+      const updated = await tx.userGamification.update({
+        where: { userId },
+        data: {
+          gems: { decrement: cost },
+          streakFreezes: { increment: 1 },
+        },
+      });
+
+      return {
+        streakFreezes: updated.streakFreezes,
+        maxStreakFreezes: 2,
+        gems: updated.gems,
+      };
+    });
+  }
+
+  async refillHearts(userId: string, method: "GEMS" | "AD_REWARD") {
+    return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const gam = await tx.userGamification.upsert({
+        where: { userId },
+        update: {},
+        create: { userId },
+      });
+
+      if (gam.hearts >= 5) {
+        return {
+          hearts: gam.hearts,
+          maxHearts: 5,
+          gems: gam.gems,
+        };
+      }
+
+      if (method === "GEMS") {
+        if (gam.gems < 350) {
+          throw new AppError(
+            400,
+            "INSUFFICIENT_GEMS",
+            "Gems tidak mencukupi untuk isi penuh nyawa (butuh 350 Gems).",
+          );
+        }
+        const updated = await tx.userGamification.update({
+          where: { userId },
+          data: {
+            gems: { decrement: 350 },
+            hearts: 5,
+            lastHeartRegenAt: new Date(),
+          },
+        });
+        return { hearts: updated.hearts, maxHearts: 5, gems: updated.gems };
+      }
+
+      const nextHearts = Math.min(5, gam.hearts + 1);
+      const updated = await tx.userGamification.update({
+        where: { userId },
+        data: {
+          hearts: nextHearts,
+          lastHeartRegenAt: new Date(),
+        },
+      });
+      return { hearts: updated.hearts, maxHearts: 5, gems: updated.gems };
+    });
+  }
 }

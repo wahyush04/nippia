@@ -22,7 +22,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import id.my.kulitech.nippia.ui.screens.auth.AuthSuccessScreen
 import id.my.kulitech.nippia.ui.screens.auth.LoginScreen
+import id.my.kulitech.nippia.ui.screens.guide.StudyGuideScreen
 import id.my.kulitech.nippia.ui.screens.home.HomeLearningPathScreen
+import id.my.kulitech.nippia.ui.screens.mistakes.MistakeBankScreen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep1Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep2Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep3Screen
@@ -189,6 +191,12 @@ fun NippiaNavGraph(
                 onOpenUnitQuiz = { unitId, categoryCode ->
                     navController.navigate(QuizSessionRoute(unitId, categoryCode))
                 },
+                onOpenStudyGuide = { unitId ->
+                    navController.navigate(StudyGuideRoute(unitId))
+                },
+                onOpenMistakeBank = {
+                    navController.navigate(MistakeBankRoute)
+                },
                 onOpenTryout = { packageId, title ->
                     navController.navigate(TryoutGraphRoute(packageId, title))
                 },
@@ -203,13 +211,37 @@ fun NippiaNavGraph(
             )
         }
 
+        composable<StudyGuideRoute> { backStackEntry ->
+            val args = backStackEntry.toRoute<StudyGuideRoute>()
+            StudyGuideScreen(
+                unitId = args.unitId,
+                onBackClick = { navController.popBackStack() },
+                onStartPractice = { unitId, categoryCode ->
+                    navController.navigate(QuizSessionRoute(unitId, categoryCode)) {
+                        popUpTo<StudyGuideRoute> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<MistakeBankRoute> {
+            MistakeBankScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
         composable<QuizSessionRoute> { backStackEntry ->
             val args = backStackEntry.toRoute<QuizSessionRoute>()
             QuizSessionScreen(
                 unitId = args.unitId,
                 categoryCode = args.categoryCode,
                 onCloseClick = { navController.popBackStack() },
-                onCompleted = { navController.popBackStack() }
+                onCompleted = { navController.popBackStack() },
+                onOpenMistakeBank = {
+                    navController.navigate(MistakeBankRoute) {
+                        popUpTo<QuizSessionRoute> { inclusive = true }
+                    }
+                }
             )
         }
 

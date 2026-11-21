@@ -119,7 +119,8 @@ class QuizModelsAndViewModelTest {
             UnitCompletionResult(15, 65, 2, 4, "u2")
         )
 
-        val viewModel = QuizViewModel(getUnitQuestionsUseCase, completeUnitUseCase)
+        val gamRepo: id.my.kulitech.nippia.domain.repository.LearningGamificationRepository = mockk(relaxed = true)
+        val viewModel = QuizViewModel(getUnitQuestionsUseCase, completeUnitUseCase, gamRepo)
         viewModel.loadUnit("u1", "TWK")
         advanceUntilIdle()
 

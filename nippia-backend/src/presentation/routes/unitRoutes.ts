@@ -35,6 +35,12 @@ unitRouter.get("/:unitId/questions", requireAuth, async (req: AuthenticatedReque
   return sendSuccess(res, data);
 });
 
+unitRouter.get("/:unitId/guide", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const unitId = String(req.params.unitId);
+  const data = await contentService.getUnitGuide(req.auth!.role, unitId);
+  return sendSuccess(res, data);
+});
+
 unitRouter.post(
   "/:unitId/complete",
   requireAuth,

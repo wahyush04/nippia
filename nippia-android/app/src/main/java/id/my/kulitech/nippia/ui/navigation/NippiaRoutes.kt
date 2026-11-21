@@ -64,3 +64,9 @@ data object TryoutReportRoute
 
 @Serializable
 data class TryoutReviewRoute(val attemptId: String)
+
+@Serializable
+data class StudyGuideRoute(val unitId: String)
+
+@Serializable
+data object MistakeBankRoute

@@ -61,6 +61,7 @@ import id.my.kulitech.nippia.domain.model.QuizQuestion
 import id.my.kulitech.nippia.domain.model.QuizQuestionType
 import id.my.kulitech.nippia.domain.model.UnitCompletionResult
 import id.my.kulitech.nippia.ui.components.TactileButton
+import id.my.kulitech.nippia.ui.components.ZeroHeartsModal
 import id.my.kulitech.nippia.ui.components.rive.HeartStatusRive
 import id.my.kulitech.nippia.ui.components.rive.LessonCompleteRive
 import id.my.kulitech.nippia.ui.components.rive.MascotRive
@@ -78,6 +79,7 @@ fun QuizSessionScreen(
     categoryCode: String,
     onCloseClick: () -> Unit,
     onCompleted: () -> Unit,
+    onOpenMistakeBank: () -> Unit = {},
     viewModel: QuizViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -121,16 +123,36 @@ fun QuizSessionScreen(
         }
     }
 
+    // Zero Hearts Modal
+    if (uiState.hearts <= 0 && uiState.completionResult == null) {
+        ZeroHeartsModal(
+            gems = uiState.gems,
+            currentStreak = uiState.currentStreak,
+            isRefilling = uiState.isRefillingHearts,
+            feedbackMessage = uiState.heartRefillMessage,
+            onActivatePro = { viewModel.refillHearts("GEMS") },
+            onRefillWithGems = { viewModel.refillHearts("GEMS") },
+            onWatchAd = { viewModel.refillHearts("AD_REWARD") },
+            onExitLesson = onCloseClick
+        )
+    }
+
     // Lesson Complete Celebration View
     val completion = uiState.completionResult
     if (completion != null) {
+        val mistakesCount = (uiState.totalQuestions - uiState.correctCount).coerceAtLeast(0)
         LessonCompleteView(
+            categoryCode = categoryCode,
             unitTitle = uiState.unitTitle,
             accuracyTier = uiState.accuracyTier,
             correctCount = uiState.correctCount,
             totalQuestions = uiState.totalQuestions,
+            mistakesCount = mistakesCount,
+            durationSeconds = uiState.durationSeconds,
             result = completion,
-            onClaimAndContinue = onCompleted
+            onClaimAndContinue = onCompleted,
+            onRetryMistakes = onOpenMistakeBank,
+            onCloseClick = onCompleted
         )
         return
     }
@@ -557,109 +579,233 @@ private fun FeedbackBanner(
 
 @Composable
 private fun LessonCompleteView(
+    categoryCode: String,
     unitTitle: String,
     accuracyTier: Int,
     correctCount: Int,
     totalQuestions: Int,
+    mistakesCount: Int,
+    durationSeconds: Int,
     result: UnitCompletionResult,
-    onClaimAndContinue: () -> Unit
+    onClaimAndContinue: () -> Unit,
+    onRetryMistakes: () -> Unit,
+    onCloseClick: () -> Unit
 ) {
+    val accuracyPercent = if (totalQuestions > 0) (correctCount * 100) / totalQuestions else 100
+    val mins = durationSeconds / 60
+    val secs = durationSeconds % 60
+    val formattedTime = "%02d:%02d".format(mins, secs)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(NippiaNavyDeep)
+            .background(Color(0xFFF8F9FF))
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(24.dp),
+            .padding(horizontal = 20.dp, vertical = 14.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Spacer(modifier = Modifier.height(12.dp))
+        // Top Bar
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onCloseClick) {
+                Icon(Icons.Rounded.Close, contentDescription = "Tutup", tint = Color(0xFF0B1C30))
+            }
+            Text(
+                text = "Selesai Latihan",
+                color = Color(0xFF0B1C30),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+            Surface(
+                shape = RoundedCornerShape(50),
+                color = Color(0xFFFFFBEB),
+                border = BorderStroke(1.dp, NippiaGold)
+            ) {
+                Text(
+                    text = "🔥 ${result.currentStreak} HARI",
+                    color = Color(0xFFB45309),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                )
+            }
+        }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            LessonCompleteRive(
-                accuracyTier = accuracyTier,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 repeat(3) { idx ->
                     Icon(
                         imageVector = Icons.Rounded.Star,
                         contentDescription = null,
-                        tint = if (idx < accuracyTier) NippiaGold else NippiaWhite.copy(alpha = 0.25f),
-                        modifier = Modifier.size(34.dp)
+                        tint = if (idx < accuracyTier) NippiaGold else Color(0xFFE2E8F0),
+                        modifier = Modifier.size(32.dp)
                     )
+                }
+            }
+
+            Box(contentAlignment = Alignment.Center) {
+                LessonCompleteRive(
+                    accuracyTier = accuracyTier,
+                    modifier = Modifier.size(150.dp)
+                )
+                MascotRive(
+                    celebrateTriggerCount = 1,
+                    modifier = Modifier.size(92.dp)
+                )
+            }
+
+            Text(
+                text = "Unit Selesai! Luar Biasa!",
+                color = Color(0xFF0B1C30),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Surface(shape = RoundedCornerShape(50), color = Color(0xFFDCFCE7)) {
+                    Text(
+                        text = "$categoryCode LOLOS",
+                        color = NippiaEmeraldDark,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp)
+                    )
+                }
+                Text(
+                    text = "$unitTitle ($correctCount/$totalQuestions Soal)",
+                    color = Color(0xFF334155),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 3 Metric Cards
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Surface(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(16.dp),
+                    color = NippiaWhite,
+                    border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("AKURASI", color = Color(0xFF64748B), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text("$accuracyPercent%", color = NippiaEmeraldDark, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                        Text("Aman PG", color = NippiaEmeraldDark, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                }
+
+                Surface(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color(0xFFFFFBEB),
+                    border = BorderStroke(1.dp, NippiaGold)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("TOTAL XP", color = Color(0xFFB45309), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text("+${result.xpEarned} XP", color = Color(0xFFD97706), fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                        Text("+10 Bonus Kilat", color = Color(0xFF64748B), fontSize = 10.sp)
+                    }
+                }
+
+                Surface(
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(16.dp),
+                    color = NippiaWhite,
+                    border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("WAKTU", color = Color(0xFF64748B), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(formattedTime, color = NippiaNavyPrimary, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                        Text("Sangat Kilat ⚡", color = NippiaNavyPrimary, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = "Unit Selesai!",
+            // Streak Active Card
+            Surface(
+                shape = RoundedCornerShape(16.dp),
                 color = NippiaWhite,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-            Text(
-                text = unitTitle,
-                color = Color(0xFF93C5FD),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Surface(
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(16.dp),
-                    color = NippiaWhite.copy(alpha = 0.1f)
+                Row(
+                    modifier = Modifier.padding(14.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        modifier = Modifier.padding(14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text("XP Diperoleh", color = Color(0xFFBFDBFE), fontSize = 11.sp)
-                        Text("+${result.xpEarned} XP", color = NippiaGold, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    Column {
+                        Text("Streak Hari ke-${result.currentStreak} Aktif!", color = Color(0xFF0B1C30), fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
+                        Text("Konsistensi belajar harian terjaga 🔥", color = Color(0xFF64748B), fontSize = 11.sp)
                     }
-                }
-
-                Surface(
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(16.dp),
-                    color = NippiaWhite.copy(alpha = 0.1f)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text("Akurasi", color = Color(0xFFBFDBFE), fontSize = 11.sp)
-                        Text("$correctCount / $totalQuestions", color = Color(0xFF6FFBE0), fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    Surface(shape = RoundedCornerShape(50), color = Color(0xFFEFF4FF)) {
+                        Text("💎 +5", color = NippiaNavyPrimary, fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
                     }
                 }
             }
         }
 
-        TactileButton(
-            onClick = onClaimAndContinue,
-            containerColor = NippiaEmerald,
-            shadowColor = NippiaEmeraldDark,
-            contentColor = NippiaWhite
-        ) {
-            Text(
-                text = "KLAIM XP & LANJUTKAN",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            TactileButton(
+                onClick = onClaimAndContinue,
+                containerColor = NippiaEmeraldDark,
+                shadowColor = Color(0xFF004D32),
+                contentColor = NippiaWhite
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "KLAIM XP & LANJUTKAN",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(Icons.AutoMirrored.Rounded.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
+                }
+            }
+
+            if (mistakesCount > 0) {
+                TactileButton(
+                    onClick = onRetryMistakes,
+                    containerColor = NippiaWhite,
+                    shadowColor = Color(0xFFC5C5D3),
+                    contentColor = Color(0xFF0B1C30),
+                    border = BorderStroke(1.dp, Color(0xFFD5D7E3))
+                ) {
+                    Text(
+                        text = "Ulangi Kesalahan ($mistakesCount Soal)",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
     }
 }
