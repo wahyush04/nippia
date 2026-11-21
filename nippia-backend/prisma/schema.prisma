@@ -102,6 +102,7 @@ model User {
   subscriptions      Subscription[]
   tryoutAttempts     TryoutAttempt[]
   idempotencyRecords IdempotencyRecord[]
+  bookmarks          UserBookmark[]
 
   @@index([updatedAt])
   @@map("users")
@@ -360,4 +361,23 @@ model TryoutAttempt {
   @@index([packageId])
   @@index([updatedAt])
   @@map("tryout_attempts")
+}
+
+
+model UserBookmark {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  itemType     String   @map("item_type") // "QUESTION" | "GUIDE"
+  targetId     String   @map("target_id")
+  categoryCode String   @default("TWK") @map("category_code")
+  title        String
+  snippet      String   @db.Text
+  personalNote String?  @map("personal_note") @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemType, targetId])
+  @@index([userId, itemType])
+  @@map("user_bookmarks")
 }

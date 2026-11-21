@@ -1206,3 +1206,171 @@ paths:
       responses:
         "200":
           description: Hadiah liga berhasil diklaim
+
+
+  /users/me/profile:
+    patch:
+      tags: [Users]
+      summary: Perbarui profil pengguna (displayName, targetInstitution, targetPosition, dailyGoal, dailyReminder)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                targetInstitution:
+                  type: string
+                targetPosition:
+                  type: string
+                dailyGoal:
+                  type: string
+                  enum: [SANTAI, REGULER, AMBISIUS]
+                dailyReminderEnabled:
+                  type: boolean
+                dailyReminderTime:
+                  type: string
+      responses:
+        "200":
+          description: Profil pengguna berhasil diperbarui
+
+  /users/me:
+    delete:
+      tags: [Users]
+      summary: Hapus akun pengguna secara permanen (Google Play Data Safety)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [confirmationText]
+              properties:
+                confirmationText:
+                  type: string
+                  example: HAPUS
+      responses:
+        "200":
+          description: Akun berhasil dihapus permanen
+        "400":
+          description: Konfirmasi tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tryouts/history:
+    get:
+      tags: [Tryouts]
+      summary: Ambil riwayat lengkap tryout CAT beserta ringkasan rata-rata & tren skor
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Riwayat tryout CAT berhasil diambil
+
+  /learning/bookmarks:
+    get:
+      tags: [Learning]
+      summary: Ambil daftar soal dan panduan materi yang di-bookmark
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: itemType
+          in: query
+          schema:
+            type: string
+            enum: [QUESTION, GUIDE]
+        - name: categoryCode
+          in: query
+          schema:
+            type: string
+            enum: [TWK, TIU, TKP]
+      responses:
+        "200":
+          description: Daftar bookmark berhasil diambil
+    post:
+      tags: [Learning]
+      summary: Simpan atau perbarui bookmark soal / materi beserta catatan pribadi
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [itemType, targetId, title, snippet]
+              properties:
+                itemType:
+                  type: string
+                  enum: [QUESTION, GUIDE]
+                targetId:
+                  type: string
+                categoryCode:
+                  type: string
+                title:
+                  type: string
+                snippet:
+                  type: string
+                personalNote:
+                  type: string
+      responses:
+        "201":
+          description: Bookmark berhasil disimpan
+
+  /learning/bookmarks/{bookmarkId}:
+    delete:
+      tags: [Learning]
+      summary: Hapus item dari daftar bookmark
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: bookmarkId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Bookmark berhasil dihapus
+
+  /learning/faq:
+    get:
+      tags: [Learning]
+      summary: Ambil katalog FAQ CAT BKN & Passing Grade KepmenPAN-RB
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Katalog FAQ berhasil diambil
+
+  /learning/report-question:
+    post:
+      tags: [Learning]
+      summary: Laporkan soal bermasalah atau bug aplikasi ke tim kurator
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [category, description]
+              properties:
+                questionId:
+                  type: string
+                category:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "201":
+          description: Laporan soal berhasil diterima

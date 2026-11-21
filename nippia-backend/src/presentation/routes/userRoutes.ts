@@ -78,3 +78,41 @@ userRouter.post(
     return sendSuccess(res, data);
   },
 );
+
+const updateProfileSchema = z.object({
+  displayName: z.string().min(2).max(80).optional(),
+  targetInstitution: z.string().min(1).max(120).optional(),
+  targetPosition: z.string().min(1).max(120).optional(),
+  dailyGoal: z.enum(["SANTAI", "REGULER", "AMBISIUS"]).optional(),
+  dailyReminderEnabled: z.boolean().optional(),
+  dailyReminderTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, "Format waktu harus HH:mm")
+    .optional(),
+});
+
+const deleteAccountSchema = z.object({
+  confirmationText: z.string().min(1),
+});
+
+userRouter.patch(
+  "/me/profile",
+  requireAuth,
+  validateBody(updateProfileSchema),
+  async (req: AuthenticatedRequest, res) => {
+    const body = req.body as z.infer<typeof updateProfileSchema>;
+    const data = await userService.updateProfile(req.auth!.sub, body);
+    return sendSuccess(res, data);
+  },
+);
+
+userRouter.delete(
+  "/me",
+  requireAuth,
+  validateBody(deleteAccountSchema),
+  async (req: AuthenticatedRequest, res) => {
+    const body = req.body as z.infer<typeof deleteAccountSchema>;
+    const data = await userService.deleteAccount(req.auth!.sub, body.confirmationText);
+    return sendSuccess(res, data);
+  },
+);

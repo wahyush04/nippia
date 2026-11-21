@@ -94,3 +94,15 @@ data object SettingsOfflineRoute
 
 @Serializable
 data object LinkGuestAccountRoute
+
+@Serializable
+data object EditProfileRoute
+
+@Serializable
+data object TryoutHistoryRoute
+
+@Serializable
+data object BookmarkListRoute
+
+@Serializable
+data object HelpFaqRoute

@@ -97,6 +97,10 @@ fun HomeLearningPathScreen(
     onOpenLeagueOutcome: () -> Unit = {},
     onOpenSettingsOffline: () -> Unit = {},
     onOpenLinkGuest: () -> Unit = {},
+    onOpenEditProfile: () -> Unit = {},
+    onOpenTryoutHistory: () -> Unit = {},
+    onOpenBookmarks: () -> Unit = {},
+    onOpenHelpFaq: () -> Unit = {},
     onOpenTryout: (String, String) -> Unit = { _, _ -> },
     onOpenTryoutReview: (String) -> Unit = {},
     onLoggedOut: () -> Unit = {},
@@ -220,7 +224,8 @@ fun HomeLearningPathScreen(
                 SimulasiCatScreen(
                     modifier = Modifier.padding(innerPadding),
                     onStartTryout = onOpenTryout,
-                    onOpenReview = onOpenTryoutReview
+                    onOpenReview = onOpenTryoutReview,
+                    onOpenHistory = onOpenTryoutHistory
                 )
                 return@Scaffold
             }
@@ -241,7 +246,10 @@ fun HomeLearningPathScreen(
                     onOpenPaywall = onOpenPaywall,
                     onOpenSubscriptionHistory = onOpenSubscriptionHistory,
                     onOpenSettingsOffline = onOpenSettingsOffline,
-                    onOpenLinkGuest = onOpenLinkGuest
+                    onOpenLinkGuest = onOpenLinkGuest,
+                    onOpenEditProfile = onOpenEditProfile,
+                    onOpenBookmarks = onOpenBookmarks,
+                    onOpenHelpFaq = onOpenHelpFaq
                 )
                 return@Scaffold
             }

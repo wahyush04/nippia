@@ -17,6 +17,7 @@ import id.my.kulitech.nippia.data.remote.api.OnboardingApiService
 import id.my.kulitech.nippia.data.remote.api.ProfileApiService
 import id.my.kulitech.nippia.data.remote.api.QuizApiService
 import id.my.kulitech.nippia.data.remote.api.SubscriptionApiService
+import id.my.kulitech.nippia.data.remote.api.SupportProfileHistoryApiService
 import id.my.kulitech.nippia.data.remote.api.TryoutApiService
 import id.my.kulitech.nippia.data.remote.interceptor.AuthInterceptor
 import kotlinx.serialization.json.Json
@@ -135,4 +136,9 @@ object NetworkModule {
     @Singleton
     fun provideSubscriptionApiService(retrofit: Retrofit): SubscriptionApiService =
         retrofit.create(SubscriptionApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSupportProfileHistoryApiService(retrofit: Retrofit): SupportProfileHistoryApiService =
+        retrofit.create(SupportProfileHistoryApiService::class.java)
 }

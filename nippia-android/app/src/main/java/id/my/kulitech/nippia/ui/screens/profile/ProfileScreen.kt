@@ -83,6 +83,9 @@ fun ProfileScreen(
     onOpenSubscriptionHistory: () -> Unit = {},
     onOpenSettingsOffline: () -> Unit = {},
     onOpenLinkGuest: () -> Unit = {},
+    onOpenEditProfile: () -> Unit = {},
+    onOpenBookmarks: () -> Unit = {},
+    onOpenHelpFaq: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -119,9 +122,7 @@ fun ProfileScreen(
                         IdentityHeaderCard(
                             overview = overview,
                             isSyncing = uiState.isSyncing,
-                            onEditProfile = {
-                                viewModel.onActionPlaceholder("Halaman Edit Profil siap diimplementasikan berikutnya.")
-                            },
+                            onEditProfile = onOpenEditProfile,
                             onQuickSync = viewModel::onQuickSync
                         )
                     }
@@ -207,6 +208,13 @@ fun ProfileScreen(
                                 ProfileActionRow(
                                     icon = Icons.Rounded.Bookmarks,
                                     tint = NippiaNavyPrimary,
+                                    title = "Koleksi Soal & Materi Tersimpan",
+                                    subtitle = "Lihat bookmark soal HOTS & panduan materi",
+                                    onClick = onOpenBookmarks
+                                )
+                                ProfileActionRow(
+                                    icon = Icons.Rounded.Bookmarks,
+                                    tint = NippiaNavyPrimary,
                                     title = "Pengaturan & Sinkronisasi Offline",
                                     subtitle = "Kelola cache Room DB, pengingat belajar, dan Delta Sync",
                                     onClick = onOpenSettingsOffline
@@ -240,7 +248,7 @@ fun ProfileScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TextButton(
-                                onClick = { viewModel.onActionPlaceholder("Pusat Bantuan & FAQ tersedia.") }
+                                onClick = onOpenHelpFaq
                             ) {
                                 Icon(Icons.AutoMirrored.Rounded.HelpOutline, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(4.dp))

@@ -318,4 +318,58 @@ export class UserService {
       return { hearts: updated.hearts, maxHearts: 5, gems: updated.gems };
     });
   }
+
+  async updateProfile(
+    userId: string,
+    input: {
+      displayName?: string | undefined;
+      targetInstitution?: string | undefined;
+      targetPosition?: string | undefined;
+      dailyGoal?: "SANTAI" | "REGULER" | "AMBISIUS" | undefined;
+      dailyReminderEnabled?: boolean | undefined;
+      dailyReminderTime?: string | undefined;
+    },
+  ) {
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(input.displayName !== undefined ? { displayName: input.displayName } : {}),
+        ...(input.targetInstitution !== undefined ? { targetInstitution: input.targetInstitution } : {}),
+        ...(input.targetPosition !== undefined ? { targetPosition: input.targetPosition } : {}),
+        ...(input.dailyGoal !== undefined
+          ? { dailyGoal: input.dailyGoal, dailyXpTarget: DAILY_XP_MAP[input.dailyGoal] }
+          : {}),
+        ...(input.dailyReminderEnabled !== undefined
+          ? { dailyReminderEnabled: input.dailyReminderEnabled }
+          : {}),
+        ...(input.dailyReminderTime !== undefined
+          ? { dailyReminderTime: input.dailyReminderTime }
+          : {}),
+      },
+      select: {
+        id: true,
+        displayName: true,
+        targetInstitution: true,
+        targetPosition: true,
+        dailyGoal: true,
+        dailyXpTarget: true,
+        dailyReminderEnabled: true,
+        dailyReminderTime: true,
+      },
+    });
+    return updated;
+  }
+
+  async deleteAccount(userId: string, confirmationText: string) {
+    if (confirmationText.trim().toUpperCase() !== "HAPUS") {
+      throw new AppError(
+        400,
+        "INVALID_CONFIRMATION",
+        "Ketik HAPUS dengan benar untuk menghapus akun permanen.",
+      );
+    }
+
+    await prisma.user.delete({ where: { id: userId } });
+    return { deleted: true };
+  }
 }

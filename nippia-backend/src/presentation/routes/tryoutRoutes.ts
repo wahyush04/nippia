@@ -29,6 +29,11 @@ tryoutRouter.get("/", requireAuth, async (req: AuthenticatedRequest, res) => {
   return sendSuccess(res, data);
 });
 
+tryoutRouter.get("/history", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const data = await tryoutService.getTryoutHistory(req.auth!.sub);
+  return sendSuccess(res, data);
+});
+
 tryoutRouter.get("/:packageId/lobby", requireAuth, async (req: AuthenticatedRequest, res) => {
   const packageId = String(req.params.packageId);
   const data = await tryoutService.getTryoutLobby(req.auth!.role, packageId);

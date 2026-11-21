@@ -75,6 +75,7 @@ fun SimulasiCatScreen(
     modifier: Modifier = Modifier,
     onStartTryout: (packageId: String, title: String) -> Unit = { _, _ -> },
     onOpenReview: (attemptId: String) -> Unit = {},
+    onOpenHistory: () -> Unit = {},
     viewModel: SimulasiCatViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -174,6 +175,20 @@ fun SimulasiCatScreen(
                                 tint = NippiaNavyPrimary
                             )
                         }
+                    }
+                }
+
+                // Riwayat & Tren Skor CTA
+                item {
+                    OutlinedButton(
+                        onClick = onOpenHistory,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Riwayat Tryout & Grafik Tren Skor →",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
 

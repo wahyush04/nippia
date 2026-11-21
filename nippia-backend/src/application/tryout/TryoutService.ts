@@ -564,4 +564,49 @@ export class TryoutService {
       }),
     };
   }
+
+  async getTryoutHistory(userId: string) {
+    const attempts = await prisma.tryoutAttempt.findMany({
+      where: {
+        userId,
+        submittedAt: { not: null },
+      },
+      orderBy: { submittedAt: "desc" },
+      take: 30,
+      include: {
+        package: {
+          select: { id: true, title: true, type: true },
+        },
+      },
+    });
+
+    const totalAttempts = attempts.length;
+    const avgTotalScore =
+      totalAttempts > 0
+        ? Math.round(attempts.reduce((sum, a) => sum + a.totalScore, 0) / totalAttempts)
+        : 0;
+    const passedCount = attempts.filter((a) => a.isPassed).length;
+    const passRatePercent =
+      totalAttempts > 0 ? Math.round((passedCount / totalAttempts) * 100) : 0;
+
+    return {
+      summary: {
+        totalAttempts,
+        avgTotalScore,
+        passRatePercent,
+      },
+      attempts: attempts.map((a) => ({
+        attemptId: a.id,
+        packageId: a.packageId,
+        title: a.package.title,
+        type: a.package.type,
+        twkScore: a.twkScore,
+        tiuScore: a.tiuScore,
+        tkpScore: a.tkpScore,
+        totalScore: a.totalScore,
+        isPassed: a.isPassed,
+        submittedAt: a.submittedAt!.toISOString(),
+      })),
+    };
+  }
 }

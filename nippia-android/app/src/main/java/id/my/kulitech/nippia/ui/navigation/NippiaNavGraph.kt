@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import id.my.kulitech.nippia.ui.screens.auth.AuthSuccessScreen
 import id.my.kulitech.nippia.ui.screens.auth.LoginScreen
+import id.my.kulitech.nippia.ui.screens.bookmarks.BookmarkListScreen
 import id.my.kulitech.nippia.ui.screens.guide.StudyGuideScreen
 import id.my.kulitech.nippia.ui.screens.home.HomeLearningPathScreen
 import id.my.kulitech.nippia.ui.screens.leaderboard.LeagueOutcomeScreen
@@ -32,6 +33,7 @@ import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep2Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingStep3Screen
 import id.my.kulitech.nippia.ui.screens.onboarding.OnboardingViewModel
 import id.my.kulitech.nippia.ui.screens.path.ChooseLearningPathScreen
+import id.my.kulitech.nippia.ui.screens.profile.EditProfileScreen
 import id.my.kulitech.nippia.ui.screens.quiz.QuizSessionScreen
 import id.my.kulitech.nippia.ui.screens.section.SectionListScreen
 import id.my.kulitech.nippia.ui.screens.settings.LinkGuestAccountScreen
@@ -41,8 +43,10 @@ import id.my.kulitech.nippia.ui.screens.subscription.PaywallScreen
 import id.my.kulitech.nippia.ui.screens.subscription.ProSuccessScreen
 import id.my.kulitech.nippia.ui.screens.subscription.SubscriptionHistoryScreen
 import id.my.kulitech.nippia.ui.screens.subscription.SubscriptionViewModel
+import id.my.kulitech.nippia.ui.screens.support.HelpFaqScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutAnswerSheetScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutExamScreen
+import id.my.kulitech.nippia.ui.screens.tryout.TryoutHistoryScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutLobbyScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutReportScreen
 import id.my.kulitech.nippia.ui.screens.tryout.TryoutReviewScreen
@@ -223,6 +227,18 @@ fun NippiaNavGraph(
                 onOpenLinkGuest = {
                     navController.navigate(LinkGuestAccountRoute)
                 },
+                onOpenEditProfile = {
+                    navController.navigate(EditProfileRoute)
+                },
+                onOpenTryoutHistory = {
+                    navController.navigate(TryoutHistoryRoute)
+                },
+                onOpenBookmarks = {
+                    navController.navigate(BookmarkListRoute)
+                },
+                onOpenHelpFaq = {
+                    navController.navigate(HelpFaqRoute)
+                },
                 onOpenTryout = { packageId, title ->
                     navController.navigate(TryoutGraphRoute(packageId, title))
                 },
@@ -341,6 +357,41 @@ fun NippiaNavGraph(
             LinkGuestAccountScreen(
                 onLinkedSuccess = { navController.popBackStack() },
                 onContinueAsGuest = { navController.popBackStack() }
+            )
+        }
+
+        composable<EditProfileRoute> {
+            EditProfileScreen(
+                onBackClick = { navController.popBackStack() },
+                onAccountDeleted = {
+                    navController.navigate(LoginRoute) {
+                        popUpTo<HomeRoute> { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<TryoutHistoryRoute> {
+            TryoutHistoryScreen(
+                onBackClick = { navController.popBackStack() },
+                onOpenReview = { attemptId ->
+                    navController.navigate(TryoutReviewRoute(attemptId))
+                }
+            )
+        }
+
+        composable<BookmarkListRoute> {
+            BookmarkListScreen(
+                onBackClick = { navController.popBackStack() },
+                onOpenStudyGuide = { unitId ->
+                    navController.navigate(StudyGuideRoute(unitId))
+                }
+            )
+        }
+
+        composable<HelpFaqRoute> {
+            HelpFaqScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
 

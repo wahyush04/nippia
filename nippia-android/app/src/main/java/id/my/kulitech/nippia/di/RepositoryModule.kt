@@ -12,6 +12,7 @@ import id.my.kulitech.nippia.data.repository.OnboardingRepositoryImpl
 import id.my.kulitech.nippia.data.repository.ProfileRepositoryImpl
 import id.my.kulitech.nippia.data.repository.QuizRepositoryImpl
 import id.my.kulitech.nippia.data.repository.SubscriptionRepositoryImpl
+import id.my.kulitech.nippia.data.repository.SupportProfileHistoryRepositoryImpl
 import id.my.kulitech.nippia.data.repository.TryoutRepositoryImpl
 import id.my.kulitech.nippia.domain.repository.AuthRepository
 import id.my.kulitech.nippia.domain.repository.LeaderboardRepository
@@ -21,6 +22,7 @@ import id.my.kulitech.nippia.domain.repository.OnboardingRepository
 import id.my.kulitech.nippia.domain.repository.ProfileRepository
 import id.my.kulitech.nippia.domain.repository.QuizRepository
 import id.my.kulitech.nippia.domain.repository.SubscriptionRepository
+import id.my.kulitech.nippia.domain.repository.SupportProfileHistoryRepository
 import id.my.kulitech.nippia.domain.repository.TryoutRepository
 import javax.inject.Singleton
 
@@ -67,4 +69,10 @@ abstract class RepositoryModule {
     abstract fun bindSubscriptionRepository(
         impl: SubscriptionRepositoryImpl
     ): SubscriptionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSupportProfileHistoryRepository(
+        impl: SupportProfileHistoryRepositoryImpl
+    ): SupportProfileHistoryRepository
 }
